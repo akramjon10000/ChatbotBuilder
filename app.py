@@ -75,7 +75,7 @@ with app.app_context():
     # Import models
     import models
     # Create all tables
-    db.create_all()
+    # Drop all tables and recreate with new structure\n    db.drop_all()\n    db.create_all()
     
     # Create admin user if not exists
     from models import User
@@ -96,6 +96,10 @@ with app.app_context():
 # Import routes
 from routes import *
 from admin_routes import *
+
+# Import admin panel
+from admin_panel import admin
+app.register_blueprint(admin)
 
 # Start scheduler
 from tasks.scheduler import start_scheduler

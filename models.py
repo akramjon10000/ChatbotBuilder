@@ -52,8 +52,6 @@ class User(UserMixin, db.Model):
     
     # RELATIONSHIPS
     bots = db.relationship('Bot', backref='owner', lazy=True, cascade='all, delete-orphan')
-    admin_actions_performed = db.relationship('AdminAction', foreign_keys='AdminAction.admin_id', backref='admin_user', lazy=True)
-    admin_actions_received = db.relationship('AdminAction', foreign_keys='AdminAction.target_user_id', backref='target_user', lazy=True)
     
     @property
     def trial_days_left(self):
@@ -211,9 +209,8 @@ class AdminAction(db.Model):
     # METADATA
     action_date = db.Column(db.DateTime, default=datetime.utcnow)
     
-    # RELATIONSHIPS
-    admin = db.relationship('User', foreign_keys=[admin_id], backref='performed_actions')
-    target_user = db.relationship('User', foreign_keys=[target_user_id], backref='received_actions')
+    # RELATIONSHIPS (relationships will be added after all models are defined)
+    # admin va target_user relationships are defined later
     
     @property
     def action_display(self):

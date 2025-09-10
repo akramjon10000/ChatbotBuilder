@@ -47,12 +47,11 @@ class AccessControlService:
         target_user.is_trial_active = False
         
         # Admin harakatini yozib olish
-        action = AdminAction(
-            admin_id=admin_user.id,
-            target_user_id=target_user.id,
-            action_type=AdminActionType.GRANT_ACCESS,
-            reason=reason
-        )
+        action = AdminAction()
+        action.admin_id = admin_user.id
+        action.target_user_id = target_user.id
+        action.action_type = AdminActionType.GRANT_ACCESS
+        action.reason = reason
         db.session.add(action)
         db.session.commit()
         
@@ -70,12 +69,11 @@ class AccessControlService:
         target_user.access_granted_date = None
         
         # Admin harakatini yozib olish
-        action = AdminAction(
-            admin_id=admin_user.id,
-            target_user_id=target_user.id,
-            action_type=AdminActionType.REVOKE_ACCESS,
-            reason=reason
-        )
+        action = AdminAction()
+        action.admin_id = admin_user.id
+        action.target_user_id = target_user.id
+        action.action_type = AdminActionType.REVOKE_ACCESS
+        action.reason = reason
         db.session.add(action)
         db.session.commit()
         
@@ -99,12 +97,11 @@ class AccessControlService:
             target_user.trial_end_date = datetime.utcnow() + timedelta(days=days)
         
         # Admin harakatini yozib olish
-        action = AdminAction(
-            admin_id=admin_user.id,
-            target_user_id=target_user.id,
-            action_type=AdminActionType.EXTEND_TRIAL,
-            reason=f"Sinov {days} kunga uzaytirildi. {reason or ''}"
-        )
+        action = AdminAction()
+        action.admin_id = admin_user.id
+        action.target_user_id = target_user.id
+        action.action_type = AdminActionType.EXTEND_TRIAL
+        action.reason = f"Sinov {days} kunga uzaytirildi. {reason or ''}"
         db.session.add(action)
         db.session.commit()
         
@@ -122,12 +119,11 @@ class AccessControlService:
         target_user.admin_approved = False
         
         # Admin harakatini yozib olish
-        action = AdminAction(
-            admin_id=admin_user.id,
-            target_user_id=target_user.id,
-            action_type=AdminActionType.SUSPEND_USER,
-            reason=reason
-        )
+        action = AdminAction()
+        action.admin_id = admin_user.id
+        action.target_user_id = target_user.id
+        action.action_type = AdminActionType.SUSPEND_USER
+        action.reason = reason
         db.session.add(action)
         db.session.commit()
         
