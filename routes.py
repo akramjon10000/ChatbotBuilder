@@ -397,6 +397,10 @@ def telegram_webhook(bot_id):
         # Get incoming message data
         data = request.get_json()
         
+        # Handle callback queries (inline keyboard responses)
+        if 'callback_query' in data:
+            return handle_telegram_callback(bot, data['callback_query'])
+        
         if not data or 'message' not in data:
             return "No message", 400
         
@@ -407,8 +411,9 @@ def telegram_webhook(bot_id):
         if not user_message:
             return "Empty message", 400
         
-        # Detect language
-        detected_language = detect_language(user_message)
+        # Handle special commands first
+        if user_message.startswith('/'):
+            return handle_telegram_command(bot, chat_id, user_message, message)
         
         # Create or get conversation
         conversation = Conversation.query.filter_by(
@@ -418,6 +423,8 @@ def telegram_webhook(bot_id):
         ).first()
         
         if not conversation:
+            # Detect language for new conversations
+            detected_language = detect_language(user_message)
             conversation = Conversation(
                 bot_id=bot.id,
                 platform='telegram',
@@ -427,6 +434,9 @@ def telegram_webhook(bot_id):
             )
             db.session.add(conversation)
             db.session.commit()
+        
+        # Use the conversation's language preference
+        user_language = conversation.language
         
         # Save user message
         user_msg = Message(
@@ -441,24 +451,24 @@ def telegram_webhook(bot_id):
             conversation_id=conversation.id
         ).order_by(Message.created_at.desc()).limit(10).all()
         
-        # Generate AI response
+        # Generate AI response using user's language preference
         try:
             if len(history) > 1:
                 response_text = ai_service.generate_response_with_context(
                     user_message, 
                     history[1:], 
                     bot.system_prompt,
-                    detected_language
+                    user_language
                 )
             else:
                 response_text = ai_service.generate_response(
                     user_message,
                     bot.system_prompt,
-                    detected_language
+                    user_language
                 )
         except Exception as e:
             logging.error(f"AI service error: {e}")
-            response_text = ai_service._get_fallback_response(detected_language)
+            response_text = ai_service._get_fallback_response(user_language)
         
         # Save bot response
         bot_msg = Message(
@@ -486,6 +496,129 @@ def telegram_webhook(bot_id):
     except Exception as e:
         logging.error(f"Telegram webhook error: {e}")
         db.session.rollback()
+        return "Error", 500
+
+def handle_telegram_command(bot, chat_id, command, message):
+    """Handle Telegram bot commands"""
+    try:
+        telegram_service = TelegramService(bot.telegram_token)
+        
+        # Get or create conversation
+        conversation = Conversation.query.filter_by(
+            bot_id=bot.id,
+            platform='telegram',
+            platform_user_id=str(chat_id)
+        ).first()
+        
+        if not conversation:
+            conversation = Conversation(
+                bot_id=bot.id,
+                platform='telegram',
+                platform_user_id=str(chat_id),
+                platform_username=message['from'].get('first_name', 'Unknown'),
+                language='uz'  # Default to Uzbek
+            )
+            db.session.add(conversation)
+            db.session.commit()
+        
+        if command.startswith('/start'):
+            # Welcome message with language selection
+            welcome_messages = {
+                'uz': f"Assalom alaykum! 👋\n\nMen <b>{bot.name}</b> botman.\n\n{bot.description or 'Sizga yordam berish uchun tayyorman!'}\n\n📣 Tilni o'zgartirish uchun /til buyrug'idan foydalaning.",
+                'ru': f"Привет! 👋\n\nЯ бот <b>{bot.name}</b>.\n\n{bot.description or 'Готов помочь вам!'}\n\n📣 Используйте команду /til для смены языка.",
+                'en': f"Hello! 👋\n\nI'm the <b>{bot.name}</b> bot.\n\n{bot.description or 'Ready to help you!'}\n\n📣 Use /til command to change language."
+            }
+            
+            text = welcome_messages.get(conversation.language, welcome_messages['uz'])
+            keyboard = telegram_service.create_language_keyboard()
+            
+            telegram_service.send_message(chat_id, text, keyboard)
+            
+        elif command.startswith('/til') or command.startswith('/language') or command.startswith('/lang'):
+            # Language selection
+            language_messages = {
+                'uz': "🌐 Tilni tanlang:",
+                'ru': "🌐 Выберите язык:",
+                'en': "🌐 Choose your language:"
+            }
+            
+            text = language_messages.get(conversation.language, language_messages['uz'])
+            keyboard = telegram_service.create_language_keyboard()
+            
+            telegram_service.send_message(chat_id, text, keyboard)
+            
+        elif command.startswith('/help'):
+            # Help message
+            help_messages = {
+                'uz': f"🤖 <b>{bot.name}</b> - Yordam\n\n📋 Mavjud buyruqlar:\n/start - Botni ishga tushirish\n/til - Tilni o'zgartirish\n/help - Yordam\n\n💬 Menga savollaringizni yozing va men javob beraman!",
+                'ru': f"🤖 <b>{bot.name}</b> - Помощь\n\n📋 Доступные команды:\n/start - Запустить бота\n/til - Сменить язык\n/help - Помощь\n\n💬 Задавайте мне вопросы и я отвечу!",
+                'en': f"🤖 <b>{bot.name}</b> - Help\n\n📋 Available commands:\n/start - Start the bot\n/til - Change language\n/help - Help\n\n💬 Ask me questions and I'll answer!"
+            }
+            
+            text = help_messages.get(conversation.language, help_messages['uz'])
+            telegram_service.send_message(chat_id, text)
+        
+        return "OK", 200
+        
+    except Exception as e:
+        logging.error(f"Telegram command error: {e}")
+        return "Error", 500
+
+def handle_telegram_callback(bot, callback_query):
+    """Handle Telegram callback queries (inline keyboard responses)"""
+    try:
+        telegram_service = TelegramService(bot.telegram_token)
+        
+        chat_id = callback_query['message']['chat']['id']
+        callback_data = callback_query['data']
+        callback_id = callback_query['id']
+        message_id = callback_query['message']['message_id']
+        
+        # Get conversation
+        conversation = Conversation.query.filter_by(
+            bot_id=bot.id,
+            platform='telegram',
+            platform_user_id=str(chat_id)
+        ).first()
+        
+        if not conversation:
+            telegram_service.answer_callback_query(callback_id, "Error: Conversation not found")
+            return "Error", 400
+        
+        if callback_data.startswith('lang_'):
+            # Language selection
+            new_language = callback_data.split('_')[1]
+            
+            if new_language in ['uz', 'ru', 'en']:
+                # Update conversation language
+                conversation.language = new_language
+                db.session.commit()
+                
+                # Success messages
+                success_messages = {
+                    'uz': "✅ Til o'zgartirildi: O'zbek",
+                    'ru': "✅ Язык изменен: Русский", 
+                    'en': "✅ Language changed: English"
+                }
+                
+                # Updated language selection message
+                language_messages = {
+                    'uz': "🌐 Til tanlandi: O'zbek\n\nEndi men sizga O'zbek tilida javob beraman!",
+                    'ru': "🌐 Язык выбран: Русский\n\nТеперь я буду отвечать вам на русском языке!",
+                    'en': "🌐 Language selected: English\n\nNow I will respond to you in English!"
+                }
+                
+                # Edit the original message
+                text = language_messages.get(new_language, language_messages['uz'])
+                telegram_service.edit_message(chat_id, message_id, text)
+                
+                # Answer callback query
+                telegram_service.answer_callback_query(callback_id, success_messages.get(new_language))
+            
+        return "OK", 200
+        
+    except Exception as e:
+        logging.error(f"Telegram callback error: {e}")
         return "Error", 500
 
 @app.route('/bot/<int:bot_id>/deploy_telegram', methods=['POST'])

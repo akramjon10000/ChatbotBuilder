@@ -26,6 +26,53 @@ class TelegramService:
             logging.error(f"Telegram send message error: {e}")
             return None
     
+    def edit_message(self, chat_id, message_id, text, reply_markup=None):
+        """Edit existing message"""
+        try:
+            url = f"{self.base_url}/editMessageText"
+            data = {
+                'chat_id': chat_id,
+                'message_id': message_id,
+                'text': text,
+                'parse_mode': 'HTML'
+            }
+            if reply_markup:
+                data['reply_markup'] = reply_markup
+            
+            response = requests.post(url, json=data)
+            return response.json()
+        except Exception as e:
+            logging.error(f"Telegram edit message error: {e}")
+            return None
+    
+    def answer_callback_query(self, callback_query_id, text=None):
+        """Answer callback query"""
+        try:
+            url = f"{self.base_url}/answerCallbackQuery"
+            data = {'callback_query_id': callback_query_id}
+            if text:
+                data['text'] = text
+            
+            response = requests.post(url, json=data)
+            return response.json()
+        except Exception as e:
+            logging.error(f"Telegram callback query error: {e}")
+            return None
+    
+    def create_language_keyboard(self):
+        """Create inline keyboard for language selection"""
+        return {
+            'inline_keyboard': [
+                [
+                    {'text': '🇺🇿 O\'zbek', 'callback_data': 'lang_uz'},
+                    {'text': '🇷🇺 Русский', 'callback_data': 'lang_ru'}
+                ],
+                [
+                    {'text': '🇺🇸 English', 'callback_data': 'lang_en'}
+                ]
+            ]
+        }
+    
     def set_webhook(self, webhook_url):
         """Set webhook for Telegram bot"""
         try:
