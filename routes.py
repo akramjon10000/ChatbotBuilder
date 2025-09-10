@@ -10,7 +10,7 @@ import csv
 from app import app, db
 from models import User, Bot, Conversation, Message, KnowledgeBase, AdminAction
 from services.ai_service import AIService
-from services.platform_service import TelegramService, PlatformManager
+from services.platform_service import TelegramService, InstagramService, PlatformManager
 from utils.helpers import allowed_file, detect_language
 
 # Initialize AI service
