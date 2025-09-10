@@ -58,9 +58,9 @@ class AIService:
             
             if knowledge_content:
                 kb_instructions = {
-                    'uz': f"\n\nSizda quyidagi bilimlar bazasi mavjud. Foydalanuvchi savollariga javob berishda ushbu ma'lumotlardan foydalaning:\n{knowledge_content}",
-                    'ru': f"\n\nУ вас есть следующая база знаний. Используйте эту информацию при ответе на вопросы пользователя:\n{knowledge_content}",
-                    'en': f"\n\nYou have the following knowledge base. Use this information when answering user questions:\n{knowledge_content}"
+                    'uz': f"\n\nSizda quyidagi bilimlar bazasi mavjud. Foydalanuvchi savollariga javob berishda ushbu ma'lumotlardan foydalaning:\n{knowledge_content}\n\nMuhim: Agar mahsulot haqida so'ralsa va uning rasm URL si mavjud bo'lsa (https bilan boshlangan), javobingizda rasm URL ni ham ko'rsating. Rasm URL ni to'g'ridan-to'g'ri yozing, masalan: 'Bu mahsulotning rasmi: https://example.com/image.jpg'",
+                    'ru': f"\n\nУ вас есть следующая база знаний. Используйте эту информацию при ответе на вопросы пользователя:\n{knowledge_content}\n\nВажно: Если спрашивают о товаре и у него есть URL изображения (начинающийся с https), включите URL изображения в ваш ответ. Пишите URL изображения напрямую, например: 'Изображение этого товара: https://example.com/image.jpg'",
+                    'en': f"\n\nYou have the following knowledge base. Use this information when answering user questions:\n{knowledge_content}\n\nImportant: If asked about a product and it has an image URL (starting with https), include the image URL in your response. Write the image URL directly, for example: 'Product image: https://example.com/image.jpg'"
                 }
                 system_instruction += kb_instructions.get(language, kb_instructions['uz'])
             
@@ -126,9 +126,9 @@ class AIService:
             
             if knowledge_content:
                 kb_instructions = {
-                    'uz': f"\n\nSizda quyidagi bilimlar bazasi mavjud. Foydalanuvchi savollariga javob berishda ushbu ma'lumotlardan foydalaning:\n{knowledge_content}",
-                    'ru': f"\n\nУ вас есть следующая база знаний. Используйте эту информацию при ответе на вопросы пользователя:\n{knowledge_content}",
-                    'en': f"\n\nYou have the following knowledge base. Use this information when answering user questions:\n{knowledge_content}"
+                    'uz': f"\n\nSizda quyidagi bilimlar bazasi mavjud. Foydalanuvchi savollariga javob berishda ushbu ma'lumotlardan foydalaning:\n{knowledge_content}\n\nMuhim: Agar mahsulot haqida so'ralsa va uning rasm URL si mavjud bo'lsa (https bilan boshlangan), javobingizda rasm URL ni ham ko'rsating. Rasm URL ni to'g'ridan-to'g'ri yozing, masalan: 'Bu mahsulotning rasmi: https://example.com/image.jpg'",
+                    'ru': f"\n\nУ вас есть следующая база знаний. Используйте эту информацию при ответе на вопросы пользователя:\n{knowledge_content}\n\nВажно: Если спрашивают о товаре и у него есть URL изображения (начинающийся с https), включите URL изображения в ваш ответ. Пишите URL изображения напрямую, например: 'Изображение этого товара: https://example.com/image.jpg'",
+                    'en': f"\n\nYou have the following knowledge base. Use this information when answering user questions:\n{knowledge_content}\n\nImportant: If asked about a product and it has an image URL (starting with https), include the image URL in your response. Write the image URL directly, for example: 'Product image: https://example.com/image.jpg'"
                 }
                 system_instruction += kb_instructions.get(language, kb_instructions['uz'])
             
