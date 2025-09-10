@@ -29,9 +29,9 @@ body {
     font-family: var(--font-family) !important;
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
     background-attachment: fixed !important;
-    color: var(--dark-color) !important;
+    color: #1A1A1A !important;
     line-height: 1.6 !important;
-    font-size: 16px !important;
+    font-size: 18px !important;
     font-weight: 400 !important;
     min-height: 100vh !important;
 }
@@ -43,20 +43,61 @@ body {
 }
 
 /* Specific element visibility fixes */
-h1, h2, h3, h4, h5, h6, p, span, div, li, td, th, a {
-    color: inherit !important;
+h1, h2, h3, h4, h5, h6 {
+    color: #1A1A1A !important;
     visibility: visible !important;
     opacity: 1 !important;
+    font-weight: 600 !important;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+p, span, div, li, td, th {
+    color: #333333 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    font-size: 16px !important;
+}
+
+a {
+    color: #0056b3 !important;
+    font-weight: 500 !important;
+    text-decoration: none;
 }
 
 /* Navigation text fixes */
 .navbar * {
-    color: rgba(255, 255, 255, 0.9) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    font-weight: 600 !important;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 /* Card content visibility */
-.card, .card-body, .card-header, .card-title, .card-text {
-    color: #212529 !important;
+.card {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.card-body, .card-header {
+    color: #1A1A1A !important;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.card-title {
+    color: #1A1A1A !important;
+    font-weight: 700 !important;
+    font-size: 20px !important;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+    margin-bottom: 15px;
+}
+
+.card-text {
+    color: #333333 !important;
+    font-size: 16px !important;
+    line-height: 1.6;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6);
 }
 
 /* Bootstrap text utility overrides */
@@ -167,9 +208,36 @@ h1, h2, h3, h4, h5, h6, p, span, div, li, td, th, a {
 /* Button Enhancements */
 .btn {
     border-radius: 8px;
-    font-weight: 500;
+    font-weight: 600 !important;
     transition: all 0.3s ease;
     border: none;
+    font-size: 16px !important;
+    padding: 12px 24px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #28a745, #1e7e34);
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #ffc107, #e0a800);
+    color: #1A1A1A !important;
+    font-weight: 700 !important;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: #ffffff !important;
+    font-weight: 700 !important;
 }
 
 .btn:hover {
@@ -208,6 +276,19 @@ h1, h2, h3, h4, h5, h6, p, span, div, li, td, th, a {
     align-items: center;
 }
 
+.hero-section h1, .hero-section h2, .hero-section h3 {
+    color: #ffffff !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5) !important;
+    font-weight: 700 !important;
+}
+
+.hero-section p, .hero-section .lead {
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4) !important;
+    font-size: 18px !important;
+    font-weight: 500 !important;
+}
+
 .hero-section::before {
     content: '';
     position: absolute;
@@ -229,9 +310,11 @@ h1, h2, h3, h4, h5, h6, p, span, div, li, td, th, a {
     border-radius: 8px;
     border: 2px solid #e9ecef;
     transition: all 0.3s ease;
-    padding: 12px 15px;
-    color: #212529 !important;
-    background-color: #fff !important;
+    padding: 15px 20px;
+    color: #1A1A1A !important;
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
 }
 
 .form-control:focus {
@@ -241,9 +324,11 @@ h1, h2, h3, h4, h5, h6, p, span, div, li, td, th, a {
 }
 
 .form-label {
-    font-weight: 600;
-    color: var(--dark-color);
-    margin-bottom: 8px;
+    font-weight: 700 !important;
+    color: #1A1A1A !important;
+    margin-bottom: 10px;
+    font-size: 16px !important;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 /* Badge Enhancements */
@@ -257,20 +342,28 @@ h1, h2, h3, h4, h5, h6, p, span, div, li, td, th, a {
 .table {
     border-radius: 12px;
     overflow: hidden;
-    color: #212529 !important;
+    color: #1A1A1A !important;
+    font-size: 16px !important;
+    background: rgba(255, 255, 255, 0.95);
 }
 
 .table th {
-    background-color: var(--light-color);
+    background: rgba(102, 126, 234, 0.1) !important;
     border: none;
-    font-weight: 600;
-    color: var(--dark-color) !important;
+    font-weight: 700 !important;
+    color: #1A1A1A !important;
+    font-size: 16px !important;
+    padding: 15px;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .table td {
     vertical-align: middle;
     border-color: #f1f3f4;
-    color: #212529 !important;
+    color: #333333 !important;
+    font-size: 16px !important;
+    padding: 12px 15px;
+    font-weight: 500;
 }
 
 .table-hover tbody tr:hover {
@@ -692,13 +785,17 @@ footer {
 }
 
 .empty-state h5 {
-    color: var(--secondary-color);
+    color: #1A1A1A !important;
     margin-bottom: 10px;
+    font-weight: 700 !important;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .empty-state p {
-    color: #6c757d;
-    font-size: 0.9rem;
+    color: #333333 !important;
+    font-size: 16px !important;
+    font-weight: 500;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6);
 }
 
 /* Uzbek Text Enhancements */
