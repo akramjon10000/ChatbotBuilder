@@ -432,23 +432,43 @@
                         <h6 class="mb-0">
                             <i class="fab fa-telegram me-2 text-info"></i>
                             Telegram Bot
+                            {% if bot.telegram_token %}
+                                <span class="badge bg-success ms-2">Ulangan</span>
+                            {% else %}
+                                <span class="badge bg-secondary ms-2">Ulanmagan</span>
+                            {% endif %}
                         </h6>
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="{{ url_for('bot_detail', bot_id=bot.id) }}">
-                            <input type="hidden" name="platform" value="telegram">
-                            <div class="mb-3">
-                                <label for="telegramToken" class="form-label">Bot Token</label>
-                                <input type="text" class="form-control" id="telegramToken" name="telegram_token" 
-                                       value="{{ bot.telegram_token or '' }}" placeholder="1234567890:ABCdefGHijklMNop...">
-                                <div class="form-text">
-                                    @BotFather dan olingan bot tokenini kiriting
-                                </div>
+                        {% if bot.telegram_token %}
+                            <div class="alert alert-success">
+                                <i class="fas fa-check-circle me-1"></i>
+                                Telegram bot muvaffaqiyatli ulangan va faol
+                                {% if bot.telegram_webhook_url %}
+                                    <br><small class="text-muted">Webhook: {{ bot.telegram_webhook_url }}</small>
+                                {% endif %}
                             </div>
-                            <button type="submit" class="btn btn-info btn-sm">
-                                <i class="fas fa-save me-1"></i>Saqlash
-                            </button>
-                        </form>
+                            <form method="POST" action="{{ url_for('disconnect_telegram', bot_id=bot.id) }}">
+                                <button type="submit" class="btn btn-outline-danger btn-sm" 
+                                        onclick="return confirm('Telegram botni uzishni xohlaysizmi?')">
+                                    <i class="fas fa-unlink me-1"></i>Uzish
+                                </button>
+                            </form>
+                        {% else %}
+                            <form method="POST" action="{{ url_for('deploy_telegram', bot_id=bot.id) }}">
+                                <div class="mb-3">
+                                    <label for="telegramToken" class="form-label">Bot Token</label>
+                                    <input type="text" class="form-control" id="telegramToken" name="telegram_token" 
+                                           placeholder="1234567890:ABCdefGHijklMNop..." required>
+                                    <div class="form-text">
+                                        @BotFather dan olingan bot tokenini kiriting
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-info btn-sm">
+                                    <i class="fas fa-plug me-1"></i>Ulash
+                                </button>
+                            </form>
+                        {% endif %}
                     </div>
                 </div>
 
