@@ -9,6 +9,7 @@ import logging
 from app import app, db
 from models import User, Bot, Conversation, Message, KnowledgeBase, AdminAction
 from services.ai_service import AIService
+from services.platform_service import TelegramService, PlatformManager
 from utils.helpers import allowed_file, detect_language
 
 # Initialize AI service
@@ -378,6 +379,202 @@ def profile():
         return redirect(url_for('profile'))
     
     return render_template('profile.html')
+
+# Platform integrations and webhook handlers
+
+@app.route('/webhook/telegram/<int:bot_id>', methods=['POST'])
+def telegram_webhook(bot_id):
+    """Telegram webhook handler"""
+    try:
+        # Get bot
+        bot = Bot.query.get_or_404(bot_id)
+        
+        # Check if bot has telegram token
+        if not bot.telegram_token:
+            logging.error(f"Bot {bot_id} has no Telegram token")
+            return "No token", 400
+        
+        # Get incoming message data
+        data = request.get_json()
+        
+        if not data or 'message' not in data:
+            return "No message", 400
+        
+        message = data['message']
+        chat_id = message['chat']['id']
+        user_message = message.get('text', '')
+        
+        if not user_message:
+            return "Empty message", 400
+        
+        # Detect language
+        detected_language = detect_language(user_message)
+        
+        # Create or get conversation
+        conversation = Conversation.query.filter_by(
+            bot_id=bot.id,
+            platform='telegram',
+            platform_user_id=str(chat_id)
+        ).first()
+        
+        if not conversation:
+            conversation = Conversation(
+                bot_id=bot.id,
+                platform='telegram',
+                platform_user_id=str(chat_id),
+                user_name=message['from'].get('first_name', 'Unknown'),
+                language=detected_language
+            )
+            db.session.add(conversation)
+            db.session.commit()
+        
+        # Save user message
+        user_msg = Message(
+            conversation_id=conversation.id,
+            content=user_message,
+            is_from_user=True,
+            language=detected_language
+        )
+        db.session.add(user_msg)
+        
+        # Get conversation history for context
+        history = Message.query.filter_by(
+            conversation_id=conversation.id
+        ).order_by(Message.created_at.desc()).limit(10).all()
+        
+        # Generate AI response
+        try:
+            if len(history) > 1:
+                response_text = ai_service.generate_response_with_context(
+                    user_message, 
+                    history[1:], 
+                    bot.system_prompt,
+                    detected_language
+                )
+            else:
+                response_text = ai_service.generate_response(
+                    user_message,
+                    bot.system_prompt,
+                    detected_language
+                )
+        except Exception as e:
+            logging.error(f"AI service error: {e}")
+            response_text = ai_service._get_fallback_response(detected_language)
+        
+        # Save bot response
+        bot_msg = Message(
+            conversation_id=conversation.id,
+            content=response_text,
+            is_from_user=False,
+            language=detected_language
+        )
+        db.session.add(bot_msg)
+        
+        # Update conversation
+        conversation.updated_at = datetime.utcnow()
+        db.session.commit()
+        
+        # Send response via Telegram
+        telegram_service = TelegramService(bot.telegram_token)
+        result = telegram_service.send_message(chat_id, response_text)
+        
+        if result and result.get('ok'):
+            logging.info(f"Telegram message sent successfully to chat {chat_id}")
+            return "OK", 200
+        else:
+            logging.error(f"Failed to send Telegram message: {result}")
+            return "Send failed", 500
+            
+    except Exception as e:
+        logging.error(f"Telegram webhook error: {e}")
+        db.session.rollback()
+        return "Error", 500
+
+@app.route('/bot/<int:bot_id>/deploy_telegram', methods=['POST'])
+@login_required
+def deploy_telegram(bot_id):
+    """Deploy bot to Telegram"""
+    if not current_user.has_access:
+        return redirect(url_for('trial_expired'))
+        
+    bot = Bot.query.get_or_404(bot_id)
+    
+    # Check ownership
+    if bot.user_id != current_user.id:
+        flash('Bu chatbotga ruxsatingiz yo\'q', 'error')
+        return redirect(url_for('dashboard'))
+    
+    telegram_token = request.form.get('telegram_token', '').strip()
+    
+    if not telegram_token:
+        flash('Telegram bot token kiritilmagan', 'error')
+        return redirect(url_for('bot_detail', bot_id=bot_id))
+    
+    try:
+        # Initialize Telegram service
+        telegram_service = TelegramService(telegram_token)
+        
+        # Check if token is valid
+        bot_info = telegram_service.get_bot_info()
+        if not bot_info or not bot_info.get('ok'):
+            flash('Telegram bot token noto\'g\'ri yoki yaroqsiz', 'error')
+            return redirect(url_for('bot_detail', bot_id=bot_id))
+        
+        # Set webhook URL
+        webhook_url = f"{request.host_url}webhook/telegram/{bot_id}"
+        webhook_result = telegram_service.set_webhook(webhook_url)
+        
+        if webhook_result and webhook_result.get('ok'):
+            # Save token to bot
+            bot.telegram_token = telegram_token
+            bot.telegram_webhook_url = webhook_url
+            bot.is_active = True
+            db.session.commit()
+            
+            flash(f'Telegram bot muvaffaqiyatli ulandi! Bot nomi: {bot_info["result"]["first_name"]}', 'success')
+        else:
+            flash('Webhook o\'rnatishda xatolik', 'error')
+            
+    except Exception as e:
+        logging.error(f"Telegram deployment error: {e}")
+        flash('Telegram botni ulashda xatolik yuz berdi', 'error')
+    
+    return redirect(url_for('bot_detail', bot_id=bot_id))
+
+@app.route('/bot/<int:bot_id>/disconnect_telegram', methods=['POST'])
+@login_required
+def disconnect_telegram(bot_id):
+    """Disconnect bot from Telegram"""
+    if not current_user.has_access:
+        return redirect(url_for('trial_expired'))
+        
+    bot = Bot.query.get_or_404(bot_id)
+    
+    # Check ownership
+    if bot.user_id != current_user.id:
+        flash('Bu chatbotga ruxsatingiz yo\'q', 'error')
+        return redirect(url_for('dashboard'))
+    
+    try:
+        if bot.telegram_token:
+            # Remove webhook
+            telegram_service = TelegramService(bot.telegram_token)
+            telegram_service.set_webhook('')  # Empty URL removes webhook
+            
+            # Clear token and webhook URL
+            bot.telegram_token = None
+            bot.telegram_webhook_url = None
+            db.session.commit()
+            
+            flash('Telegram bot muvaffaqiyatli uzildi', 'success')
+        else:
+            flash('Bot Telegram bilan ulanmagan', 'warning')
+            
+    except Exception as e:
+        logging.error(f"Telegram disconnect error: {e}")
+        flash('Telegram botni uzishda xatolik', 'error')
+    
+    return redirect(url_for('bot_detail', bot_id=bot_id))
 
 @app.errorhandler(404)
 def not_found_error(error):
