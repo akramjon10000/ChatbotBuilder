@@ -172,7 +172,7 @@ def create_bot():
     
     return render_template('bot/create.html')
 
-@app.route('/bot/<int:bot_id>')
+@app.route('/bot/<int:bot_id>', methods=['GET', 'POST'])
 @login_required
 def bot_detail(bot_id):
     """Chatbot tafsilotlari"""
