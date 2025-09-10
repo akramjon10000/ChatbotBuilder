@@ -66,6 +66,11 @@ def get_locale():
 
 babel.init_app(app, locale_selector=get_locale)
 
+# Make get_locale available in templates
+@app.context_processor
+def inject_locale():
+    return dict(get_locale=get_locale)
+
 with app.app_context():
     # Import models
     import models
