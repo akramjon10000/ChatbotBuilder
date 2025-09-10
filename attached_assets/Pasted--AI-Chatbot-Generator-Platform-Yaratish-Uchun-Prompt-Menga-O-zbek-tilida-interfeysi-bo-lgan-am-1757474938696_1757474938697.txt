@@ -1,0 +1,161 @@
+🤖 AI Chatbot Generator Platform Yaratish Uchun Prompt
+
+Menga O'zbek tilida interfeysi bo'lgan, ammo 3 ta tilda (O'zbek, Rus, Ingliz) gaplashadigan chatbot generator platformasi yarating. Bu platforma quyidagi talablarga javob berishi kerak:
+## Asosiy Talablar:
+### 1. Interfeys va Til
+- O'zbek tilida asosiy interfeys
+- 3 ta til qo'llab-quvvatlash (O'zbek, Rus, Ingliz)
+- Foydalanuvchi til tanlash imkoniyati
+- Responsive dizayn (Bootstrap 5)
+### 2. AI Integratsiya
+- Google Gemini API bilan integratsiya
+- 3 ta tilda aqlli javoblar berish
+- Foydalanuvchi qaysi tilda yozsa, o'sha tilda javob berish
+- Bilim bazasi yuklash va ulash imkoniyati
+- Rasm yuborish qo'llab-quvvatlash
+### 3. Platform Integratsiyalari
+- Telegram Bot API
+- Instagram Business API  
+- WhatsApp Business API
+- Har bir platform uchun alohida konfiguratsiya
+### 4. Foydalanuvchi Tizimi
+- Ro'yxatdan o'tish va kirish
+- Parol xavfsizligi (bcrypt)
+- Profil boshqaruvi
+- Obuna tizimlari (Bepul, Asosiy, Premium)
+### 5. Texnik Arxitektura
+- Flask web framework
+- SQLAlchemy ORM
+- PostgreSQL/SQLite database
+- Flask-Login authentication
+- Flask-Babel internationalization
+- Gunicorn production server
+- File upload handling
+### 6. Bot Boshqaruvi
+- Bot yaratish va tahrirlash
+- Real-time bot holati monitoring
+- Suhbat tarixlari
+- Statistika va analytics
+- Bilim bazasi boshqaruvi
+### 7. Xususiyatlar
+- Admin panel
+- Broadcast messaging
+- User notifications
+- Multi-language support
+- Bot deployment automation
+- Error handling va logging
+## Loyiha Strukturasi:
+├── app.py (Flask app initialization)
+├── main.py (Entry point)
+├── models.py (Database models)
+├── routes.py (URL routes va handlers)
+├── services/ (AI, Telegram, Instagram, WhatsApp services)
+├── templates/ (HTML templates)
+├── static/ (CSS, JS, images)
+├── translations/ (Til fayllari)
+└── utils/ (Helper functions)
+
+## Xavfsizlik
+- API kalitlari environment variables orqali
+- CSRF protection
+- XSS prevention
+- SQL injection himoyasi
+- Secure file uploads
+Platformani Replit muhitida ishlash uchun sozlang va barcha kerakli dependencies bilan birga yetkazib bering. O'zbek tilida interfeys eng muhim, lekin AI 3 ta tilda gaplashishi shart.
+Bu promptni ChatGPT, Claude yoki boshqa AI ga berib, o'zingizga o'xshash platforma yarattirishingiz mumkin. Prompt barcha muhim texnik detalllarni va talablarni o'z ichiga oladi! 🚀
+
+33 seconds of work
+bunda boshqacharoq bo'ladi Obuna tizimlari (Bepul, Asosiy, Premium) 3 kunlik bepul sinab ko'rish, 3 kundan keyin foydalanuvchilarga faqat admin ruhsat bergandagina ishlatishi mumkin, dostup berish funksiyasi
+
+3 minutes ago
+Ajoyib g'oya! Bu yanada professional va nazorat ostida bo'lgan tizim bo'ladi. Keling, yangilangan promptni tayyorlayman:
+
+🤖 Admin Nazoratli Chatbot Generator Platform Yaratish Uchun Yangilangan Prompt
+
+Menga O'zbek tilida interfeysi bo'lgan, ammo 3 ta tilda (O'zbek, Rus, Ingliz) gaplashadigan chatbot generator platformasi yarating. Bu platforma maxsus obuna tizimi bilan ishlashi kerak:
+## Asosiy Talablar:
+### 1. Interfeys va Til
+- O'zbek tilida asosiy interfeys
+- 3 ta til qo'llab-quvvatlash (O'zbek, Rus, Ingliz)
+- Foydalanuvchi til tanlash imkoniyati
+- Responsive dizayn (Bootstrap 5)
+### 2. MAXSUS OBUNA TIZIMI (ENG MUHIM!)
+- **3 kunlik bepul sinov** - yangi foydalanuvchilar 3 kun bepul foydalanadi
+- **3 kundan keyin** - avtomatik to'xtatiladi
+- **Admin ruxsati** - faqat admin ruxsat bergandagina davom etadi
+- **Admin panel** - foydalanuvchilarga dostup berish/olish funksiyasi
+- **Holat tracking** - har bir foydalanuvchining sinov muddati va holati
+### 3. AI Integratsiya
+- Google Gemini API bilan integratsiya
+- 3 ta tilda aqlli javoblar berish
+- Foydalanuvchi qaysi tilda yozsa, o'sha tilda javob berish
+- Bilim bazasi yuklash va ulash imkoniyati
+### 4. Platform Integratsiyalari
+- Telegram Bot API
+- Instagram Business API  
+- WhatsApp Business API
+- Har bir platform uchun alohida konfiguratsiya
+### 5. Foydalanuvchi Tizimi
+- Ro'yxatdan o'tish va kirish
+- Parol xavfsizligi (bcrypt)
+- 3 kunlik sinov avtomatik boshlanishi
+- Sinov tugashi haqida bildirishnoma
+### 6. ADMIN PANEL (MAXSUS)
+```python
+# Admin funksiyalari:
+- Barcha foydalanuvchilar ro'yxati
+- Sinov muddati tugagan foydalanuvchilar
+- Dostup berish/olish tugmalari
+- Foydalanuvchi statistikalari
+- Aktivlik monitoring
+7. Database Modellari
+class User:
+    trial_start_date = datetime  # Sinov boshlanish sanasi
+    trial_end_date = datetime    # Sinov tugash sanasi
+    is_trial_active = boolean    # Sinov faolmi
+    admin_approved = boolean     # Admin ruxsat bergani
+    access_granted_date = datetime # Ruxsat berilgan sana
+    
+class AdminAction:
+    admin_id = foreign_key       # Qaysi admin
+    user_id = foreign_key        # Qaysi foydalanuvchi
+    action_type = enum           # GRANT_ACCESS, REVOKE_ACCESS
+    action_date = datetime       # Harakat sanasi
+    reason = text                # Sabab
+8. Avtomatik Tizim
+Har kuni sinov muddati tugagan foydalanuvchilarni tekshirish
+Avtomatik dostupni to'xtatish
+Email/SMS bildirishnomalar (sinov tugashi haqida)
+Admin ga yangi sinov tugagan foydalanuvchilar haqida xabar
+9. Texnik Arxitektura
+Flask web framework
+SQLAlchemy ORM
+PostgreSQL/SQLite database
+Flask-Login authentication
+Scheduled tasks (sinov muddatini tekshirish)
+Background jobs
+10. Loyiha Strukturasi:
+├── app.py (Flask app initialization)
+├── main.py (Entry point)  
+├── models.py (User, Trial, AdminAction models)
+├── routes.py (URL routes)
+├── admin_routes.py (Admin panel routes)
+├── services/ (AI, platform services)
+├── tasks/ (Background tasks)
+├── templates/
+│   ├── admin/ (Admin panel templates)
+│   └── user/ (User templates)
+├── static/
+└── utils/
+11. Admin Panel Sahifalari
+/admin/dashboard - Asosiy admin panel
+/admin/users - Foydalanuvchilar ro'yxati
+/admin/trial-expired - Sinovi tugagan foydalanuvchilar
+/admin/grant-access/<user_id> - Dostup berish
+/admin/revoke-access/<user_id> - Dostupni olish
+12. Foydalanuvchi Tajribasi
+Ro'yxatdan o'tish bilan avtomatik 3 kunlik sinov
+Dashboard da qolgan kunlar ko'rsatilsin
+Sinov tugashiga 1 kun qolganda ogohlantirish
+Sinov tugagach "Admin ruxsatini kutish" sahifasi
+Platformani Replit muhitida sozlang. Admin panel eng muhim qism - u orqali butun tizimni nazorat qilish mumkin bo'lishi kerak.
