@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}Bilimlar Bazasi Yo'riqnomasi - AI Chatbot Platform{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-book me-2"></i>
+                        Bilimlar Bazasi Yo'riqnomasi
+                    </h4>
+                </div>
+                <div class="card-body">
+                    
+                    <!-- CSV Format Guide -->
+                    <section class="mb-5">
+                        <h5 class="text-primary">
+                            <i class="fas fa-table me-2"></i>
+                            CSV Fayl Formati (Mahsulotlar uchun)
+                        </h5>
+                        <p class="text-muted">Mahsulotlar ro'yxatini CSV formatida yuklash uchun quyidagi strukturani ishlating:</p>
+                        
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-info-circle me-1"></i> CSV Ustunlari:</h6>
+                            <ul class="mb-0">
+                                <li><strong>Birinchi ustun:</strong> Mahsulot nomi</li>
+                                <li><strong>narx:</strong> Mahsulot narxi (so'm bilan)</li>
+                                <li><strong>tavsif:</strong> Mahsulot tavsifi</li>
+                                <li><strong>rasm_url:</strong> Mahsulot rasmi (ixtiyoriy)</li>
+                            </ul>
+                        </div>
+                        
+                        <h6>Misol CSV fayl:</h6>
+                        <div class="bg-light p-3 rounded">
+                            <code>
+,narx,tavsif,rasm_url<br>
+Zip paket 4x6,3000 so'm,"Suv o'tkazmaydigan zip paket, zo'r sifatli",https://example.com/image1.jpg<br>
+Telefon g'ilof,25000 so'm,"Telefon uchun himoya g'ilofi, turli ranglar",https://example.com/image2.jpg<br>
+USB kabel,15000 so'm,"Tez zaryadlash USB kabeli, 1 metr",https://example.com/image3.jpg
+                            </code>
+                        </div>
+                        
+                        <div class="alert alert-warning mt-3">
+                            <h6><i class="fas fa-exclamation-triangle me-1"></i> Muhim qoidalar:</h6>
+                            <ul class="mb-0">
+                                <li>Matn ichida vergul bo'lsa, uni qo'sh tirnoq bilan o'rang: "matn, vergul bilan"</li>
+                                <li>Narxni aniq ko'rsating: "3000 so'm", "25000 so'm"</li>
+                                <li>Tavsifni batafsil yozing - bu mijozlarga yordam beradi</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <!-- Text Format Guide -->
+                    <section class="mb-5">
+                        <h5 class="text-primary">
+                            <i class="fas fa-file-alt me-2"></i>
+                            TXT Fayl Formati (Umumiy ma'lumotlar uchun)
+                        </h5>
+                        <p class="text-muted">Umumiy ma'lumotlar, xizmatlar va kompaniya haqida ma'lumotni TXT formatida yuklash mumkin.</p>
+                        
+                        <h6>TXT fayl tuzilishi:</h6>
+                        <div class="bg-light p-3 rounded">
+                            <code>
+KOMPANIYA HAQIDA<br>
+OptomBazar - O'zbekistondagi eng yirik optom savdo platformasi.<br>
+Biz 2020-yildan beri faoliyat yuritamiz.<br><br>
+
+XIZMATLAR<br>
+- Tez yetkazib berish (1-3 kun)<br>
+- Bepul konsultatsiya<br>
+- Sifat kafolati<br><br>
+
+ALOQA MA'LUMOTLARI<br>
+Telefon: +998 90 123 45 67<br>
+Email: info@optombazar.uz<br>
+Manzil: Toshkent sh., Yunusobod tumani
+                            </code>
+                        </div>
+                        
+                        <div class="alert alert-success">
+                            <h6><i class="fas fa-check-circle me-1"></i> Tavsiyalar:</h6>
+                            <ul class="mb-0">
+                                <li>Sarlavhalarni KATTA HARFLAR bilan yozing</li>
+                                <li>Bo'limlar orasida bo'sh qator qoldiring</li>
+                                <li>Ro'yxatlar uchun tire (-) yoki raqam (1, 2, 3) ishlating</li>
+                                <li>Muhim ma'lumotlarni alohida qatorlarda yozing</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <!-- Best Practices -->
+                    <section class="mb-4">
+                        <h5 class="text-primary">
+                            <i class="fas fa-star me-2"></i>
+                            Eng Yaxshi Amaliyotlar
+                        </h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card border-success">
+                                    <div class="card-header bg-success text-white">
+                                        <h6 class="mb-0">✅ To'g'ri</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled mb-0">
+                                            <li>✓ Aniq va tushunarli yozish</li>
+                                            <li>✓ To'liq ma'lumot berish</li>
+                                            <li>✓ Narxlarni aniq ko'rsatish</li>
+                                            <li>✓ UTF-8 formatda saqlash</li>
+                                            <li>✓ Savollar va javoblar qo'shish</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-danger">
+                                    <div class="card-header bg-danger text-white">
+                                        <h6 class="mb-0">❌ Noto'g'ri</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled mb-0">
+                                            <li>✗ Qisqa va noaniq tavsiflar</li>
+                                            <li>✗ Eski ma'lumotlar</li>
+                                            <li>✗ Noto'g'ri narxlar</li>
+                                            <li>✗ Maxsus belgilar muammolari</li>
+                                            <li>✗ Takrorlanuvchi ma'lumotlar</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- File Upload Tips -->
+                    <section>
+                        <h5 class="text-primary">
+                            <i class="fas fa-upload me-2"></i>
+                            Fayl Yuklash Maslahatlari
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="alert alert-primary">
+                                    <h6>Qo'llab-quvvatlanadigan formatlar:</h6>
+                                    <ul class="mb-0">
+                                        <li><strong>.csv</strong> - Mahsulotlar jadvali</li>
+                                        <li><strong>.txt</strong> - Umumiy matn</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="alert alert-warning">
+                                    <h6>Fayl hajmi:</h6>
+                                    <p class="mb-0">Maksimal 5 MB gacha fayllar yuklash mumkin.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>
+                            Orqaga
+                        </a>
+                        <button class="btn btn-primary" onclick="window.print()">
+                            <i class="fas fa-print me-1"></i>
+                            Chop etish
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

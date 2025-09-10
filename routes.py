@@ -388,6 +388,12 @@ def profile():
     
     return render_template('profile.html')
 
+@app.route('/knowledge-guide')
+@login_required
+def knowledge_guide():
+    """Bilimlar bazasi yo'riqnomasi"""
+    return render_template('knowledge_guide.html')
+
 # Platform integrations and webhook handlers
 
 @app.route('/webhook/telegram/<int:bot_id>', methods=['POST'])
