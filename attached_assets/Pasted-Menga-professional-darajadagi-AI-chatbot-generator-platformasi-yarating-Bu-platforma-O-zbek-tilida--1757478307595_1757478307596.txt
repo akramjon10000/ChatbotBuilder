@@ -1,0 +1,193 @@
+Menga professional darajadagi AI chatbot generator platformasi yarating. Bu platforma O'zbek tilida interfeysi bo'lgan, 3 ta tilda gaplashadigan va maxsus admin nazorati ostida ishlaydigan tizim bo'lishi kerak.
+## 🎯 ASOSIY KONSEPSIYA
+### Obuna Tizimi Logikasi:
+1. **Avtomatik 3 kunlik sinov** - har bir yangi foydalanuvchi
+2. **Admin nazorati** - sinov tugagach faqat admin ruxsat beradi
+3. **To'liq dostup nazorati** - admin istalgan vaqtda ruxsatni berib/olib qo'yishi mumkin
+## 🏗️ TEXNIK ARXITEKTURA
+### Database Modellari:
+```python
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(256), nullable=False)
+    
+    # SINOV TIZIMI
+    trial_start_date = db.Column(db.DateTime, default=datetime.utcnow)
+    trial_end_date = db.Column(db.DateTime)  # 3 kun qo'shiladi
+    is_trial_active = db.Column(db.Boolean, default=True)
+    
+    # ADMIN NAZORATI
+    admin_approved = db.Column(db.Boolean, default=False)
+    access_granted_date = db.Column(db.DateTime, nullable=True)
+    access_status = db.Column(db.Enum(AccessStatus), default=AccessStatus.TRIAL)
+    
+    is_admin = db.Column(db.Boolean, default=False)
+    language = db.Column(db.String(5), default='uz')
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+class AccessStatus(enum.Enum):
+    TRIAL = "trial"           # 3 kunlik sinov
+    PENDING = "pending"       # Sinov tugagan, admin ruxsatini kutmoqda
+    APPROVED = "approved"     # Admin ruxsat bergan
+    SUSPENDED = "suspended"   # Admin dostupni to'xtatgan
+class AdminAction(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    admin_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    target_user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    action_type = db.Column(db.Enum(AdminActionType), nullable=False)
+    reason = db.Column(db.Text, nullable=True)
+    action_date = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    admin = db.relationship('User', foreign_keys=[admin_id])
+    target_user = db.relationship('User', foreign_keys=[target_user_id])
+class AdminActionType(enum.Enum):
+    GRANT_ACCESS = "grant_access"
+    REVOKE_ACCESS = "revoke_access"
+    EXTEND_TRIAL = "extend_trial"
+    SUSPEND_USER = "suspend_user"
+Access Control Service:
+class AccessControlService:
+    @staticmethod
+    def check_user_access(user):
+        """Foydalanuvchi dostupini tekshirish"""
+        if user.is_admin:
+            return True
+        
+        if user.access_status == AccessStatus.APPROVED:
+            return True
+        
+        if user.access_status == AccessStatus.TRIAL:
+            if user.trial_end_date and datetime.utcnow() < user.trial_end_date:
+                return True
+            else:
+                # Sinov tugagan
+                user.access_status = AccessStatus.PENDING
+                user.is_trial_active = False
+                db.session.commit()
+                return False
+        
+        return False
+    
+    @staticmethod
+    def grant_access(admin_user, target_user, reason=None):
+        """Admin tomonidan dostup berish"""
+        target_user.admin_approved = True
+        target_user.access_status = AccessStatus.APPROVED
+        target_user.access_granted_date = datetime.utcnow()
+        
+        # Admin harakatini yozib olish
+        action = AdminAction(
+            admin_id=admin_user.id,
+            target_user_id=target_user.id,
+            action_type=AdminActionType.GRANT_ACCESS,
+            reason=reason
+        )
+        db.session.add(action)
+        db.session.commit()
+🎨 ADMIN PANEL INTERFEYSI
+Admin Dashboard Sahifalari:
+/admin/
+├── dashboard/           # Asosiy statistika
+├── users/              # Barcha foydalanuvchilar
+├── pending-users/      # Ruxsat kutayotgan foydalanuvchilar
+├── trial-users/        # Sinov foydalanuvchilari
+├── approved-users/     # Tasdiqlangan foydalanuvchilar
+├── actions-history/    # Admin harakatlari tarixi
+└── settings/          # Admin sozlamalari
+Admin Panel Funksiyalari:
+@admin.route('/pending-users')
+@admin_required
+def pending_users():
+    """Ruxsat kutayotgan foydalanuvchilar"""
+    pending = User.query.filter_by(access_status=AccessStatus.PENDING).all()
+    return render_template('admin/pending_users.html', users=pending)
+@admin.route('/grant-access/<int:user_id>', methods=['POST'])
+@admin_required
+def grant_access(user_id):
+    """Foydalanuvchiga dostup berish"""
+    user = User.query.get_or_404(user_id)
+    reason = request.form.get('reason', '')
+    
+    AccessControlService.grant_access(current_user, user, reason)
+    flash(f'{user.username}ga dostup berildi!', 'success')
+    return redirect(url_for('admin.pending_users'))
+🚀 FOYDALANUVCHI TAJRIBASI
+Ro'yxatdan O'tish Jarayoni:
+@auth.route('/register', methods=['POST'])
+def register():
+    # ... validation ...
+    
+    user = User(
+        username=username,
+        email=email,
+        trial_start_date=datetime.utcnow(),
+        trial_end_date=datetime.utcnow() + timedelta(days=3),
+        is_trial_active=True,
+        access_status=AccessStatus.TRIAL
+    )
+    user.set_password(password)
+    db.session.add(user)
+    db.session.commit()
+    
+    flash('3 kunlik bepul sinov boshlandi!', 'success')
+Dashboard da Holat Ko'rsatish:
+<!-- Trial holati -->
+{% if current_user.access_status.value == 'trial' %}
+    <div class="alert alert-info">
+        <i class="fas fa-clock"></i>
+        Sinov muddati: {{ current_user.trial_end_date.strftime('%d.%m.%Y') }}ga qadar
+        <small class="d-block">{{ days_left }} kun qoldi</small>
+    </div>
+{% elif current_user.access_status.value == 'pending' %}
+    <div class="alert alert-warning">
+        <i class="fas fa-hourglass-half"></i>
+        Admin ruxsatini kutmoqdasiz...
+    </div>
+{% elif current_user.access_status.value == 'approved' %}
+    <div class="alert alert-success">
+        <i class="fas fa-check-circle"></i>
+        To'liq dostup berilgan
+    </div>
+{% endif %}
+⚙️ AVTOMATIK TIZIMLAR
+Background Tasks:
+def check_expired_trials():
+    """Har kuni sinov muddati tugagan foydalanuvchilarni tekshirish"""
+    expired_users = User.query.filter(
+        User.access_status == AccessStatus.TRIAL,
+        User.trial_end_date < datetime.utcnow(),
+        User.is_trial_active == True
+    ).all()
+    
+    for user in expired_users:
+        user.access_status = AccessStatus.PENDING
+        user.is_trial_active = False
+        
+        # Admin ga bildirishnoma
+        send_admin_notification(f"Foydalanuvchi {user.username} sinov muddati tugadi")
+    
+    db.session.commit()
+📱 QO'SHIMCHA XUSUSIYATLAR
+Bildirishnoma Tizimi:
+Sinov tugashiga 1 kun qolganda ogohlantirish
+Admin ga yangi pending foydalanuvchilar haqida xabar
+Email/SMS bildirishnomalar
+Statistika va Hisobotlar:
+Kunlik yangi ro'yxatdan o'tganlar
+Sinov tugagan foydalanuvchilar
+Admin tomonidan tasdiqlangan foydalanuvchilar
+Platformadagi umumiy faollik
+Xavfsizlik:
+API kalitlari environment variables orqali
+Admin panelga maxsus himoya
+Har bir admin harakati log qilinadi
+CSRF va XSS himoyasi
+🎯 ASOSIY MAQSAD
+Bu tizim orqali siz:
+
+Har bir foydalanuvchini shaxsan ko'rib chiqasiz
+Faqat kerakli odamlarga dostup berasiz
+To'liq nazorat qilasiz kim platformadan foydalanayotganini
+Professional va xavfsiz muhit yarataysiz
+Platformani Replit muhitida ishlaydigan qilib yarating, barcha kerakli dependencies va database bilan birga. O'zbek tilida interfeys, 3 ta tilda AI va admin nazorati - bularning barchasi to'liq ishlashi shart!
