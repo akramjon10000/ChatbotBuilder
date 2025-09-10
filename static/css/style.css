@@ -9,13 +9,15 @@
     --info-color: #17a2b8;
     --light-color: #f8f9fa;
     --dark-color: #343a40;
-    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-family: 'Segoe UI', 'Roboto', 'Arial', 'Helvetica Neue', 'DejaVu Sans', sans-serif;
 }
 
 /* Global Styles */
 body {
     font-family: var(--font-family);
     background-color: #f5f5f5;
+    color: #212529;
+    line-height: 1.6;
 }
 
 /* Navigation Enhancements */
@@ -98,6 +100,8 @@ body {
     border: 2px solid #e9ecef;
     transition: all 0.3s ease;
     padding: 12px 15px;
+    color: #212529 !important;
+    background-color: #fff !important;
 }
 
 .form-control:focus {
@@ -123,18 +127,20 @@ body {
 .table {
     border-radius: 12px;
     overflow: hidden;
+    color: #212529 !important;
 }
 
 .table th {
     background-color: var(--light-color);
     border: none;
     font-weight: 600;
-    color: var(--dark-color);
+    color: var(--dark-color) !important;
 }
 
 .table td {
     vertical-align: middle;
     border-color: #f1f3f4;
+    color: #212529 !important;
 }
 
 .table-hover tbody tr:hover {
@@ -418,8 +424,148 @@ footer {
 }
 
 /* Uzbek Text Enhancements */
-.uzbek-text {
-    font-family: 'Times New Roman', serif;
+.uzbek-text, 
+body[lang="uz"], 
+body[lang="uz"] *,
+[lang="uz"], 
+[lang="uz"] * {
+    font-family: 'Segoe UI', 'Roboto', 'Arial', 'Helvetica Neue', 'DejaVu Sans', 'Noto Sans', sans-serif !important;
+    font-weight: 400;
+    color: inherit;
+}
+
+/* Ensure all text is visible */
+*, *::before, *::after {
+    color: inherit;
+    font-family: inherit;
+}
+
+/* Fix any potential color visibility issues */
+.text-white {
+    color: #ffffff !important;
+}
+
+.text-dark {
+    color: #212529 !important;
+}
+
+.text-muted {
+    color: #6c757d !important;
+}
+
+/* Ensure card text is visible */
+.card-text, .card-title, .card-body p, .card-body h1, .card-body h2, .card-body h3, .card-body h4, .card-body h5, .card-body h6 {
+    color: var(--dark-color) !important;
+}
+
+/* Ensure navbar text is visible */
+.navbar-nav .nav-link, .navbar-brand {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #ffffff !important;
+}
+
+/* Ensure form labels are visible */
+.form-label, label {
+    color: var(--dark-color) !important;
+    font-weight: 600;
+}
+
+/* Fix dropdown menu text visibility */
+.dropdown-menu {
+    color: #212529 !important;
+}
+
+.dropdown-item {
+    color: #212529 !important;
+}
+
+.dropdown-item:hover {
+    color: #fff !important;
+}
+
+/* Fix modal text visibility */
+.modal-body, .modal-title, .modal-header, .modal-footer {
+    color: #212529 !important;
+}
+
+/* Fix alert text visibility */
+.alert {
+    color: inherit !important;
+}
+
+/* Fix badge text visibility */
+.badge {
+    color: #fff !important;
+}
+
+/* Fix button text visibility */
+.btn {
+    color: inherit;
+}
+
+.btn-primary {
+    color: #fff !important;
+}
+
+.btn-secondary {
+    color: #fff !important;
+}
+
+.btn-success {
+    color: #fff !important;
+}
+
+.btn-danger {
+    color: #fff !important;
+}
+
+.btn-warning {
+    color: #212529 !important;
+}
+
+.btn-info {
+    color: #fff !important;
+}
+
+.btn-light {
+    color: #212529 !important;
+}
+
+.btn-dark {
+    color: #fff !important;
+}
+
+/* Fix list and other common elements */
+ul, ol, li, p, span, div {
+    color: inherit;
+}
+
+/* Fix specific Bootstrap text utilities */
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.text-secondary {
+    color: var(--secondary-color) !important;
+}
+
+.text-success {
+    color: var(--success-color) !important;
+}
+
+.text-danger {
+    color: var(--danger-color) !important;
+}
+
+.text-warning {
+    color: var(--warning-color) !important;
+}
+
+.text-info {
+    color: var(--info-color) !important;
 }
 
 /* Dark Mode Support */
