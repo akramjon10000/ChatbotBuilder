@@ -83,17 +83,28 @@ with app.app_context():
     from models import User, AccessStatus
     from werkzeug.security import generate_password_hash
     
-    admin_user = User()
-    admin_user.username = 'admin'
-    admin_user.email = 'admin@chatbot.uz'
-    admin_user.password_hash = generate_password_hash('admin123')
-    admin_user.is_admin = True
-    admin_user.admin_approved = True
-    admin_user.is_trial_active = False
-    admin_user.access_status = AccessStatus.APPROVED
-    db.session.add(admin_user)
-    db.session.commit()
-    logging.info("Admin user created: admin/admin123")
+    admin_username = os.environ.get("ADMIN_USERNAME")
+    admin_password = os.environ.get("ADMIN_PASSWORD")
+    
+    if admin_username and admin_password:
+        # Check if admin user already exists
+        existing_admin = User.query.filter_by(username=admin_username).first()
+        if not existing_admin:
+            admin_user = User()
+            admin_user.username = admin_username
+            admin_user.email = f"{admin_username}@chatbot.uz"
+            admin_user.password_hash = generate_password_hash(admin_password)
+            admin_user.is_admin = True
+            admin_user.admin_approved = True
+            admin_user.is_trial_active = False
+            admin_user.access_status = AccessStatus.APPROVED
+            db.session.add(admin_user)
+            db.session.commit()
+            logging.info(f"Admin user created: {admin_username}")
+        else:
+            logging.info(f"Admin user already exists: {admin_username}")
+    else:
+        logging.warning("ADMIN_USERNAME or ADMIN_PASSWORD not set in environment variables")
 
 # Import routes
 from routes import *
