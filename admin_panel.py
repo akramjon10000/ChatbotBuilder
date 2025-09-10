@@ -30,4 +30,233 @@ def admin_required(f):
 @login_required
 @admin_required
 def dashboard():
-    \"\"\"Admin asosiy dashboard\"\"\"\n    # Statistikalarni olish\n    stats = AccessControlService.get_user_statistics()\n    \n    # So'nggi admin harakatlarini olish\n    recent_actions = AccessControlService.get_recent_admin_actions(10)\n    \n    # Sinov muddati tugash arafasida bo'lgan foydalanuvchilar\n    expiring_trials = User.query.filter(\n        User.access_status == AccessStatus.TRIAL,\n        User.trial_end_date <= datetime.utcnow() + timedelta(days=1),\n        User.trial_end_date > datetime.utcnow()\n    ).all()\n    \n    # Ruxsat kutayotgan foydalanuvchilar\n    pending_users = AccessControlService.get_pending_users()[:5]  # Faqat 5 tasi\n    \n    return render_template('admin/dashboard.html', \n                         stats=stats,\n                         recent_actions=recent_actions,\n                         expiring_trials=expiring_trials,\n                         pending_users=pending_users)\n\n@admin.route('/users')\n@login_required\n@admin_required\ndef users():\n    \"\"\"Barcha foydalanuvchilar ro'yxati\"\"\"\n    page = request.args.get('page', 1, type=int)\n    status_filter = request.args.get('status')\n    search_query = request.args.get('search', '')\n    \n    # Bazaviy so'rov\n    query = User.query\n    \n    # Qidiruv filtri\n    if search_query:\n        query = query.filter(\n            db.or_(\n                User.username.contains(search_query),\n                User.email.contains(search_query),\n                User.full_name.contains(search_query)\n            )\n        )\n    \n    # Status filtri\n    if status_filter and status_filter != 'all':\n        if status_filter == 'admin':\n            query = query.filter(User.is_admin == True)\n        else:\n            try:\n                status_enum = AccessStatus(status_filter)\n                query = query.filter(User.access_status == status_enum)\n            except ValueError:\n                pass\n    \n    # Sahifalash\n    users = query.order_by(User.created_at.desc()).paginate(\n        page=page, per_page=20, error_out=False\n    )\n    \n    return render_template('admin/users.html', \n                         users=users, \n                         current_filter=status_filter,\n                         search_query=search_query)\n\n@admin.route('/pending-users')\n@login_required\n@admin_required\ndef pending_users():\n    \"\"\"Ruxsat kutayotgan foydalanuvchilar\"\"\"\n    pending = AccessControlService.get_pending_users()\n    return render_template('admin/pending_users.html', users=pending)\n\n@admin.route('/grant-access/<int:user_id>', methods=['POST'])\n@login_required\n@admin_required\ndef grant_access(user_id):\n    \"\"\"Foydalanuvchiga dostup berish\"\"\"\n    user = User.query.get_or_404(user_id)\n    reason = request.form.get('reason', '')\n    \n    try:\n        AccessControlService.grant_access(current_user, user, reason)\n        flash(f'{user.username} ga dostup berildi!', 'success')\n    except Exception as e:\n        flash(f'Xatolik: {str(e)}', 'error')\n    \n    return redirect(request.referrer or url_for('admin.pending_users'))\n\n@admin.route('/revoke-access/<int:user_id>', methods=['POST'])\n@login_required\n@admin_required\ndef revoke_access(user_id):\n    \"\"\"Dostupni olib qo'yish\"\"\"\n    user = User.query.get_or_404(user_id)\n    reason = request.form.get('reason', '')\n    \n    try:\n        AccessControlService.revoke_access(current_user, user, reason)\n        flash(f'{user.username} dan dostup olib qo\\'yildi!', 'warning')\n    except Exception as e:\n        flash(f'Xatolik: {str(e)}', 'error')\n    \n    return redirect(request.referrer or url_for('admin.users'))\n\n@admin.route('/extend-trial/<int:user_id>', methods=['POST'])\n@login_required\n@admin_required\ndef extend_trial(user_id):\n    \"\"\"Sinov muddatini uzaytirish\"\"\"\n    user = User.query.get_or_404(user_id)\n    days = request.form.get('days', 7, type=int)\n    reason = request.form.get('reason', '')\n    \n    try:\n        AccessControlService.extend_trial(current_user, user, days, reason)\n        flash(f'{user.username} ning sinovi {days} kunga uzaytirildi!', 'info')\n    except Exception as e:\n        flash(f'Xatolik: {str(e)}', 'error')\n    \n    return redirect(request.referrer or url_for('admin.users'))\n\n@admin.route('/suspend-user/<int:user_id>', methods=['POST'])\n@login_required\n@admin_required\ndef suspend_user(user_id):\n    \"\"\"Foydalanuvchini to'xtatish\"\"\"\n    user = User.query.get_or_404(user_id)\n    reason = request.form.get('reason', '')\n    \n    try:\n        AccessControlService.suspend_user(current_user, user, reason)\n        flash(f'{user.username} to\\'xtatildi!', 'warning')\n    except Exception as e:\n        flash(f'Xatolik: {str(e)}', 'error')\n    \n    return redirect(request.referrer or url_for('admin.users'))\n\n@admin.route('/actions-history')\n@login_required\n@admin_required\ndef actions_history():\n    \"\"\"Admin harakatlari tarixi\"\"\"\n    page = request.args.get('page', 1, type=int)\n    admin_filter = request.args.get('admin_id', type=int)\n    action_filter = request.args.get('action_type')\n    \n    query = AdminAction.query\n    \n    # Admin filtri\n    if admin_filter:\n        query = query.filter(AdminAction.admin_id == admin_filter)\n    \n    # Harakat turi filtri\n    if action_filter and action_filter != 'all':\n        try:\n            action_enum = AdminActionType(action_filter)\n            query = query.filter(AdminAction.action_type == action_enum)\n        except ValueError:\n            pass\n    \n    actions = query.order_by(AdminAction.action_date.desc()).paginate(\n        page=page, per_page=50, error_out=False\n    )\n    \n    # Admin ro'yxati filter uchun\n    admins = User.query.filter(User.is_admin == True).all()\n    \n    return render_template('admin/actions_history.html', \n                         actions=actions,\n                         admins=admins,\n                         current_admin_filter=admin_filter,\n                         current_action_filter=action_filter)\n\n@admin.route('/statistics')\n@login_required\n@admin_required\ndef statistics():\n    \"\"\"Batafsil statistikalar\"\"\"\n    stats = AccessControlService.get_user_statistics()\n    \n    # Oxirgi 30 kunlik statistika\n    daily_stats = []\n    for i in range(30):\n        date = datetime.utcnow().date() - timedelta(days=i)\n        day_stats = SystemStats.query.filter(\n            SystemStats.date == date\n        ).first()\n        \n        if not day_stats:\n            # Agar o'sha kun uchun statistika bo'lmasa, hisoblash\n            day_stats = {\n                'date': date,\n                'total_users': User.query.filter(\n                    db.func.date(User.created_at) <= date\n                ).count(),\n                'new_users': User.query.filter(\n                    db.func.date(User.created_at) == date\n                ).count()\n            }\n        else:\n            day_stats = {\n                'date': day_stats.date,\n                'total_users': day_stats.total_users,\n                'new_users': 0  # Keyinroq hisoblash\n            }\n        \n        daily_stats.append(day_stats)\n    \n    daily_stats.reverse()  # Eskilardan yangiga\n    \n    return render_template('admin/statistics.html', \n                         stats=stats,\n                         daily_stats=daily_stats)\n\n@admin.route('/api/user-stats')\n@login_required\n@admin_required\ndef api_user_stats():\n    \"\"\"API: Foydalanuvchi statistikalari (AJAX uchun)\"\"\"\n    stats = AccessControlService.get_user_statistics()\n    return jsonify(stats)\n\n@admin.route('/settings')\n@login_required\n@admin_required\ndef settings():\n    \"\"\"Admin sozlamalari\"\"\"\n    return render_template('admin/settings.html')\n
+    """Admin asosiy dashboard"""
+    # Statistikalarni olish
+    stats = AccessControlService.get_user_statistics()
+    
+    # So'nggi admin harakatlarini olish
+    recent_actions = AccessControlService.get_recent_admin_actions(10)
+    
+    # Sinov muddati tugash arafasida bo'lgan foydalanuvchilar
+    expiring_trials = User.query.filter(
+        User.access_status == AccessStatus.TRIAL,
+        User.trial_end_date <= datetime.utcnow() + timedelta(days=1),
+        User.trial_end_date > datetime.utcnow()
+    ).all()
+    
+    # Ruxsat kutayotgan foydalanuvchilar
+    pending_users = AccessControlService.get_pending_users()[:5]  # Faqat 5 tasi
+    
+    return render_template('admin/dashboard.html', 
+                         stats=stats,
+                         recent_actions=recent_actions,
+                         expiring_trials=expiring_trials,
+                         pending_users=pending_users)
+
+@admin.route('/users')
+@login_required
+@admin_required
+def users():
+    """Barcha foydalanuvchilar ro'yxati"""
+    page = request.args.get('page', 1, type=int)
+    status_filter = request.args.get('status')
+    search_query = request.args.get('search', '')
+    
+    # Bazaviy so'rov
+    query = User.query
+    
+    # Qidiruv filtri
+    if search_query:
+        query = query.filter(
+            db.or_(
+                User.username.contains(search_query),
+                User.email.contains(search_query),
+                User.full_name.contains(search_query)
+            )
+        )
+    
+    # Status filtri
+    if status_filter and status_filter != 'all':
+        if status_filter == 'admin':
+            query = query.filter(User.is_admin == True)
+        else:
+            try:
+                status_enum = AccessStatus(status_filter)
+                query = query.filter(User.access_status == status_enum)
+            except ValueError:
+                pass
+    
+    # Sahifalash
+    users_paginated = query.order_by(User.created_at.desc()).paginate(
+        page=page, per_page=20, error_out=False
+    )
+    
+    return render_template('admin/users.html', 
+                         users=users_paginated, 
+                         current_filter=status_filter,
+                         search_query=search_query)
+
+@admin.route('/pending-users')
+@login_required
+@admin_required
+def pending_users():
+    """Ruxsat kutayotgan foydalanuvchilar"""
+    pending = AccessControlService.get_pending_users()
+    return render_template('admin/pending_users.html', users=pending)
+
+@admin.route('/grant-access/<int:user_id>', methods=['POST'])
+@login_required
+@admin_required
+def grant_access(user_id):
+    """Foydalanuvchiga dostup berish"""
+    user = User.query.get_or_404(user_id)
+    reason = request.form.get('reason', '')
+    
+    try:
+        AccessControlService.grant_access(current_user, user, reason)
+        flash(f'{user.username} ga dostup berildi!', 'success')
+    except Exception as e:
+        flash(f'Xatolik: {str(e)}', 'error')
+    
+    return redirect(request.referrer or url_for('admin.pending_users'))
+
+@admin.route('/revoke-access/<int:user_id>', methods=['POST'])
+@login_required
+@admin_required
+def revoke_access(user_id):
+    """Dostupni olib qo'yish"""
+    user = User.query.get_or_404(user_id)
+    reason = request.form.get('reason', '')
+    
+    try:
+        AccessControlService.revoke_access(current_user, user, reason)
+        flash(f'{user.username} dan dostup olib qo\'yildi!', 'warning')
+    except Exception as e:
+        flash(f'Xatolik: {str(e)}', 'error')
+    
+    return redirect(request.referrer or url_for('admin.users'))
+
+@admin.route('/extend-trial/<int:user_id>', methods=['POST'])
+@login_required
+@admin_required
+def extend_trial(user_id):
+    """Sinov muddatini uzaytirish"""
+    user = User.query.get_or_404(user_id)
+    days = request.form.get('days', 7, type=int)
+    reason = request.form.get('reason', '')
+    
+    try:
+        AccessControlService.extend_trial(current_user, user, days, reason)
+        flash(f'{user.username} ning sinovi {days} kunga uzaytirildi!', 'info')
+    except Exception as e:
+        flash(f'Xatolik: {str(e)}', 'error')
+    
+    return redirect(request.referrer or url_for('admin.users'))
+
+@admin.route('/suspend-user/<int:user_id>', methods=['POST'])
+@login_required
+@admin_required
+def suspend_user(user_id):
+    """Foydalanuvchini to'xtatish"""
+    user = User.query.get_or_404(user_id)
+    reason = request.form.get('reason', '')
+    
+    try:
+        AccessControlService.suspend_user(current_user, user, reason)
+        flash(f'{user.username} to\'xtatildi!', 'warning')
+    except Exception as e:
+        flash(f'Xatolik: {str(e)}', 'error')
+    
+    return redirect(request.referrer or url_for('admin.users'))
+
+@admin.route('/actions-history')
+@login_required
+@admin_required
+def actions_history():
+    """Admin harakatlari tarixi"""
+    page = request.args.get('page', 1, type=int)
+    admin_filter = request.args.get('admin_id', type=int)
+    action_filter = request.args.get('action_type')
+    
+    query = AdminAction.query
+    
+    # Admin filtri
+    if admin_filter:
+        query = query.filter(AdminAction.admin_id == admin_filter)
+    
+    # Harakat turi filtri
+    if action_filter and action_filter != 'all':
+        try:
+            action_enum = AdminActionType(action_filter)
+            query = query.filter(AdminAction.action_type == action_enum)
+        except ValueError:
+            pass
+    
+    actions = query.order_by(AdminAction.action_date.desc()).paginate(
+        page=page, per_page=50, error_out=False
+    )
+    
+    # Admin ro'yxati filter uchun
+    admins = User.query.filter(User.is_admin == True).all()
+    
+    return render_template('admin/actions_history.html', 
+                         actions=actions,
+                         admins=admins,
+                         current_admin_filter=admin_filter,
+                         current_action_filter=action_filter)
+
+@admin.route('/statistics')
+@login_required
+@admin_required
+def statistics():
+    """Batafsil statistikalar"""
+    stats = AccessControlService.get_user_statistics()
+    
+    # Oxirgi 30 kunlik statistika
+    daily_stats = []
+    for i in range(30):
+        date = datetime.utcnow().date() - timedelta(days=i)
+        day_stats = SystemStats.query.filter(
+            SystemStats.date == date
+        ).first()
+        
+        if not day_stats:
+            # Agar o'sha kun uchun statistika bo'lmasa, hisoblash
+            day_data = {
+                'date': date,
+                'total_users': User.query.filter(
+                    db.func.date(User.created_at) <= date
+                ).count(),
+                'new_users': User.query.filter(
+                    db.func.date(User.created_at) == date
+                ).count()
+            }
+        else:
+            day_data = {
+                'date': day_stats.date,
+                'total_users': day_stats.total_users,
+                'new_users': 0  # Keyinroq hisoblash
+            }
+        
+        daily_stats.append(day_data)
+    
+    daily_stats.reverse()  # Eskilardan yangiga
+    
+    return render_template('admin/statistics.html', 
+                         stats=stats,
+                         daily_stats=daily_stats)
+
+@admin.route('/api/user-stats')
+@login_required
+@admin_required
+def api_user_stats():
+    """API: Foydalanuvchi statistikalari (AJAX uchun)"""
+    stats = AccessControlService.get_user_statistics()
+    return jsonify(stats)
+
+@admin.route('/settings')
+@login_required
+@admin_required
+def settings():
+    """Admin sozlamalari"""
+    return render_template('admin/settings.html')

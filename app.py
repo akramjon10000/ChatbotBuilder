@@ -74,24 +74,26 @@ def inject_locale():
 with app.app_context():
     # Import models
     import models
-    # Create all tables
-    # Drop all tables and recreate with new structure\n    db.drop_all()\n    db.create_all()
+    
+    # Drop all tables and recreate with new structure
+    db.drop_all()
+    db.create_all()
     
     # Create admin user if not exists
-    from models import User
+    from models import User, AccessStatus
     from werkzeug.security import generate_password_hash
-    admin = User.query.filter_by(username='admin').first()
-    if not admin:
-        admin_user = User()
-        admin_user.username = 'admin'
-        admin_user.email = 'admin@chatbot.uz'
-        admin_user.password_hash = generate_password_hash('admin123')
-        admin_user.is_admin = True
-        admin_user.admin_approved = True
-        admin_user.is_trial_active = False
-        db.session.add(admin_user)
-        db.session.commit()
-        logging.info("Admin user created: admin/admin123")
+    
+    admin_user = User()
+    admin_user.username = 'admin'
+    admin_user.email = 'admin@chatbot.uz'
+    admin_user.password_hash = generate_password_hash('admin123')
+    admin_user.is_admin = True
+    admin_user.admin_approved = True
+    admin_user.is_trial_active = False
+    admin_user.access_status = AccessStatus.APPROVED
+    db.session.add(admin_user)
+    db.session.commit()
+    logging.info("Admin user created: admin/admin123")
 
 # Import routes
 from routes import *
