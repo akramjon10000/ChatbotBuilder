@@ -82,14 +82,13 @@ with app.app_context():
     from werkzeug.security import generate_password_hash
     admin = User.query.filter_by(username='admin').first()
     if not admin:
-        admin_user = User(
-            username='admin',
-            email='admin@chatbot.uz',
-            password_hash=generate_password_hash('admin123'),
-            is_admin=True,
-            admin_approved=True,
-            is_trial_active=False
-        )
+        admin_user = User()
+        admin_user.username = 'admin'
+        admin_user.email = 'admin@chatbot.uz'
+        admin_user.password_hash = generate_password_hash('admin123')
+        admin_user.is_admin = True
+        admin_user.admin_approved = True
+        admin_user.is_trial_active = False
         db.session.add(admin_user)
         db.session.commit()
         logging.info("Admin user created: admin/admin123")
