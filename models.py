@@ -116,10 +116,10 @@ class Bot(db.Model):
     languages = db.Column(db.String(20), default='uz,ru,en')  # Comma-separated
     
     # Platform integrations
-    telegram_token = db.Column(db.String(200))
+    telegram_token = db.Column(db.String(500))
     telegram_webhook_url = db.Column(db.String(300))
-    whatsapp_token = db.Column(db.String(200))
-    instagram_token = db.Column(db.String(200))
+    whatsapp_token = db.Column(db.String(500))
+    instagram_token = db.Column(db.String(500))
     
     # Settings
     is_active = db.Column(db.Boolean, default=True)
