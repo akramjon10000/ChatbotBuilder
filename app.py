@@ -41,10 +41,9 @@ app.config['BABEL_DEFAULT_TIMEZONE'] = 'UTC'
 # Initialize extensions
 db.init_app(app)
 login_manager.init_app(app)
-babel.init_app(app)
 
 # Login manager settings
-login_manager.login_view = 'auth.login'
+login_manager.login_view = 'login'
 login_manager.login_message = 'Tizimga kirish talab qilinadi.'
 login_manager.login_message_category = 'info'
 
@@ -53,7 +52,6 @@ def load_user(user_id):
     from models import User
     return User.query.get(int(user_id))
 
-@babel.locale_selector
 def get_locale():
     from flask import request, session
     # Check if language is set in session
@@ -65,6 +63,8 @@ def get_locale():
         return request.args['lang']
     # Default to Uzbek
     return 'uz'
+
+babel.init_app(app, locale_selector=get_locale)
 
 with app.app_context():
     # Import models

@@ -32,13 +32,17 @@ def set_language(language):
 def register():
     """Ro'yxatdan o'tish"""
     if request.method == 'POST':
-        username = request.form.get('username')
-        email = request.form.get('email')
-        password = request.form.get('password')
-        full_name = request.form.get('full_name')
-        phone = request.form.get('phone')
+        username = request.form.get('username', '').strip()
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '')
+        full_name = request.form.get('full_name', '').strip()
+        phone = request.form.get('phone', '').strip()
         
         # Validation
+        if not username or not email or not password:
+            flash('Barcha majburiy maydonlarni to\'ldiring', 'error')
+            return render_template('auth/register.html')
+            
         if User.query.filter_by(username=username).first():
             flash('Bu foydalanuvchi nomi band', 'error')
             return render_template('auth/register.html')
@@ -73,12 +77,16 @@ def register():
 def login():
     """Tizimga kirish"""
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
+        
+        if not username or not password:
+            flash('Foydalanuvchi nomi va parolni kiriting', 'error')
+            return render_template('auth/login.html')
         
         user = User.query.filter_by(username=username).first()
         
-        if user and check_password_hash(user.password_hash, password):
+        if user and user.password_hash and check_password_hash(user.password_hash, password):
             if not user.is_active:
                 flash('Sizning hisobingiz faol emas', 'error')
                 return render_template('auth/login.html')
@@ -305,13 +313,13 @@ def upload_knowledge(bot_id):
         return redirect(url_for('bot_detail', bot_id=bot_id))
     
     file = request.files['file']
-    if file.filename == '':
+    if not file.filename or file.filename == '':
         flash('Fayl tanlanmagan', 'error')
         return redirect(url_for('bot_detail', bot_id=bot_id))
     
     if file and allowed_file(file.filename):
         try:
-            filename = secure_filename(file.filename)
+            filename = secure_filename(file.filename or '')
             # Create uploads directory if it doesn't exist
             upload_dir = os.path.join(app.root_path, 'uploads', 'knowledge')
             os.makedirs(upload_dir, exist_ok=True)
