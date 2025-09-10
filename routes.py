@@ -256,7 +256,7 @@ def bot_chat(bot_id):
                     message_content,
                     bot.system_prompt,
                     detected_language,
-                    conversation.id
+                    bot.id
                 )
                 response_time = (datetime.utcnow() - start_time).total_seconds()
                 
@@ -451,20 +451,22 @@ def telegram_webhook(bot_id):
             conversation_id=conversation.id
         ).order_by(Message.created_at.desc()).limit(10).all()
         
-        # Generate AI response using user's language preference
+        # Generate AI response using user's language preference and knowledge base
         try:
             if len(history) > 1:
                 response_text = ai_service.generate_response_with_context(
                     user_message, 
                     history[1:], 
                     bot.system_prompt,
-                    user_language
+                    user_language,
+                    bot.id
                 )
             else:
                 response_text = ai_service.generate_response(
                     user_message,
                     bot.system_prompt,
-                    user_language
+                    user_language,
+                    bot.id
                 )
         except Exception as e:
             logging.error(f"AI service error: {e}")
