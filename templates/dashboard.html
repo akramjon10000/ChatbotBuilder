@@ -3,105 +3,304 @@
 {% block title %}Bosh Sahifa - AI Chatbot Platform{% endblock %}
 
 {% block content %}
-<!-- Trial Status Alert -->
+<!-- Modern Status Alerts -->
 {% if current_user.is_trial_active and current_user.trial_days_left <= 1 %}
-    <div class="alert alert-warning">
-        <h5><i class="fas fa-exclamation-triangle me-2"></i>Sinov Muddati Tugaydi!</h5>
-        <p class="mb-2">
-            Sizning bepul sinov muddatingiz {{ current_user.trial_days_left }} kun ichida tugaydi.
-            Davom etish uchun admin ruxsatini kutishingiz kerak.
-        </p>
-        <small class="text-muted">
-            Sinov tugagach, admin sizga ruxsat berguncha chatbotlaringiz ishlamaydi.
-        </small>
+    <div class="alert border-0 rounded-4 shadow-sm" style="background: linear-gradient(135deg, #ffe066 0%, #ff9a56 100%); color: #8b4513;">
+        <div class="d-flex align-items-center">
+            <div class="me-3">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 9v4m0 4h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div class="flex-grow-1">
+                <h5 class="mb-2 fw-bold">⏰ Sinov Muddati Tugaydi!</h5>
+                <p class="mb-2">
+                    Sizning bepul sinov muddatingiz {{ current_user.trial_days_left }} kun ichida tugaydi.
+                    Davom etish uchun admin ruxsatini kutishingiz kerak.
+                </p>
+                <small class="opacity-75">
+                    Sinov tugagach, admin sizga ruxsat berguncha chatbotlaringiz ishlamaydi.
+                </small>
+            </div>
+        </div>
     </div>
 {% elif current_user.admin_approved %}
-    <div class="alert alert-success">
-        <h5><i class="fas fa-check-circle me-2"></i>Tasdiqlangan Hisob</h5>
-        <p class="mb-0">Sizning hisobingiz admin tomonidan tasdiqlangan. Barcha xususiyatlardan foydalana olasiz!</p>
+    <div class="alert border-0 rounded-4 shadow-sm" style="background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%); color: white;">
+        <div class="d-flex align-items-center">
+            <div class="me-3">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div class="flex-grow-1">
+                <h5 class="mb-2 fw-bold">✅ Tasdiqlangan Hisob</h5>
+                <p class="mb-0 opacity-90">Sizning hisobingiz admin tomonidan tasdiqlangan. Barcha xususiyatlardan foydalana olasiz!</p>
+            </div>
+        </div>
     </div>
 {% endif %}
 
-<!-- Welcome Section -->
-<div class="row mb-4">
+<!-- Modern Welcome Section -->
+<div class="row mb-5">
     <div class="col-12">
-        <div class="bg-primary text-white p-4 rounded">
-            <h2><i class="fas fa-user-circle me-2"></i>Xush kelibsiz, {{ current_user.full_name or current_user.username }}!</h2>
-            <p class="mb-0">AI chatbot platformasiga xush kelibsiz. Bu yerda o'z botlaringizni boshqarishingiz mumkin.</p>
+        <div class="welcome-hero text-white p-5 rounded-4 position-relative overflow-hidden" style="background: var(--gradient-primary); min-height: 200px;">
+            <!-- Background decoration -->
+            <div class="position-absolute top-0 end-0 opacity-10">
+                <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M40,40 L40,160 L160,160 L160,40 Z" fill="none" stroke="white" stroke-width="2" opacity="0.3"/>
+                    <circle cx="100" cy="100" r="30" fill="none" stroke="white" stroke-width="2" opacity="0.4"/>
+                    <circle cx="60" cy="60" r="5" fill="white" opacity="0.3"/>
+                    <circle cx="140" cy="140" r="5" fill="white" opacity="0.3"/>
+                </svg>
+            </div>
+            
+            <div class="position-relative z-3">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="me-3">
+                                <div class="bg-white bg-opacity-20 rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/>
+                                        <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div>
+                                <h2 class="mb-1 fw-bold">Xush kelibsiz, {{ current_user.full_name or current_user.username }}! 👋</h2>
+                                <p class="mb-0 opacity-90 fs-5">AI chatbot platformasiga xush kelibsiz. Bu yerda o'z botlaringizni boshqarishingiz mumkin.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick stats in welcome -->
+                        <div class="row g-3">
+                            <div class="col-6 col-md-3">
+                                <div class="bg-white bg-opacity-15 rounded-3 p-3 text-center">
+                                    <h4 class="mb-1">{{ bots|length }}</h4>
+                                    <small class="opacity-75">Botlarim</small>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="bg-white bg-opacity-15 rounded-3 p-3 text-center">
+                                    <h4 class="mb-1">{{ recent_conversations|length }}</h4>
+                                    <small class="opacity-75">Suhbatlar</small>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="bg-white bg-opacity-15 rounded-3 p-3 text-center">
+                                    {% if current_user.admin_approved %}
+                                        <h4 class="mb-1">∞</h4>
+                                        <small class="opacity-75">Cheksiz</small>
+                                    {% else %}
+                                        <h4 class="mb-1">{{ trial_days_left }}</h4>
+                                        <small class="opacity-75">Kun qoldi</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="bg-white bg-opacity-15 rounded-3 p-3 text-center">
+                                    {% if current_user.admin_approved %}
+                                        <h4 class="mb-1">✓</h4>
+                                        <small class="opacity-75">Tasdiqlangan</small>
+                                    {% else %}
+                                        <h4 class="mb-1">⏳</h4>
+                                        <small class="opacity-75">Sinov</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4 text-center">
+                        <div class="welcome-illustration">
+                            <svg width="150" height="120" viewBox="0 0 150 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="75" cy="60" r="25" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+                                <circle cx="68" cy="55" r="2" fill="white"/>
+                                <circle cx="82" cy="55" r="2" fill="white"/>
+                                <path d="M68 68h14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                <rect x="50" y="85" width="50" height="20" rx="10" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                                <rect x="30" y="110" width="90" height="5" rx="2" fill="rgba(255,255,255,0.1)"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Stats Cards -->
-<div class="row mb-4">
-    <div class="col-md-3 mb-3">
-        <div class="card bg-primary text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
+<!-- Modern Stats Grid -->
+<div class="row g-4 mb-5">
+    <div class="col-xl-3 col-lg-6 col-md-6">
+        <div class="stats-card border-0 rounded-4 shadow-lg h-100 position-relative overflow-hidden" style="background: var(--gradient-primary);">
+            <div class="card-body p-4 text-white position-relative z-3">
+                <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <h4>{{ bots|length }}</h4>
-                        <p class="mb-0">Chatbotlar</p>
+                        <h3 class="fw-bold mb-1">{{ bots|length }}</h3>
+                        <p class="mb-0 opacity-90">🤖 Chatbotlarim</p>
+                        <small class="opacity-75">Faol botlar soni</small>
                     </div>
+                    <div class="stats-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="opacity-30">
+                            <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="9" cy="9" r="1" fill="currentColor"/>
+                            <circle cx="15" cy="9" r="1" fill="currentColor"/>
+                            <path d="M8 13s1 2 4 2 4-2 4-2" stroke="currentColor" stroke-width="1.5"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="position-absolute bottom-0 end-0 opacity-10">
+                <svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="40" cy="40" r="30" fill="white" opacity="0.1"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-lg-6 col-md-6">
+        <div class="stats-card border-0 rounded-4 shadow-lg h-100 position-relative overflow-hidden" style="background: var(--gradient-success);">
+            <div class="card-body p-4 text-white position-relative z-3">
+                <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <i class="fas fa-robot fa-2x opacity-75"></i>
+                        <h3 class="fw-bold mb-1">{{ recent_conversations|length }}</h3>
+                        <p class="mb-0 opacity-90">💬 Suhbatlar</p>
+                        <small class="opacity-75">So'nggi faollik</small>
+                    </div>
+                    <div class="stats-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="opacity-30">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2"/>
+                        </svg>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     
-    <div class="col-md-3 mb-3">
-        <div class="card bg-success text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h4>{{ recent_conversations|length }}</h4>
-                        <p class="mb-0">Suhbatlar</p>
-                    </div>
-                    <div>
-                        <i class="fas fa-comments fa-2x opacity-75"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3 mb-3">
-        <div class="card bg-info text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
+    <div class="col-xl-3 col-lg-6 col-md-6">
+        <div class="stats-card border-0 rounded-4 shadow-lg h-100 position-relative overflow-hidden" style="background: var(--gradient-info);">
+            <div class="card-body p-4 text-white position-relative z-3">
+                <div class="d-flex justify-content-between align-items-start">
                     <div>
                         {% if current_user.admin_approved %}
-                            <h4><i class="fas fa-infinity"></i></h4>
-                            <p class="mb-0">Cheksiz</p>
+                            <h3 class="fw-bold mb-1">∞</h3>
+                            <p class="mb-0 opacity-90">✨ Cheksiz</p>
+                            <small class="opacity-75">Premium status</small>
                         {% else %}
-                            <h4>{{ trial_days_left }}</h4>
-                            <p class="mb-0">Kun qoldi</p>
+                            <h3 class="fw-bold mb-1">{{ trial_days_left }}</h3>
+                            <p class="mb-0 opacity-90">⏰ Kun qoldi</p>
+                            <small class="opacity-75">Sinov muddati</small>
                         {% endif %}
                     </div>
-                    <div>
-                        <i class="fas fa-calendar fa-2x opacity-75"></i>
+                    <div class="stats-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="opacity-30">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                            <polyline points="12,6 12,12 16,14" stroke="currentColor" stroke-width="2"/>
+                        </svg>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     
-    <div class="col-md-3 mb-3">
-        <div class="card bg-warning text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
+    <div class="col-xl-3 col-lg-6 col-md-6">
+        <div class="stats-card border-0 rounded-4 shadow-lg h-100 position-relative overflow-hidden" style="background: var(--gradient-warning);">
+            <div class="card-body p-4 text-dark position-relative z-3">
+                <div class="d-flex justify-content-between align-items-start">
                     <div>
                         {% if current_user.admin_approved %}
-                            <h4><i class="fas fa-check"></i></h4>
-                            <p class="mb-0">Tasdiqlangan</p>
+                            <h3 class="fw-bold mb-1">✅</h3>
+                            <p class="mb-0 opacity-90">🎯 Tasdiqlangan</p>
+                            <small class="opacity-75">Premium hisob</small>
                         {% else %}
-                            <h4><i class="fas fa-clock"></i></h4>
-                            <p class="mb-0">Sinov</p>
+                            <h3 class="fw-bold mb-1">⏳</h3>
+                            <p class="mb-0 opacity-90">🧪 Sinov</p>
+                            <small class="opacity-75">Bepul rejim</small>
                         {% endif %}
                     </div>
+                    <div class="stats-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="opacity-30">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="8.5" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                            <polyline points="17,11 19,13 23,9" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modern Quick Actions -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card border-0 rounded-4 shadow-lg">
+            <div class="card-header bg-transparent border-0 pt-4 px-4">
+                <div class="d-flex align-items-center">
+                    <div class="me-3">
+                        <div class="bg-primary bg-opacity-10 rounded-3 p-2">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-primary">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
                     <div>
-                        <i class="fas fa-user-check fa-2x opacity-75"></i>
+                        <h5 class="mb-1 fw-bold">⚡ Tezkor Harakatlar</h5>
+                        <p class="text-muted mb-0">Platformani boshqarish uchun asosiy amallar</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-3">
+                    <div class="col-lg-3 col-md-6">
+                        <a href="{{ url_for('create_bot') }}" class="btn btn-primary w-100 py-3 rounded-3 btn-modern" style="background: var(--gradient-primary); border: none;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                                <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
+                                <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <div>
+                                <div class="fw-semibold">Yangi Chatbot</div>
+                                <small class="opacity-75">Bot yaratish</small>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <a href="{{ url_for('profile') }}" class="btn btn-outline-primary w-100 py-3 rounded-3 btn-modern">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <div>
+                                <div class="fw-semibold">Profilni Tahrirlash</div>
+                                <small class="text-muted">Hisob sozlamalari</small>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <button class="btn btn-outline-info w-100 py-3 rounded-3 btn-modern" data-bs-toggle="modal" data-bs-target="#helpModal">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke="currentColor" stroke-width="2"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <div>
+                                <div class="fw-semibold">Yordam</div>
+                                <small class="text-muted">Ko'mak olish</small>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <button class="btn btn-outline-success w-100 py-3 rounded-3 btn-modern" onclick="testAI()">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" stroke="currentColor" stroke-width="2"/>
+                                <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2"/>
+                                <path d="M16 10a4 4 0 0 1-8 0" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <div>
+                                <div class="fw-semibold">AI Sinash</div>
+                                <small class="text-muted">Tezkor test</small>
+                            </div>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -109,79 +308,95 @@
     </div>
 </div>
 
-<!-- Quick Actions -->
-<div class="row mb-4">
+<!-- Modern Chatbots Grid -->
+<div class="row mb-5">
     <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Tezkor Harakatlar</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-3 mb-2">
-                        <a href="{{ url_for('create_bot') }}" class="btn btn-primary w-100">
-                            <i class="fas fa-plus me-2"></i>
-                            Yangi Chatbot
-                        </a>
+        <div class="card border-0 rounded-4 shadow-lg">
+            <div class="card-header bg-transparent border-0 pt-4 px-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <div class="bg-primary bg-opacity-10 rounded-3 p-2">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-primary">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+                                    <circle cx="9" cy="9" r="1" fill="currentColor"/>
+                                    <circle cx="15" cy="9" r="1" fill="currentColor"/>
+                                    <path d="M8 13s1 2 4 2 4-2 4-2" stroke="currentColor" stroke-width="1.5"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="mb-1 fw-bold">🤖 Mening Chatbotlarim</h5>
+                            <p class="text-muted mb-0">Yaratilgan va faol botlar</p>
+                        </div>
                     </div>
-                    <div class="col-md-3 mb-2">
-                        <a href="{{ url_for('profile') }}" class="btn btn-outline-primary w-100">
-                            <i class="fas fa-user-edit me-2"></i>
-                            Profilni Tahrirlash
-                        </a>
-                    </div>
-                    <div class="col-md-3 mb-2">
-                        <button class="btn btn-outline-info w-100" data-bs-toggle="modal" data-bs-target="#helpModal">
-                            <i class="fas fa-question-circle me-2"></i>
-                            Yordam
-                        </button>
-                    </div>
-                    <div class="col-md-3 mb-2">
-                        <button class="btn btn-outline-success w-100" onclick="testAI()">
-                            <i class="fas fa-vial me-2"></i>
-                            AI Sinash
-                        </button>
-                    </div>
+                    <a href="{{ url_for('create_bot') }}" class="btn btn-primary rounded-pill px-4 btn-modern" style="background: var(--gradient-primary); border: none;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                            <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
+                            <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        Yangi Bot
+                    </a>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-
-<!-- Chatbots List -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0"><i class="fas fa-robot me-2"></i>Mening Chatbotlarim</h5>
-                <a href="{{ url_for('create_bot') }}" class="btn btn-primary btn-sm">
-                    <i class="fas fa-plus me-1"></i>Yangi Bot
-                </a>
-            </div>
-            <div class="card-body">
+            <div class="card-body p-4">
                 {% if bots %}
-                    <div class="row">
+                    <div class="row g-4">
                         {% for bot in bots %}
-                        <div class="col-md-6 col-lg-4 mb-3">
-                            <div class="card border">
-                                <div class="card-body">
-                                    <h6 class="card-title">
-                                        <i class="fas fa-robot me-1 text-primary"></i>
-                                        {{ bot.name }}
-                                    </h6>
-                                    <p class="card-text text-muted small">{{ bot.description[:50] }}...</p>
-                                    <p class="card-text">
-                                        <small class="text-muted">
-                                            <i class="fas fa-calendar me-1"></i>
+                        <div class="col-xl-4 col-lg-6 col-md-6">
+                            <div class="bot-card card border-0 rounded-4 shadow h-100 position-relative overflow-hidden">
+                                <!-- Card gradient background -->
+                                <div class="position-absolute top-0 start-0 w-100 h-100 opacity-10" style="background: var(--gradient-primary);"></div>
+                                
+                                <div class="card-body p-4 position-relative z-3">
+                                    <div class="d-flex align-items-start justify-content-between mb-3">
+                                        <div class="bot-avatar">
+                                            <div class="bg-primary bg-opacity-15 rounded-3 p-3">
+                                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-primary">
+                                                    <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+                                                    <circle cx="9" cy="9" r="1" fill="currentColor"/>
+                                                    <circle cx="15" cy="9" r="1" fill="currentColor"/>
+                                                    <path d="M8 13s1 2 4 2 4-2 4-2" stroke="currentColor" stroke-width="1.5"/>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="bot-status">
+                                            <span class="badge bg-success bg-opacity-15 text-success border border-success border-opacity-25 rounded-pill px-3">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="bg-success rounded-circle me-1" style="width: 6px; height: 6px;"></div>
+                                                    Faol
+                                                </div>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bot-info mb-3">
+                                        <h6 class="fw-bold mb-2">{{ bot.name }}</h6>
+                                        <p class="text-muted small mb-2">{{ bot.description[:60] }}{% if bot.description|length > 60 %}...{% endif %}</p>
+                                        <div class="d-flex align-items-center text-muted small">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                                                <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2"/>
+                                                <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2"/>
+                                                <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2"/>
+                                            </svg>
                                             {{ bot.created_at.strftime('%d.%m.%Y') }}
-                                        </small>
-                                    </p>
-                                    <div class="d-flex gap-2">
-                                        <a href="{{ url_for('bot_detail', bot_id=bot.id) }}" class="btn btn-outline-primary btn-sm">
-                                            <i class="fas fa-cog me-1"></i>Sozlash
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bot-actions d-flex gap-2">
+                                        <a href="{{ url_for('bot_detail', bot_id=bot.id) }}" class="btn btn-outline-primary btn-sm rounded-pill flex-fill">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                                                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" stroke-width="2"/>
+                                            </svg>
+                                            Sozlash
                                         </a>
-                                        <a href="{{ url_for('bot_chat', bot_id=bot.id) }}" class="btn btn-primary btn-sm">
-                                            <i class="fas fa-comments me-1"></i>Suhbat
+                                        <a href="{{ url_for('bot_chat', bot_id=bot.id) }}" class="btn btn-primary btn-sm rounded-pill flex-fill" style="background: var(--gradient-primary); border: none;">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2"/>
+                                            </svg>
+                                            Suhbat
                                         </a>
                                     </div>
                                 </div>
@@ -190,12 +405,25 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <div class="text-center py-4">
-                        <i class="fas fa-robot fa-3x text-muted mb-3"></i>
-                        <h5 class="text-muted">Hali chatbotingiz yo'q</h5>
-                        <p class="text-muted">Birinchi AI chatbotingizni yarating va mijozlaringiz bilan avtomatik suhbat boshlang!</p>
-                        <a href="{{ url_for('create_bot') }}" class="btn btn-primary">
-                            <i class="fas fa-plus me-2"></i>Birinchi Chatbot Yaratish
+                    <div class="empty-state text-center py-5">
+                        <div class="empty-illustration mb-4">
+                            <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-muted opacity-50">
+                                <rect x="20" y="20" width="80" height="80" rx="8" stroke="currentColor" stroke-width="2" stroke-dasharray="5,5"/>
+                                <circle cx="45" cy="45" r="3" fill="currentColor" opacity="0.5"/>
+                                <circle cx="75" cy="45" r="3" fill="currentColor" opacity="0.5"/>
+                                <path d="M45 65h30" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+                                <line x1="60" y1="10" x2="60" y2="30" stroke="currentColor" stroke-width="2"/>
+                                <line x1="50" y1="20" x2="70" y2="20" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <h5 class="mb-3">🤖 Hali chatbotingiz yo'q</h5>
+                        <p class="text-muted mb-4 fs-6">Birinchi AI chatbotingizni yarating va mijozlaringiz bilan<br/>avtomatik suhbat boshlang!</p>
+                        <a href="{{ url_for('create_bot') }}" class="btn btn-primary btn-lg rounded-pill px-5 btn-modern" style="background: var(--gradient-primary); border: none;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                                <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
+                                <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            Birinchi Chatbot Yaratish
                         </a>
                     </div>
                 {% endif %}
