@@ -3,14 +3,40 @@ import logging
 import time
 from google import genai
 from google.genai import types
+from app import db
+from models import KnowledgeBase
 
 class AIService:
     def __init__(self):
         """Initialize AI service with Gemini API"""
         self.client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
         self.model = "gemini-2.5-flash"
+    
+    def get_knowledge_base_content(self, bot_id):
+        """Retrieve knowledge base content for the bot"""
+        try:
+            knowledge_files = KnowledgeBase.query.filter_by(
+                bot_id=bot_id, is_active=True
+            ).all()
+            
+            if not knowledge_files:
+                return None
+            
+            # Combine all knowledge base content
+            combined_content = ""
+            for kb in knowledge_files:
+                if kb.content:
+                    combined_content += f"\n\n--- {kb.original_filename} ---\n{kb.content}"
+            
+            if combined_content.strip():
+                return combined_content.strip()
+            return None
+            
+        except Exception as e:
+            logging.error(f"Knowledge base retrieval error: {e}")
+            return None
         
-    def generate_response(self, user_message, system_prompt=None, language='uz', conversation_id=None):
+    def generate_response(self, user_message, system_prompt=None, language='uz', bot_id=None):
         """Generate AI response using Gemini"""
         try:
             # Prepare system instruction based on language
@@ -22,10 +48,24 @@ class AIService:
             
             base_instruction = language_instructions.get(language, language_instructions['uz'])
             
+            # Get knowledge base content if bot_id is provided
+            knowledge_content = None
+            if bot_id:
+                knowledge_content = self.get_knowledge_base_content(bot_id)
+            
+            # Build system instruction
+            system_instruction = base_instruction
+            
+            if knowledge_content:
+                kb_instructions = {
+                    'uz': f"\n\nSizda quyidagi bilimlar bazasi mavjud. Foydalanuvchi savollariga javob berishda ushbu ma'lumotlardan foydalaning:\n{knowledge_content}",
+                    'ru': f"\n\nУ вас есть следующая база знаний. Используйте эту информацию при ответе на вопросы пользователя:\n{knowledge_content}",
+                    'en': f"\n\nYou have the following knowledge base. Use this information when answering user questions:\n{knowledge_content}"
+                }
+                system_instruction += kb_instructions.get(language, kb_instructions['uz'])
+            
             if system_prompt:
-                system_instruction = f"{base_instruction}\n\nQo'shimcha ko'rsatmalar: {system_prompt}"
-            else:
-                system_instruction = base_instruction
+                system_instruction += f"\n\nQo'shimcha ko'rsatmalar: {system_prompt}"
             
             # Generate response
             response = self.client.models.generate_content(
@@ -49,7 +89,7 @@ class AIService:
             logging.error(f"AI service error: {e}")
             return self._get_fallback_response(language)
     
-    def generate_response_with_context(self, user_message, conversation_history, system_prompt=None, language='uz'):
+    def generate_response_with_context(self, user_message, conversation_history, system_prompt=None, language='uz', bot_id=None):
         """Generate AI response with conversation context"""
         try:
             # Prepare conversation history
@@ -76,10 +116,24 @@ class AIService:
             
             base_instruction = language_instructions.get(language, language_instructions['uz'])
             
+            # Get knowledge base content if bot_id is provided
+            knowledge_content = None
+            if bot_id:
+                knowledge_content = self.get_knowledge_base_content(bot_id)
+            
+            # Build system instruction
+            system_instruction = base_instruction
+            
+            if knowledge_content:
+                kb_instructions = {
+                    'uz': f"\n\nSizda quyidagi bilimlar bazasi mavjud. Foydalanuvchi savollariga javob berishda ushbu ma'lumotlardan foydalaning:\n{knowledge_content}",
+                    'ru': f"\n\nУ вас есть следующая база знаний. Используйте эту информацию при ответе на вопросы пользователя:\n{knowledge_content}",
+                    'en': f"\n\nYou have the following knowledge base. Use this information when answering user questions:\n{knowledge_content}"
+                }
+                system_instruction += kb_instructions.get(language, kb_instructions['uz'])
+            
             if system_prompt:
-                system_instruction = f"{base_instruction}\n\nQo'shimcha ko'rsatmalar: {system_prompt}"
-            else:
-                system_instruction = base_instruction
+                system_instruction += f"\n\nQo'shimcha ko'rsatmalar: {system_prompt}"
             
             # Generate response
             response = self.client.models.generate_content(
