@@ -1,19 +1,43 @@
 /* Qo'shimcha kontrast yaxshilashlar - Matn ko'rinishini yaxshilash uchun */
 
+/* Text Shadow - matn kontrastini oshirish uchun */
+.text-contrast {
+    color: #ffffff !important;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4) !important;
+    font-weight: 600 !important;
+}
+
+/* Yarim shaffof overlay */
+.overlay {
+    background: rgba(255, 255, 255, 0.7) !important;
+    padding: 10px;
+    border-radius: 8px;
+    color: #222222 !important;
+}
+
+.overlay-dark {
+    background: rgba(0, 0, 0, 0.6) !important;
+    padding: 10px;
+    border-radius: 8px;
+    color: #ffffff !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8) !important;
+}
+
 /* Muhim so'zlarni ajratib ko'rsatish */
 .highlight-text {
-    background: rgba(255, 224, 102, 0.3);
+    background: rgba(255, 224, 102, 0.4);
     padding: 2px 6px;
     border-radius: 4px;
     font-weight: 700 !important;
-    color: #1A1A1A !important;
-    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+    color: #000000 !important;
 }
 
 .important-word {
     font-weight: 800 !important;
-    color: #0056b3 !important;
-    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+    color: #000000 !important;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 2px 4px;
+    border-radius: 3px;
 }
 
 /* Matn bloklari uchun yarim shaffof fon */
@@ -28,16 +52,20 @@
 
 .text-block h1, .text-block h2, .text-block h3, 
 .text-block h4, .text-block h5, .text-block h6 {
-    color: #1A1A1A !important;
+    color: #000000 !important;
     font-weight: 700 !important;
-    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8);
+    font-size: 20px !important;
 }
 
+.text-block h1 { font-size: 28px !important; }
+.text-block h2 { font-size: 24px !important; }
+.text-block h3 { font-size: 20px !important; }
+
 .text-block p, .text-block span, .text-block li {
-    color: #333333 !important;
+    color: #222222 !important;
     font-size: 16px !important;
-    font-weight: 500;
-    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6);
+    font-weight: 400;
+    line-height: 1.6;
 }
 
 /* Hero bo'limi uchun maxsus stillar */
@@ -106,17 +134,22 @@
 }
 
 .pricing-title {
-    color: #1A1A1A !important;
+    color: #000000 !important;
     font-weight: 800 !important;
     font-size: 24px !important;
-    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8);
 }
 
 .pricing-amount {
     color: #667eea !important;
     font-weight: 900 !important;
     font-size: 2.5rem !important;
-    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8);
+}
+
+.pricing-feature {
+    color: #222222 !important;
+    font-size: 16px !important;
+    font-weight: 400;
+    line-height: 1.5;
 }
 
 /* Xavfsizlik va muhim xabarlar uchun */
@@ -133,7 +166,6 @@
     font-weight: 600 !important;
     margin: 0;
     font-size: 16px !important;
-    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 /* Loading holati uchun */
@@ -141,32 +173,29 @@
     color: #667eea !important;
     font-weight: 600 !important;
     font-size: 18px !important;
-    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8);
     animation: pulse 2s infinite;
 }
 
 /* Muvaffaqiyat xabarlari */
 .success-message {
-    background: rgba(78, 205, 196, 0.1);
-    border: 1px solid #4ecdc4;
+    background: rgba(40, 167, 69, 0.1);
+    border: 1px solid #28a745;
     border-radius: 8px;
     padding: 15px 20px;
     color: #155724 !important;
     font-weight: 600 !important;
     font-size: 16px !important;
-    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 /* Xato xabarlari */
 .error-message {
-    background: rgba(255, 107, 107, 0.1);
-    border: 1px solid #ff6b6b;
+    background: rgba(220, 53, 69, 0.1);
+    border: 1px solid #dc3545;
     border-radius: 8px;
     padding: 15px 20px;
     color: #721c24 !important;
     font-weight: 600 !important;
     font-size: 16px !important;
-    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 /* Responsive design uchun */
