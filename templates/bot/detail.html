@@ -216,7 +216,7 @@
                                                 <small>{{ "%.1f"|format(kb.file_size / 1024) }} KB</small>
                                             </td>
                                             <td>
-                                                <small>{{ kb.created_at.strftime('%d.%m.%Y') }}</small>
+                                                <small>{{ kb.created_at.strftime('%d.%m.%Y') if kb.created_at else 'Noma\'lum' }}</small>
                                             </td>
                                             <td>
                                                 <button class="btn btn-outline-danger btn-sm" 
