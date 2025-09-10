@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Sinov Muddati Tugagan - AI Chatbot Platform{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card border-warning">
+            <div class="card-header bg-warning text-dark text-center">
+                <h3 class="mb-0">
+                    <i class="fas fa-clock me-2"></i>
+                    Sinov Muddati Tugagan
+                </h3>
+            </div>
+            <div class="card-body text-center">
+                <i class="fas fa-hourglass-end fa-4x text-warning mb-4"></i>
+                
+                <h4 class="mb-3">3 kunlik bepul sinov muddatingiz tugadi</h4>
+                
+                <p class="lead mb-4">
+                    Platformadan foydalanishni davom ettirish uchun admin ruxsatini kutishingiz kerak.
+                </p>
+                
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-info-circle me-1"></i>Navbatdagi qadamlar:</h6>
+                    <ol class="text-start mb-0">
+                        <li>Admin sizning so'rovingizni ko'rib chiqadi</li>
+                        <li>Ruxsat berilgach email orqali xabar keladi</li>
+                        <li>Keyin barcha xususiyatlardan foydalana olasiz</li>
+                    </ol>
+                </div>
+                
+                <div class="row text-center mb-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="border rounded p-3">
+                            <i class="fas fa-user-clock fa-2x text-primary mb-2"></i>
+                            <h6>Hozirgi holatingiz</h6>
+                            <span class="badge bg-warning">Kutish rejimi</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="border rounded p-3">
+                            <i class="fas fa-calendar-alt fa-2x text-info mb-2"></i>
+                            <h6>Sinov boshlangan</h6>
+                            <small>{{ current_user.trial_start_date.strftime('%d.%m.%Y') }}</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <h6 class="mb-3">Sinov davomida sizda mavjud bo'lgan:</h6>
+                <div class="row">
+                    <div class="col-6 col-md-3 mb-2">
+                        <i class="fas fa-robot text-primary"></i><br>
+                        <small>Chatbotlar</small>
+                    </div>
+                    <div class="col-6 col-md-3 mb-2">
+                        <i class="fas fa-globe text-success"></i><br>
+                        <small>3 til</small>
+                    </div>
+                    <div class="col-6 col-md-3 mb-2">
+                        <i class="fas fa-brain text-info"></i><br>
+                        <small>AI javoblar</small>
+                    </div>
+                    <div class="col-6 col-md-3 mb-2">
+                        <i class="fas fa-comments text-warning"></i><br>
+                        <small>Suhbatlar</small>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-center">
+                <p class="mb-2">
+                    <i class="fas fa-envelope me-1"></i>
+                    Savollaringiz bo'lsa bizga murojaat qiling: 
+                    <a href="mailto:support@chatbot.uz">support@chatbot.uz</a>
+                </p>
+                <a href="{{ url_for('profile') }}" class="btn btn-outline-primary me-2">
+                    <i class="fas fa-user me-1"></i>Profil
+                </a>
+                <a href="{{ url_for('logout') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-sign-out-alt me-1"></i>Chiqish
+                </a>
+            </div>
+        </div>
+        
+        <!-- Additional Info -->
+        <div class="alert alert-light mt-4">
+            <h6><i class="fas fa-lightbulb me-1"></i>Nima qilish mumkin?</h6>
+            <ul class="mb-0">
+                <li>Profilingizni to'ldiring</li>
+                <li>Admin javobini sabr bilan kuting</li>
+                <li>Texnik yordam uchun bizga murojaat qiling</li>
+                <li>Platformaning imkoniyatlari haqida o'rganing</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

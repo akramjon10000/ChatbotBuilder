@@ -1,0 +1,215 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Suhbatlar - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center border-bottom mb-4 pb-3">
+    <h1 class="h2">
+        <i class="fas fa-comments me-2"></i>
+        Barcha Suhbatlar
+    </h1>
+</div>
+
+<!-- Conversations Table -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">
+            Suhbatlar Ro'yxati
+            <span class="badge bg-primary ms-2">{{ conversations.total }}</span>
+        </h5>
+    </div>
+    <div class="card-body">
+        {% if conversations.items %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Bot</th>
+                            <th>Platform</th>
+                            <th>Foydalanuvchi</th>
+                            <th>Til</th>
+                            <th>Xabarlar</th>
+                            <th>Oxirgi faollik</th>
+                            <th>Harakatlar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for conv in conversations.items %}
+                        <tr>
+                            <td>
+                                <strong>{{ conv.bot.name }}</strong>
+                                <br><small class="text-muted">{{ conv.bot.owner.username }}</small>
+                            </td>
+                            <td>
+                                {% if conv.platform == 'telegram' %}
+                                    <i class="fab fa-telegram text-info me-1"></i>Telegram
+                                {% elif conv.platform == 'whatsapp' %}
+                                    <i class="fab fa-whatsapp text-success me-1"></i>WhatsApp
+                                {% elif conv.platform == 'instagram' %}
+                                    <i class="fab fa-instagram text-danger me-1"></i>Instagram
+                                {% else %}
+                                    <i class="fas fa-globe text-primary me-1"></i>Web
+                                {% endif %}
+                            </td>
+                            <td>
+                                <strong>{{ conv.platform_username or conv.platform_user_id }}</strong>
+                                {% if conv.platform_username and conv.platform_user_id %}
+                                    <br><small class="text-muted">ID: {{ conv.platform_user_id }}</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">
+                                    {% if conv.language == 'uz' %}O'zbek
+                                    {% elif conv.language == 'ru' %}Русский
+                                    {% else %}English{% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-info">{{ conv.messages|length }}</span>
+                            </td>
+                            <td>
+                                <small>{{ conv.updated_at.strftime('%d.%m.%Y %H:%M') }}</small>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-sm" 
+                                        data-bs-toggle="modal" data-bs-target="#convModal{{ conv.id }}">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Conversation Details Modal -->
+                        <div class="modal fade" id="convModal{{ conv.id }}" tabindex="-1">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Suhbat Tafsilotlari</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <h6>Suhbat Ma'lumotlari:</h6>
+                                                <ul class="list-unstyled">
+                                                    <li><strong>Bot:</strong> {{ conv.bot.name }}</li>
+                                                    <li><strong>Platform:</strong> {{ conv.platform.title() }}</li>
+                                                    <li><strong>Foydalanuvchi:</strong> {{ conv.platform_username or conv.platform_user_id }}</li>
+                                                    <li><strong>Til:</strong> {{ conv.language.upper() }}</li>
+                                                    <li><strong>Boshlanma vaqti:</strong> {{ conv.created_at.strftime('%d.%m.%Y %H:%M') }}</li>
+                                                    <li><strong>Oxirgi faollik:</strong> {{ conv.updated_at.strftime('%d.%m.%Y %H:%M') }}</li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h6>Statistika:</h6>
+                                                <ul class="list-unstyled">
+                                                    <li><strong>Jami xabarlar:</strong> {{ conv.messages|length }}</li>
+                                                    <li><strong>Foydalanuvchi xabarlari:</strong> 
+                                                        {{ conv.messages|selectattr('is_from_user')|list|length }}
+                                                    </li>
+                                                    <li><strong>Bot xabarlari:</strong> 
+                                                        {{ conv.messages|rejectattr('is_from_user')|list|length }}
+                                                    </li>
+                                                    <li><strong>Holat:</strong> 
+                                                        <span class="badge bg-{{ 'success' if conv.is_active else 'secondary' }}">
+                                                            {{ 'Faol' if conv.is_active else 'Faolsiz' }}
+                                                        </span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                        <h6>Xabarlar Tarixi:</h6>
+                                        <div style="max-height: 300px; overflow-y: auto;" class="border rounded p-2">
+                                            {% if conv.messages %}
+                                                {% for message in conv.messages[-10:] %}
+                                                <div class="mb-2">
+                                                    <div class="d-flex justify-content-between">
+                                                        <strong class="text-{{ 'primary' if message.is_from_user else 'success' }}">
+                                                            {% if message.is_from_user %}
+                                                                <i class="fas fa-user me-1"></i>{{ conv.platform_username or 'Foydalanuvchi' }}
+                                                            {% else %}
+                                                                <i class="fas fa-robot me-1"></i>{{ conv.bot.name }}
+                                                            {% endif %}
+                                                        </strong>
+                                                        <small class="text-muted">{{ message.created_at.strftime('%d.%m %H:%M') }}</small>
+                                                    </div>
+                                                    <div class="ms-3">{{ message.content }}</div>
+                                                    {% if not message.is_from_user and message.response_time %}
+                                                        <small class="text-muted ms-3">
+                                                            Javob vaqti: {{ "%.2f"|format(message.response_time) }}s
+                                                        </small>
+                                                    {% endif %}
+                                                </div>
+                                                <hr class="my-1">
+                                                {% endfor %}
+                                                {% if conv.messages|length > 10 %}
+                                                    <small class="text-muted">... va yana {{ conv.messages|length - 10 }} ta xabar</small>
+                                                {% endif %}
+                                            {% else %}
+                                                <p class="text-muted text-center">Xabarlar yo'q</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yopish</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if conversations.pages > 1 %}
+                <nav aria-label="Sahifalar">
+                    <ul class="pagination justify-content-center">
+                        {% if conversations.has_prev %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin_conversations', page=conversations.prev_num) }}">
+                                    Oldingi
+                                </a>
+                            </li>
+                        {% endif %}
+                        
+                        {% for page_num in conversations.iter_pages() %}
+                            {% if page_num %}
+                                {% if page_num != conversations.page %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for('admin_conversations', page=page_num) }}">
+                                            {{ page_num }}
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ page_num }}</span>
+                                    </li>
+                                {% endif %}
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if conversations.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin_conversations', page=conversations.next_num) }}">
+                                    Keyingi
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        {% else %}
+            <div class="text-center py-4">
+                <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">Suhbatlar yo'q</h5>
+                <p class="text-muted">Hali hech qanday suhbat boshlanmagan.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

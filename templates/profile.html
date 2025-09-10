@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+
+{% block title %}Profil - AI Chatbot Platform{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <!-- Profile Header -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">
+                    <i class="fas fa-user-circle me-2"></i>
+                    Profil Ma'lumotlari
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h4>{{ current_user.full_name or current_user.username }}</h4>
+                        <p class="text-muted mb-1">{{ current_user.email }}</p>
+                        {% if current_user.phone %}
+                            <p class="text-muted mb-1">{{ current_user.phone }}</p>
+                        {% endif %}
+                        <p class="text-muted">
+                            Ro'yxatdan o'tgan: {{ current_user.created_at.strftime('%d.%m.%Y') }}
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        {% if current_user.admin_approved %}
+                            <span class="badge bg-success fs-6">
+                                <i class="fas fa-check-circle me-1"></i>Tasdiqlangan
+                            </span>
+                        {% elif current_user.trial_days_left > 0 %}
+                            <span class="badge bg-info fs-6">
+                                <i class="fas fa-clock me-1"></i>{{ current_user.trial_days_left }} kun qoldi
+                            </span>
+                        {% else %}
+                            <span class="badge bg-warning fs-6">
+                                <i class="fas fa-hourglass-end me-1"></i>Sinov tugagan
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Edit Form -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-edit me-2"></i>
+                    Profilni Tahrirlash
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="username" class="form-label">
+                                <i class="fas fa-user me-1"></i>
+                                Foydalanuvchi nomi
+                            </label>
+                            <input type="text" class="form-control" id="username" name="username" 
+                                   value="{{ current_user.username }}" readonly>
+                            <div class="form-text">Foydalanuvchi nomini o'zgartirib bo'lmaydi</div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">
+                                <i class="fas fa-envelope me-1"></i>
+                                Email *
+                            </label>
+                            <input type="email" class="form-control" id="email" name="email" 
+                                   value="{{ current_user.email }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="full_name" class="form-label">
+                            <i class="fas fa-id-card me-1"></i>
+                            To'liq ism
+                        </label>
+                        <input type="text" class="form-control" id="full_name" name="full_name" 
+                               value="{{ current_user.full_name or '' }}">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">
+                            <i class="fas fa-phone me-1"></i>
+                            Telefon raqam
+                        </label>
+                        <input type="tel" class="form-control" id="phone" name="phone" 
+                               value="{{ current_user.phone or '' }}" placeholder="+998 90 123 45 67">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="preferred_language" class="form-label">
+                            <i class="fas fa-globe me-1"></i>
+                            Afzal ko'rilgan til
+                        </label>
+                        <select class="form-select" id="preferred_language" name="preferred_language">
+                            <option value="uz" {% if current_user.preferred_language == 'uz' %}selected{% endif %}>O'zbek</option>
+                            <option value="ru" {% if current_user.preferred_language == 'ru' %}selected{% endif %}>Русский</option>
+                            <option value="en" {% if current_user.preferred_language == 'en' %}selected{% endif %}>English</option>
+                        </select>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h6>Parolni O'zgartirish</h6>
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">
+                            <i class="fas fa-lock me-1"></i>
+                            Yangi parol
+                        </label>
+                        <input type="password" class="form-control" id="new_password" name="new_password">
+                        <div class="form-text">Bo'sh qoldiring agar parolni o'zgartirmoqchi bo'lmasangiz</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label">
+                            <i class="fas fa-lock me-1"></i>
+                            Parolni tasdiqlang
+                        </label>
+                        <input type="password" class="form-control" id="confirm_password" name="confirm_password">
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Orqaga
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Saqlash
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Account Status -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Hisob Holati
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Sinov Ma'lumotlari:</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Sinov boshlangan:</strong> {{ current_user.trial_start_date.strftime('%d.%m.%Y %H:%M') }}</li>
+                            <li><strong>Sinov tugaydi:</strong> {{ current_user.trial_end_date.strftime('%d.%m.%Y %H:%M') }}</li>
+                            <li><strong>Qolgan kunlar:</strong> 
+                                {% if current_user.admin_approved %}
+                                    <span class="text-success">Cheksiz (Tasdiqlangan)</span>
+                                {% else %}
+                                    <span class="badge bg-{{ 'info' if current_user.trial_days_left > 0 else 'warning' }}">
+                                        {{ current_user.trial_days_left }} kun
+                                    </span>
+                                {% endif %}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Hisob Ma'lumotlari:</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Admin ruxsati:</strong> 
+                                <span class="badge bg-{{ 'success' if current_user.admin_approved else 'secondary' }}">
+                                    {{ 'Ha' if current_user.admin_approved else 'Yo\'q' }}
+                                </span>
+                            </li>
+                            {% if current_user.access_granted_date %}
+                                <li><strong>Ruxsat berilgan sana:</strong> {{ current_user.access_granted_date.strftime('%d.%m.%Y') }}</li>
+                            {% endif %}
+                            <li><strong>Oxirgi kirish:</strong> 
+                                {{ current_user.last_login.strftime('%d.%m.%Y %H:%M') if current_user.last_login else 'Hech qachon' }}
+                            </li>
+                            <li><strong>Hisob holati:</strong> 
+                                <span class="badge bg-{{ 'success' if current_user.is_active else 'danger' }}">
+                                    {{ 'Faol' if current_user.is_active else 'Faolsiz' }}
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    Statistika
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3 mb-3">
+                        <div class="border rounded p-3">
+                            <i class="fas fa-robot fa-2x text-primary mb-2"></i>
+                            <h4>{{ current_user.bots|length }}</h4>
+                            <p class="mb-0 text-muted">Chatbotlar</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="border rounded p-3">
+                            <i class="fas fa-comments fa-2x text-success mb-2"></i>
+                            <h4>
+                                {% set total_conversations = current_user.bots|sum(attribute='conversations')|length %}
+                                {{ total_conversations }}
+                            </h4>
+                            <p class="mb-0 text-muted">Suhbatlar</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="border rounded p-3">
+                            <i class="fas fa-envelope fa-2x text-info mb-2"></i>
+                            <h4>
+                                {% set total_messages = 0 %}
+                                {% for bot in current_user.bots %}
+                                    {% for conv in bot.conversations %}
+                                        {% set total_messages = total_messages + conv.messages|length %}
+                                    {% endfor %}
+                                {% endfor %}
+                                {{ total_messages }}
+                            </h4>
+                            <p class="mb-0 text-muted">Xabarlar</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="border rounded p-3">
+                            <i class="fas fa-calendar fa-2x text-warning mb-2"></i>
+                            <h4>{{ (current_user.created_at.date() - current_user.created_at.date()).days or (datetime.now().date() - current_user.created_at.date()).days }}</h4>
+                            <p class="mb-0 text-muted">Kunlar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const newPassword = document.getElementById('new_password');
+    const confirmPassword = document.getElementById('confirm_password');
+    
+    function validatePassword() {
+        if (newPassword.value && confirmPassword.value) {
+            if (newPassword.value !== confirmPassword.value) {
+                confirmPassword.setCustomValidity('Parollar mos kelmaydi');
+            } else {
+                confirmPassword.setCustomValidity('');
+            }
+        }
+    }
+    
+    newPassword.addEventListener('input', validatePassword);
+    confirmPassword.addEventListener('input', validatePassword);
+    
+    // Phone number formatting
+    const phoneInput = document.getElementById('phone');
+    phoneInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.startsWith('998')) {
+            value = '+' + value.substring(0, 3) + ' ' + value.substring(3, 5) + ' ' + 
+                    value.substring(5, 8) + ' ' + value.substring(8, 10) + ' ' + value.substring(10, 12);
+        }
+        e.target.value = value;
+    });
+});
+</script>
+{% endblock %}

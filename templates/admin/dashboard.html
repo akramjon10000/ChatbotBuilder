@@ -1,0 +1,312 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Admin Dashboard - AI Chatbot Platform{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center border-bottom mb-4 pb-3">
+    <h1 class="h2">
+        <i class="fas fa-tachometer-alt me-2"></i>
+        Admin Dashboard
+    </h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="location.reload()">
+                <i class="fas fa-sync-alt me-1"></i>
+                Yangilash
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h3 class="mb-0">{{ stats.total_users }}</h3>
+                        <p class="mb-0">Jami Foydalanuvchilar</p>
+                    </div>
+                    <div>
+                        <i class="fas fa-users fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a class="small text-white stretched-link" href="{{ url_for('admin_users') }}">
+                    Ko'rish
+                </a>
+                <div class="small text-white">
+                    <i class="fas fa-angle-right"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h3 class="mb-0">{{ stats.trial_expired }}</h3>
+                        <p class="mb-0">Sinov Tugagan</p>
+                    </div>
+                    <div>
+                        <i class="fas fa-clock fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a class="small text-white stretched-link" href="{{ url_for('admin_trial_expired') }}">
+                    Tekshirish
+                </a>
+                <div class="small text-white">
+                    <i class="fas fa-angle-right"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h3 class="mb-0">{{ stats.approved_users }}</h3>
+                        <p class="mb-0">Tasdiqlangan</p>
+                    </div>
+                    <div>
+                        <i class="fas fa-user-check fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a class="small text-white stretched-link" href="{{ url_for('admin_users', status='approved') }}">
+                    Ko'rish
+                </a>
+                <div class="small text-white">
+                    <i class="fas fa-angle-right"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h3 class="mb-0">{{ stats.active_trials }}</h3>
+                        <p class="mb-0">Faol Sinovlar</p>
+                    </div>
+                    <div>
+                        <i class="fas fa-vial fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a class="small text-white stretched-link" href="{{ url_for('admin_users', status='trial_active') }}">
+                    Ko'rish
+                </a>
+                <div class="small text-white">
+                    <i class="fas fa-angle-right"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Additional Statistics -->
+<div class="row mb-4">
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-robot fa-2x text-primary mb-2"></i>
+                <h4>{{ stats.total_bots }}</h4>
+                <p class="mb-0 text-muted">Jami Chatbotlar</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-comments fa-2x text-success mb-2"></i>
+                <h4>{{ stats.total_conversations }}</h4>
+                <p class="mb-0 text-muted">Jami Suhbatlar</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-envelope fa-2x text-info mb-2"></i>
+                <h4>{{ stats.total_messages }}</h4>
+                <p class="mb-0 text-muted">Jami Xabarlar</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Recent Users -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-user-plus me-2"></i>
+                    So'nggi Ro'yxatdan O'tganlar
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if recent_users %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Foydalanuvchi</th>
+                                    <th>Email</th>
+                                    <th>Sana</th>
+                                    <th>Holat</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in recent_users %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ user.username }}</strong>
+                                        {% if user.full_name %}
+                                            <br><small class="text-muted">{{ user.full_name }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ user.email }}</td>
+                                    <td>
+                                        <small>{{ user.created_at.strftime('%d.%m.%Y') }}</small>
+                                    </td>
+                                    <td>
+                                        {% if user.admin_approved %}
+                                            <span class="badge bg-success">Tasdiqlangan</span>
+                                        {% elif user.trial_days_left > 0 %}
+                                            <span class="badge bg-info">{{ user.trial_days_left }} kun</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">Kutish</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center">
+                        <a href="{{ url_for('admin_users') }}" class="btn btn-outline-primary btn-sm">
+                            Barchasini ko'rish
+                        </a>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center mb-0">Yangi foydalanuvchilar yo'q</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Needing Approval -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Ruxsat Kutayotganlar
+                    <span class="badge bg-dark ms-2">{{ users_needing_approval|length }}</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if users_needing_approval %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Foydalanuvchi</th>
+                                    <th>Tugagan Sana</th>
+                                    <th>Harakat</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users_needing_approval[:5] %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ user.username }}</strong>
+                                        {% if user.full_name %}
+                                            <br><small class="text-muted">{{ user.full_name }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <small>{{ user.trial_end_date.strftime('%d.%m.%Y') }}</small>
+                                    </td>
+                                    <td>
+                                        <form method="POST" action="{{ url_for('grant_user_access', user_id=user.id) }}" class="d-inline">
+                                            <button type="submit" class="btn btn-success btn-sm" 
+                                                    onclick="return confirm('{{ user.username }} ga ruxsat berasizmi?')">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center">
+                        <a href="{{ url_for('admin_trial_expired') }}" class="btn btn-warning btn-sm">
+                            Barchasini ko'rish
+                        </a>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center mb-0">Ruxsat kutayotgan foydalanuvchilar yo'q</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-bolt me-2"></i>
+                    Tezkor Harakatlar
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('admin_users') }}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-users me-2"></i>
+                            Foydalanuvchilarni Boshqarish
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('admin_trial_expired') }}" class="btn btn-outline-warning w-100">
+                            <i class="fas fa-clock me-2"></i>
+                            Sinov Tugaganlar
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('admin_stats') }}" class="btn btn-outline-info w-100">
+                            <i class="fas fa-chart-bar me-2"></i>
+                            Statistika Ko'rish
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('admin_settings') }}" class="btn btn-outline-secondary w-100">
+                            <i class="fas fa-cog me-2"></i>
+                            Tizim Sozlamalari
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

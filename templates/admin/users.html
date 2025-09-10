@@ -1,0 +1,247 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Foydalanuvchilar - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center border-bottom mb-4 pb-3">
+    <h1 class="h2">
+        <i class="fas fa-users me-2"></i>
+        Foydalanuvchilar
+    </h1>
+</div>
+
+<!-- Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-3">
+                <label for="status" class="form-label">Holat</label>
+                <select name="status" id="status" class="form-select">
+                    <option value="all" {{ 'selected' if status_filter == 'all' }}>Barchasi</option>
+                    <option value="trial_active" {{ 'selected' if status_filter == 'trial_active' }}>Faol Sinov</option>
+                    <option value="trial_expired" {{ 'selected' if status_filter == 'trial_expired' }}>Sinov Tugagan</option>
+                    <option value="approved" {{ 'selected' if status_filter == 'approved' }}>Tasdiqlangan</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="search" class="form-label">Qidirish</label>
+                <input type="text" name="search" id="search" class="form-control" 
+                       placeholder="Foydalanuvchi nomi, email yoki ism..." value="{{ search }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">&nbsp;</label>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search me-1"></i>Qidirish
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Users Table -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">
+            Foydalanuvchilar Ro'yxati
+            <span class="badge bg-primary ms-2">{{ users.total }}</span>
+        </h5>
+    </div>
+    <div class="card-body">
+        {% if users.items %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Foydalanuvchi</th>
+                            <th>Email</th>
+                            <th>Ro'yxatdan O'tgan</th>
+                            <th>Sinov Holati</th>
+                            <th>Faol</th>
+                            <th>Harakatlar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users.items %}
+                        <tr>
+                            <td>
+                                <div>
+                                    <strong>{{ user.username }}</strong>
+                                    {% if user.full_name %}
+                                        <br><small class="text-muted">{{ user.full_name }}</small>
+                                    {% endif %}
+                                    {% if user.phone %}
+                                        <br><small class="text-muted">{{ user.phone }}</small>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                <small>{{ user.created_at.strftime('%d.%m.%Y %H:%M') }}</small>
+                            </td>
+                            <td>
+                                {% if user.admin_approved %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check me-1"></i>Tasdiqlangan
+                                    </span>
+                                    {% if user.access_granted_date %}
+                                        <br><small class="text-muted">{{ user.access_granted_date.strftime('%d.%m.%Y') }}</small>
+                                    {% endif %}
+                                {% elif user.is_trial_active %}
+                                    {% if user.trial_days_left > 0 %}
+                                        <span class="badge bg-info">
+                                            <i class="fas fa-clock me-1"></i>{{ user.trial_days_left }} kun qoldi
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-warning">
+                                            <i class="fas fa-exclamation-triangle me-1"></i>Kutish rejimi
+                                        </span>
+                                    {% endif %}
+                                    <br><small class="text-muted">Tugaydi: {{ user.trial_end_date.strftime('%d.%m.%Y') }}</small>
+                                {% else %}
+                                    <span class="badge bg-secondary">
+                                        <i class="fas fa-question me-1"></i>Noma'lum
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-{{ 'success' if user.is_active else 'danger' }}">
+                                    {{ 'Faol' if user.is_active else 'Faolsiz' }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    {% if not user.admin_approved and user.trial_days_left <= 0 %}
+                                        <!-- Grant Access Button -->
+                                        <button type="button" class="btn btn-success btn-sm" 
+                                                data-bs-toggle="modal" data-bs-target="#grantModal{{ user.id }}">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    {% endif %}
+                                    
+                                    {% if user.admin_approved %}
+                                        <!-- Revoke Access Button -->
+                                        <button type="button" class="btn btn-warning btn-sm" 
+                                                data-bs-toggle="modal" data-bs-target="#revokeModal{{ user.id }}">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    {% endif %}
+                                    
+                                    <!-- Toggle Active Button -->
+                                    <form method="POST" action="{{ url_for('toggle_user_active', user_id=user.id) }}" class="d-inline">
+                                        <button type="submit" class="btn btn-{{ 'danger' if user.is_active else 'success' }} btn-sm"
+                                                onclick="return confirm('{{ user.username }} ni {{ 'faolsizlashtirish' if user.is_active else 'faollashtirish' }}ni xohlaysizmi?')">
+                                            <i class="fas fa-{{ 'pause' if user.is_active else 'play' }}"></i>
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <!-- Grant Access Modal -->
+                                <div class="modal fade" id="grantModal{{ user.id }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Dostup Berish</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <form method="POST" action="{{ url_for('grant_user_access', user_id=user.id) }}">
+                                                <div class="modal-body">
+                                                    <p><strong>{{ user.username }}</strong> ga dostup berasizmi?</p>
+                                                    <div class="mb-3">
+                                                        <label for="reason{{ user.id }}" class="form-label">Sabab (ixtiyoriy)</label>
+                                                        <textarea name="reason" id="reason{{ user.id }}" class="form-control" rows="3"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                                                    <button type="submit" class="btn btn-success">Dostup berish</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Revoke Access Modal -->
+                                <div class="modal fade" id="revokeModal{{ user.id }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Dostupni Bekor Qilish</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <form method="POST" action="{{ url_for('revoke_user_access', user_id=user.id) }}">
+                                                <div class="modal-body">
+                                                    <p><strong>{{ user.username }}</strong> ning dostupini bekor qilasizmi?</p>
+                                                    <div class="mb-3">
+                                                        <label for="reasonRevoke{{ user.id }}" class="form-label">Sabab (ixtiyoriy)</label>
+                                                        <textarea name="reason" id="reasonRevoke{{ user.id }}" class="form-control" rows="3"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                                                    <button type="submit" class="btn btn-warning">Dostupni bekor qilish</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if users.pages > 1 %}
+                <nav aria-label="Sahifalar">
+                    <ul class="pagination justify-content-center">
+                        {% if users.has_prev %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin_users', page=users.prev_num, status=status_filter, search=search) }}">
+                                    Oldingi
+                                </a>
+                            </li>
+                        {% endif %}
+                        
+                        {% for page_num in users.iter_pages() %}
+                            {% if page_num %}
+                                {% if page_num != users.page %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for('admin_users', page=page_num, status=status_filter, search=search) }}">
+                                            {{ page_num }}
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ page_num }}</span>
+                                    </li>
+                                {% endif %}
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if users.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin_users', page=users.next_num, status=status_filter, search=search) }}">
+                                    Keyingi
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        {% else %}
+            <div class="text-center py-4">
+                <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">Foydalanuvchilar topilmadi</h5>
+                <p class="text-muted">Qidiruv mezonlaringizni o'zgartiring yoki filtrlanni tozalang.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block title %}Sahifa Topilmadi - 404{% endblock %}
+
+{% block main_class %}container-fluid{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-6 text-center">
+        <div class="error-page">
+            <!-- Error Icon -->
+            <div class="mb-4">
+                <i class="fas fa-search fa-5x text-muted opacity-50"></i>
+            </div>
+            
+            <!-- Error Code -->
+            <h1 class="display-1 fw-bold text-primary mb-3">404</h1>
+            
+            <!-- Error Message -->
+            <h2 class="h3 mb-4">Sahifa Topilmadi</h2>
+            
+            <p class="lead text-muted mb-4">
+                Kechirasiz, siz qidirayotgan sahifa mavjud emas yoki ko'chirilgan bo'lishi mumkin.
+            </p>
+            
+            <!-- Actions -->
+            <div class="d-flex flex-column flex-sm-row justify-content-center gap-3 mb-4">
+                <a href="{{ url_for('index') }}" class="btn btn-primary">
+                    <i class="fas fa-home me-2"></i>
+                    Bosh Sahifa
+                </a>
+                
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-tachometer-alt me-2"></i>
+                        Dashboard
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-sign-in-alt me-2"></i>
+                        Kirish
+                    </a>
+                {% endif %}
+                
+                <button class="btn btn-outline-secondary" onclick="history.back()">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    Orqaga
+                </button>
+            </div>
+            
+            <!-- Suggestions -->
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <i class="fas fa-lightbulb me-2 text-warning"></i>
+                        Quyidagilarni sinab ko'ring:
+                    </h6>
+                    <ul class="list-unstyled text-start mb-0">
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            URL manzilini to'g'ri yozganingizni tekshiring
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Brauzer sahifasini yangilang
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Bosh sahifaga qaytib, kerakli bo'limni toping
+                        </li>
+                        {% if current_user.is_authenticated %}
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Dashboard dan kerakli sahifaga o'ting
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Popular Links -->
+            {% if current_user.is_authenticated %}
+            <div class="mt-4">
+                <h6 class="text-muted mb-3">Mashhur sahifalar:</h6>
+                <div class="d-flex flex-wrap justify-content-center gap-2">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-sm btn-outline-info">
+                        <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                    </a>
+                    <a href="{{ url_for('create_bot') }}" class="btn btn-sm btn-outline-success">
+                        <i class="fas fa-plus me-1"></i>Yangi Bot
+                    </a>
+                    <a href="{{ url_for('profile') }}" class="btn btn-sm btn-outline-warning">
+                        <i class="fas fa-user me-1"></i>Profil
+                    </a>
+                    {% if current_user.is_admin %}
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-sm btn-outline-danger">
+                        <i class="fas fa-shield-alt me-1"></i>Admin
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+            <div class="mt-4">
+                <h6 class="text-muted mb-3">Boshlash uchun:</h6>
+                <div class="d-flex flex-wrap justify-content-center gap-2">
+                    <a href="{{ url_for('register') }}" class="btn btn-sm btn-outline-success">
+                        <i class="fas fa-user-plus me-1"></i>Ro'yxatdan O'tish
+                    </a>
+                    <a href="{{ url_for('login') }}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-sign-in-alt me-1"></i>Kirish
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Animated Background -->
+<div class="position-fixed top-0 start-0 w-100 h-100" style="z-index: -1; opacity: 0.05;">
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+        <div class="shape shape-5"></div>
+    </div>
+</div>
+
+<style>
+.floating-shapes {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+}
+
+.shape {
+    position: absolute;
+    background: linear-gradient(45deg, #007bff, #6f42c1);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+}
+
+.shape-1 {
+    width: 80px;
+    height: 80px;
+    top: 20%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.shape-2 {
+    width: 120px;
+    height: 120px;
+    top: 50%;
+    right: 15%;
+    animation-delay: 2s;
+}
+
+.shape-3 {
+    width: 60px;
+    height: 60px;
+    bottom: 30%;
+    left: 20%;
+    animation-delay: 4s;
+}
+
+.shape-4 {
+    width: 100px;
+    height: 100px;
+    top: 10%;
+    right: 30%;
+    animation-delay: 1s;
+}
+
+.shape-5 {
+    width: 70px;
+    height: 70px;
+    bottom: 20%;
+    right: 10%;
+    animation-delay: 3s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    33% {
+        transform: translateY(-30px) rotate(120deg);
+    }
+    66% {
+        transform: translateY(20px) rotate(240deg);
+    }
+}
+
+.error-page {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Add some interactive effects
+document.addEventListener('DOMContentLoaded', function() {
+    // Parallax effect for floating shapes
+    document.addEventListener('mousemove', function(e) {
+        const shapes = document.querySelectorAll('.shape');
+        const mouseX = e.clientX / window.innerWidth;
+        const mouseY = e.clientY / window.innerHeight;
+        
+        shapes.forEach((shape, index) => {
+            const speed = (index + 1) * 0.5;
+            const x = (mouseX - 0.5) * speed * 20;
+            const y = (mouseY - 0.5) * speed * 20;
+            
+            shape.style.transform = `translate(${x}px, ${y}px)`;
+        });
+    });
+    
+    // Add loading animation to buttons
+    document.querySelectorAll('.btn').forEach(button => {
+        button.addEventListener('click', function() {
+            if (this.getAttribute('href') && !this.getAttribute('href').startsWith('#')) {
+                this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Yuklanmoqda...';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

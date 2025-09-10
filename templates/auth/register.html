@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Ro'yxatdan O'tish - AI Chatbot Platform{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white text-center">
+                <h3 class="mb-0">
+                    <i class="fas fa-user-plus me-2"></i>
+                    Ro'yxatdan O'tish
+                </h3>
+                <p class="mb-0 mt-2">
+                    <small>3 kunlik bepul sinov bilan boshlang!</small>
+                </p>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="username" class="form-label">
+                                <i class="fas fa-user me-1"></i>
+                                Foydalanuvchi nomi *
+                            </label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">
+                                <i class="fas fa-envelope me-1"></i>
+                                Email *
+                            </label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="full_name" class="form-label">
+                            <i class="fas fa-id-card me-1"></i>
+                            To'liq ism
+                        </label>
+                        <input type="text" class="form-control" id="full_name" name="full_name">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">
+                            <i class="fas fa-phone me-1"></i>
+                            Telefon raqam
+                        </label>
+                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="+998 90 123 45 67">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label">
+                            <i class="fas fa-lock me-1"></i>
+                            Parol *
+                        </label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                        <div class="form-text">Kamida 6 ta belgi bo'lishi kerak</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="terms" required>
+                            <label class="form-check-label" for="terms">
+                                Foydalanish shartlari va maxfiylik siyosatiga roziman
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-rocket me-2"></i>
+                            3 Kunlik Sinov Boshlash
+                        </button>
+                    </div>
+                </form>
+                
+                <hr>
+                
+                <div class="text-center">
+                    <p class="mb-2">Hisobingiz bormi?</p>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-sign-in-alt me-2"></i>
+                        Tizimga kirish
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Benefits info -->
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="text-center">
+                    <i class="fas fa-gift fa-2x text-success mb-2"></i>
+                    <h6>3 Kun Bepul</h6>
+                    <small class="text-muted">To'lov talab qilinmaydi</small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center">
+                    <i class="fas fa-robot fa-2x text-primary mb-2"></i>
+                    <h6>AI Chatbot</h6>
+                    <small class="text-muted">Aqlli javoblar</small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center">
+                    <i class="fas fa-globe fa-2x text-info mb-2"></i>
+                    <h6>3 Til</h6>
+                    <small class="text-muted">O'zbek, Rus, Ingliz</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

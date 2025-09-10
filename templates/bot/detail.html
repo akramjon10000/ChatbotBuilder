@@ -1,0 +1,524 @@
+{% extends "base.html" %}
+
+{% block title %}{{ bot.name }} - Tafsilotlar{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <!-- Bot Header -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0">
+                            <i class="fas fa-robot me-2"></i>
+                            {{ bot.name }}
+                        </h3>
+                        <p class="mb-0 mt-2">{{ bot.description or "Tavsif kiritilmagan" }}</p>
+                    </div>
+                    <div>
+                        <span class="badge bg-{{ 'success' if bot.is_active else 'danger' }} fs-6">
+                            {{ 'Faol' if bot.is_active else 'Faolsiz' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-2">
+                <a href="{{ url_for('bot_chat', bot_id=bot.id) }}" class="btn btn-primary w-100">
+                    <i class="fas fa-comments me-2"></i>
+                    Suhbat Boshlash
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
+                <button class="btn btn-outline-success w-100" data-bs-toggle="modal" data-bs-target="#platformModal">
+                    <i class="fas fa-share-alt me-2"></i>
+                    Platformalar
+                </button>
+            </div>
+            <div class="col-md-3 mb-2">
+                <button class="btn btn-outline-info w-100" data-bs-toggle="modal" data-bs-target="#editModal">
+                    <i class="fas fa-edit me-2"></i>
+                    Tahrirlash
+                </button>
+            </div>
+            <div class="col-md-3 mb-2">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary w-100">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    Orqaga
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Bot Information -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Bot Ma'lumotlari
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td><strong>Nom:</strong></td>
+                                <td>{{ bot.name }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tavsif:</strong></td>
+                                <td>{{ bot.description or "Tavsif yo'q" }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tillar:</strong></td>
+                                <td>
+                                    {% for lang in bot.languages.split(',') %}
+                                        <span class="badge bg-secondary me-1">
+                                            {% if lang.strip() == 'uz' %}O'zbek
+                                            {% elif lang.strip() == 'ru' %}Русский
+                                            {% else %}English{% endif %}
+                                        </span>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Yaratilgan:</strong></td>
+                                <td>{{ bot.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Oxirgi yangilangan:</strong></td>
+                                <td>{{ bot.updated_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kunlik limit:</strong></td>
+                                <td>{{ bot.max_daily_messages }} xabar</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Platform Integrations -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-share-alt me-2"></i>
+                            Platform Integratsiyalari
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-4 mb-3">
+                                <div class="border rounded p-3 {{ 'bg-light' if bot.telegram_token else '' }}">
+                                    <i class="fab fa-telegram fa-2x {{ 'text-info' if bot.telegram_token else 'text-muted' }} mb-2"></i>
+                                    <br>
+                                    <small class="fw-bold">Telegram</small>
+                                    <br>
+                                    <span class="badge bg-{{ 'success' if bot.telegram_token else 'secondary' }}">
+                                        {{ 'Ulangan' if bot.telegram_token else 'Ulanmagan' }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-4 mb-3">
+                                <div class="border rounded p-3 {{ 'bg-light' if bot.whatsapp_token else '' }}">
+                                    <i class="fab fa-whatsapp fa-2x {{ 'text-success' if bot.whatsapp_token else 'text-muted' }} mb-2"></i>
+                                    <br>
+                                    <small class="fw-bold">WhatsApp</small>
+                                    <br>
+                                    <span class="badge bg-{{ 'success' if bot.whatsapp_token else 'secondary' }}">
+                                        {{ 'Ulangan' if bot.whatsapp_token else 'Ulanmagan' }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-4 mb-3">
+                                <div class="border rounded p-3 {{ 'bg-light' if bot.instagram_token else '' }}">
+                                    <i class="fab fa-instagram fa-2x {{ 'text-danger' if bot.instagram_token else 'text-muted' }} mb-2"></i>
+                                    <br>
+                                    <small class="fw-bold">Instagram</small>
+                                    <br>
+                                    <span class="badge bg-{{ 'success' if bot.instagram_token else 'secondary' }}">
+                                        {{ 'Ulangan' if bot.instagram_token else 'Ulanmagan' }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#platformModal">
+                                <i class="fas fa-cog me-1"></i>Sozlash
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Instructions -->
+        {% if bot.system_prompt %}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-brain me-2"></i>
+                            Tizim Ko'rsatmalari
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="bg-light p-3 rounded">
+                            {{ bot.system_prompt }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Knowledge Base -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-database me-2"></i>
+                            Bilim Bazasi
+                            <span class="badge bg-primary ms-2">{{ knowledge_files|length }}</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if knowledge_files %}
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Fayl nomi</th>
+                                            <th>Turi</th>
+                                            <th>Hajmi</th>
+                                            <th>Yuklangan</th>
+                                            <th>Harakat</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for kb in knowledge_files %}
+                                        <tr>
+                                            <td>
+                                                <i class="fas fa-file-text me-1"></i>
+                                                {{ kb.original_filename }}
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-info">{{ kb.file_type }}</span>
+                                            </td>
+                                            <td>
+                                                <small>{{ "%.1f"|format(kb.file_size / 1024) }} KB</small>
+                                            </td>
+                                            <td>
+                                                <small>{{ kb.created_at.strftime('%d.%m.%Y') }}</small>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-outline-danger btn-sm" 
+                                                        onclick="deleteKnowledge({{ kb.id }})">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-3">
+                                <i class="fas fa-database fa-2x text-muted mb-2"></i>
+                                <p class="text-muted mb-0">Bilim bazasi fayllari yo'q</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">Yangi Fayl Yuklash</h6>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('upload_knowledge', bot_id=bot.id) }}" 
+                              enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="knowledgeFile" class="form-label">Fayl tanlang</label>
+                                <input type="file" class="form-control" id="knowledgeFile" name="file" 
+                                       accept=".txt,.pdf,.doc,.docx,.json,.csv" required>
+                                <div class="form-text">
+                                    Qo'llab-quvvatlanadigan formatlar: TXT, PDF, DOC, DOCX, JSON, CSV
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-upload me-1"></i>Yuklash
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conversations -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-comments me-2"></i>
+                            So'nggi Suhbatlar
+                            <span class="badge bg-primary ms-2">{{ conversations|length }}</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if conversations %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Platform</th>
+                                            <th>Foydalanuvchi</th>
+                                            <th>Til</th>
+                                            <th>Xabarlar</th>
+                                            <th>Oxirgi faollik</th>
+                                            <th>Holat</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for conv in conversations %}
+                                        <tr>
+                                            <td>
+                                                {% if conv.platform == 'telegram' %}
+                                                    <i class="fab fa-telegram text-info me-1"></i>Telegram
+                                                {% elif conv.platform == 'whatsapp' %}
+                                                    <i class="fab fa-whatsapp text-success me-1"></i>WhatsApp
+                                                {% elif conv.platform == 'instagram' %}
+                                                    <i class="fab fa-instagram text-danger me-1"></i>Instagram
+                                                {% else %}
+                                                    <i class="fas fa-globe text-primary me-1"></i>Web
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ conv.platform_username or conv.platform_user_id }}</td>
+                                            <td>
+                                                <span class="badge bg-secondary">
+                                                    {% if conv.language == 'uz' %}O'zbek
+                                                    {% elif conv.language == 'ru' %}Русский
+                                                    {% else %}English{% endif %}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-info">{{ conv.messages|length }}</span>
+                                            </td>
+                                            <td>
+                                                <small>{{ conv.updated_at.strftime('%d.%m.%Y %H:%M') }}</small>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-{{ 'success' if conv.is_active else 'secondary' }}">
+                                                    {{ 'Faol' if conv.is_active else 'Faolsiz' }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                                <h6 class="text-muted">Hali suhbatlar yo'q</h6>
+                                <p class="text-muted">Bot bilan birinchi suhbatni boshlash uchun "Suhbat Boshlash" tugmasini bosing.</p>
+                                <a href="{{ url_for('bot_chat', bot_id=bot.id) }}" class="btn btn-primary">
+                                    <i class="fas fa-comments me-1"></i>Suhbat Boshlash
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Bot Modal -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Bot Tahrirlash</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('bot_detail', bot_id=bot.id) }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="editName" class="form-label">Bot Nomi</label>
+                        <input type="text" class="form-control" id="editName" name="name" value="{{ bot.name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDescription" class="form-label">Tavsif</label>
+                        <textarea class="form-control" id="editDescription" name="description" rows="3">{{ bot.description or '' }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editSystemPrompt" class="form-label">Tizim Ko'rsatmalari</label>
+                        <textarea class="form-control" id="editSystemPrompt" name="system_prompt" rows="5">{{ bot.system_prompt or '' }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tillar</label>
+                        <div class="row">
+                            {% set selected_languages = bot.languages.split(',') %}
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="languages" value="uz" 
+                                           id="editLangUz" {% if 'uz' in selected_languages %}checked{% endif %}>
+                                    <label class="form-check-label" for="editLangUz">O'zbek</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="languages" value="ru" 
+                                           id="editLangRu" {% if 'ru' in selected_languages %}checked{% endif %}>
+                                    <label class="form-check-label" for="editLangRu">Русский</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="languages" value="en" 
+                                           id="editLangEn" {% if 'en' in selected_languages %}checked{% endif %}>
+                                    <label class="form-check-label" for="editLangEn">English</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDailyLimit" class="form-label">Kunlik Xabarlar Limiti</label>
+                        <input type="number" class="form-control" id="editDailyLimit" name="max_daily_messages" 
+                               value="{{ bot.max_daily_messages }}" min="10" max="10000">
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="editIsActive" name="is_active" 
+                               {% if bot.is_active %}checked{% endif %}>
+                        <label class="form-check-label" for="editIsActive">Bot faol</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Platform Integration Modal -->
+<div class="modal fade" id="platformModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Platform Integratsiyalari</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Platform integratsiyalari orqali botingizni Telegram, WhatsApp va Instagram da ishlatishingiz mumkin.
+                </div>
+                
+                <!-- Telegram Integration -->
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="fab fa-telegram me-2 text-info"></i>
+                            Telegram Bot
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('bot_detail', bot_id=bot.id) }}">
+                            <input type="hidden" name="platform" value="telegram">
+                            <div class="mb-3">
+                                <label for="telegramToken" class="form-label">Bot Token</label>
+                                <input type="text" class="form-control" id="telegramToken" name="telegram_token" 
+                                       value="{{ bot.telegram_token or '' }}" placeholder="1234567890:ABCdefGHijklMNop...">
+                                <div class="form-text">
+                                    @BotFather dan olingan bot tokenini kiriting
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-info btn-sm">
+                                <i class="fas fa-save me-1"></i>Saqlash
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- WhatsApp Integration -->
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="fab fa-whatsapp me-2 text-success"></i>
+                            WhatsApp Business
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('bot_detail', bot_id=bot.id) }}">
+                            <input type="hidden" name="platform" value="whatsapp">
+                            <div class="mb-3">
+                                <label for="whatsappToken" class="form-label">Access Token</label>
+                                <input type="text" class="form-control" id="whatsappToken" name="whatsapp_token" 
+                                       value="{{ bot.whatsapp_token or '' }}" placeholder="EAABxyz...">
+                                <div class="form-text">
+                                    WhatsApp Business API tokenini kiriting
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-sm">
+                                <i class="fas fa-save me-1"></i>Saqlash
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Instagram Integration -->
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="fab fa-instagram me-2 text-danger"></i>
+                            Instagram Business
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('bot_detail', bot_id=bot.id) }}">
+                            <input type="hidden" name="platform" value="instagram">
+                            <div class="mb-3">
+                                <label for="instagramToken" class="form-label">Page Access Token</label>
+                                <input type="text" class="form-control" id="instagramToken" name="instagram_token" 
+                                       value="{{ bot.instagram_token or '' }}" placeholder="EAABxyz...">
+                                <div class="form-text">
+                                    Instagram Business API tokenini kiriting
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="fas fa-save me-1"></i>Saqlash
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yopish</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function deleteKnowledge(kbId) {
+    if (confirm('Bu faylni o\'chirishni xohlaysizmi?')) {
+        // This would need to be implemented as a separate endpoint
+        alert('Fayl o\'chirish funksiyasi ishlab chiqilmoqda...');
+    }
+}
+</script>
+{% endblock %}

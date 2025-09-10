@@ -1,0 +1,393 @@
+# Uzbek translations for AI Chatbot Platform
+# Copyright (C) 2024
+# This file is distributed under the same license as the AI Chatbot Platform package.
+#
+
+msgid ""
+msgstr ""
+"Project-Id-Version: AI Chatbot Platform 1.0\n"
+"Report-Msgid-Bugs-To: support@chatbot.uz\n"
+"POT-Creation-Date: 2024-01-01 12:00+0000\n"
+"PO-Revision-Date: 2024-01-01 12:00+0000\n"
+"Last-Translator: AI Chatbot Platform Team\n"
+"Language: uz\n"
+"Language-Team: uz <support@chatbot.uz>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.12.1\n"
+
+# Navigation
+msgid "Home"
+msgstr "Bosh sahifa"
+
+msgid "Dashboard"
+msgstr "Boshqaruv paneli"
+
+msgid "Admin Panel"
+msgstr "Admin panel"
+
+msgid "Login"
+msgstr "Kirish"
+
+msgid "Register"
+msgstr "Ro'yxatdan o'tish"
+
+msgid "Logout"
+msgstr "Chiqish"
+
+msgid "Profile"
+msgstr "Profil"
+
+# Authentication
+msgid "Username"
+msgstr "Foydalanuvchi nomi"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Password"
+msgstr "Parol"
+
+msgid "Full Name"
+msgstr "To'liq ism"
+
+msgid "Phone"
+msgstr "Telefon"
+
+msgid "Sign In"
+msgstr "Tizimga kirish"
+
+msgid "Sign Up"
+msgstr "Ro'yxatdan o'tish"
+
+msgid "Forgot Password?"
+msgstr "Parolni unutdingizmi?"
+
+# Trial System
+msgid "Free Trial"
+msgstr "Bepul sinov"
+
+msgid "Trial Period"
+msgstr "Sinov muddati"
+
+msgid "Days Left"
+msgstr "Kun qoldi"
+
+msgid "Trial Expired"
+msgstr "Sinov tugagan"
+
+msgid "Admin Approval Required"
+msgstr "Admin ruxsati talab qilinadi"
+
+msgid "Waiting for Approval"
+msgstr "Ruxsat kutilmoqda"
+
+msgid "Approved"
+msgstr "Tasdiqlangan"
+
+# Chatbots
+msgid "Chatbot"
+msgstr "Chatbot"
+
+msgid "Create Chatbot"
+msgstr "Chatbot yaratish"
+
+msgid "Bot Name"
+msgstr "Bot nomi"
+
+msgid "Description"
+msgstr "Tavsif"
+
+msgid "System Instructions"
+msgstr "Tizim ko'rsatmalari"
+
+msgid "Languages"
+msgstr "Tillar"
+
+msgid "Active"
+msgstr "Faol"
+
+msgid "Inactive"
+msgstr "Faolsiz"
+
+# Chat
+msgid "Chat"
+msgstr "Suhbat"
+
+msgid "Start Chat"
+msgstr "Suhbat boshlash"
+
+msgid "Send Message"
+msgstr "Xabar jo'natish"
+
+msgid "Type a message..."
+msgstr "Xabar yozing..."
+
+msgid "Conversation"
+msgstr "Suhbat"
+
+msgid "Messages"
+msgstr "Xabarlar"
+
+# Platforms
+msgid "Telegram"
+msgstr "Telegram"
+
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+msgid "Instagram"
+msgstr "Instagram"
+
+msgid "Platform Integration"
+msgstr "Platform integratsiyasi"
+
+# Admin
+msgid "Users"
+msgstr "Foydalanuvchilar"
+
+msgid "Grant Access"
+msgstr "Dostup berish"
+
+msgid "Revoke Access"
+msgstr "Dostupni bekor qilish"
+
+msgid "Actions History"
+msgstr "Harakatlar tarixi"
+
+msgid "Statistics"
+msgstr "Statistika"
+
+msgid "Settings"
+msgstr "Sozlamalar"
+
+# Status Messages
+msgid "Success"
+msgstr "Muvaffaqiyat"
+
+msgid "Error"
+msgstr "Xatolik"
+
+msgid "Warning"
+msgstr "Ogohlantirish"
+
+msgid "Info"
+msgstr "Ma'lumot"
+
+msgid "Loading..."
+msgstr "Yuklanmoqda..."
+
+msgid "Saving..."
+msgstr "Saqlanmoqda..."
+
+msgid "Processing..."
+msgstr "Qayta ishlanmoqda..."
+
+# Common Actions
+msgid "Save"
+msgstr "Saqlash"
+
+msgid "Cancel"
+msgstr "Bekor qilish"
+
+msgid "Delete"
+msgstr "O'chirish"
+
+msgid "Edit"
+msgstr "Tahrirlash"
+
+msgid "View"
+msgstr "Ko'rish"
+
+msgid "Create"
+msgstr "Yaratish"
+
+msgid "Update"
+msgstr "Yangilash"
+
+msgid "Search"
+msgstr "Qidirish"
+
+msgid "Filter"
+msgstr "Filtrlash"
+
+msgid "Export"
+msgstr "Eksport"
+
+msgid "Import"
+msgstr "Import"
+
+# Forms
+msgid "Required field"
+msgstr "Majburiy maydon"
+
+msgid "Invalid email"
+msgstr "Noto'g'ri email"
+
+msgid "Password too short"
+msgstr "Parol juda qisqa"
+
+msgid "Passwords do not match"
+msgstr "Parollar mos kelmaydi"
+
+msgid "Invalid phone number"
+msgstr "Noto'g'ri telefon raqam"
+
+# Time and Date
+msgid "Today"
+msgstr "Bugun"
+
+msgid "Yesterday"
+msgstr "Kecha"
+
+msgid "This week"
+msgstr "Bu hafta"
+
+msgid "This month"
+msgstr "Bu oy"
+
+msgid "Last month"
+msgstr "O'tgan oy"
+
+msgid "Date"
+msgstr "Sana"
+
+msgid "Time"
+msgstr "Vaqt"
+
+# File Upload
+msgid "Upload File"
+msgstr "Fayl yuklash"
+
+msgid "Choose File"
+msgstr "Fayl tanlash"
+
+msgid "File uploaded successfully"
+msgstr "Fayl muvaffaqiyatli yuklandi"
+
+msgid "File upload failed"
+msgstr "Fayl yuklashda xatolik"
+
+msgid "Invalid file type"
+msgstr "Noto'g'ri fayl turi"
+
+msgid "File too large"
+msgstr "Fayl juda katta"
+
+# Knowledge Base
+msgid "Knowledge Base"
+msgstr "Bilim bazasi"
+
+msgid "Upload Knowledge"
+msgstr "Bilim yuklash"
+
+msgid "Documents"
+msgstr "Hujjatlar"
+
+msgid "Text Files"
+msgstr "Matn fayllari"
+
+# Notifications
+msgid "New message received"
+msgstr "Yangi xabar keldi"
+
+msgid "User registered"
+msgstr "Foydalanuvchi ro'yxatdan o'tdi"
+
+msgid "Trial expiring soon"
+msgstr "Sinov muddati tugaydi"
+
+msgid "Access granted"
+msgstr "Dostup berildi"
+
+msgid "Access revoked"
+msgstr "Dostup bekor qilindi"
+
+# Error Messages
+msgid "Page not found"
+msgstr "Sahifa topilmadi"
+
+msgid "Access denied"
+msgstr "Dostup rad etildi"
+
+msgid "Internal server error"
+msgstr "Ichki server xatoligi"
+
+msgid "Network error"
+msgstr "Tarmoq xatoligi"
+
+msgid "Timeout error"
+msgstr "Vaqt tugashi xatoligi"
+
+# AI Messages
+msgid "AI is typing..."
+msgstr "AI yozmoqda..."
+
+msgid "AI response generated"
+msgstr "AI javobi yaratildi"
+
+msgid "Failed to generate response"
+msgstr "Javob yaratishda xatolik"
+
+msgid "Language detected"
+msgstr "Til aniqlandi"
+
+# Plurals (Uzbek doesn't have complex plurals, but keeping for consistency)
+msgid "1 user"
+msgid_plural "%d users"
+msgstr[0] "%d foydalanuvchi"
+
+msgid "1 message"
+msgid_plural "%d messages"
+msgstr[0] "%d xabar"
+
+msgid "1 day"
+msgid_plural "%d days"
+msgstr[0] "%d kun"
+
+msgid "1 bot"
+msgid_plural "%d bots"
+msgstr[0] "%d bot"
+
+# Help and Instructions
+msgid "Help"
+msgstr "Yordam"
+
+msgid "Instructions"
+msgstr "Ko'rsatmalar"
+
+msgid "Tutorial"
+msgstr "Qo'llanma"
+
+msgid "FAQ"
+msgstr "Tez-tez beriladigan savollar"
+
+msgid "Contact Support"
+msgstr "Yordam xizmatiga murojaat"
+
+msgid "Documentation"
+msgstr "Hujjatlar"
+
+# API and Integration
+msgid "API Key"
+msgstr "API kalit"
+
+msgid "Webhook URL"
+msgstr "Webhook URL"
+
+msgid "Integration Settings"
+msgstr "Integratsiya sozlamalari"
+
+msgid "Connection Status"
+msgstr "Ulanish holati"
+
+msgid "Connected"
+msgstr "Ulangan"
+
+msgid "Disconnected"
+msgstr "Ulanmagan"
+
+msgid "Test Connection"
+msgstr "Ulanishni sinash"

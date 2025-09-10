@@ -1,0 +1,401 @@
+# Russian translations for AI Chatbot Platform
+# Copyright (C) 2024
+# This file is distributed under the same license as the AI Chatbot Platform package.
+#
+
+msgid ""
+msgstr ""
+"Project-Id-Version: AI Chatbot Platform 1.0\n"
+"Report-Msgid-Bugs-To: support@chatbot.uz\n"
+"POT-Creation-Date: 2024-01-01 12:00+0000\n"
+"PO-Revision-Date: 2024-01-01 12:00+0000\n"
+"Last-Translator: AI Chatbot Platform Team\n"
+"Language: ru\n"
+"Language-Team: ru <support@chatbot.uz>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.12.1\n"
+
+# Navigation
+msgid "Home"
+msgstr "Главная"
+
+msgid "Dashboard"
+msgstr "Панель управления"
+
+msgid "Admin Panel"
+msgstr "Админ панель"
+
+msgid "Login"
+msgstr "Вход"
+
+msgid "Register"
+msgstr "Регистрация"
+
+msgid "Logout"
+msgstr "Выход"
+
+msgid "Profile"
+msgstr "Профиль"
+
+# Authentication
+msgid "Username"
+msgstr "Имя пользователя"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Password"
+msgstr "Пароль"
+
+msgid "Full Name"
+msgstr "Полное имя"
+
+msgid "Phone"
+msgstr "Телефон"
+
+msgid "Sign In"
+msgstr "Войти в систему"
+
+msgid "Sign Up"
+msgstr "Зарегистрироваться"
+
+msgid "Forgot Password?"
+msgstr "Забыли пароль?"
+
+# Trial System
+msgid "Free Trial"
+msgstr "Бесплатная пробная версия"
+
+msgid "Trial Period"
+msgstr "Пробный период"
+
+msgid "Days Left"
+msgstr "Дней осталось"
+
+msgid "Trial Expired"
+msgstr "Пробный период истек"
+
+msgid "Admin Approval Required"
+msgstr "Требуется одобрение администратора"
+
+msgid "Waiting for Approval"
+msgstr "Ожидание одобрения"
+
+msgid "Approved"
+msgstr "Одобрено"
+
+# Chatbots
+msgid "Chatbot"
+msgstr "Чатбот"
+
+msgid "Create Chatbot"
+msgstr "Создать чатбота"
+
+msgid "Bot Name"
+msgstr "Имя бота"
+
+msgid "Description"
+msgstr "Описание"
+
+msgid "System Instructions"
+msgstr "Системные инструкции"
+
+msgid "Languages"
+msgstr "Языки"
+
+msgid "Active"
+msgstr "Активный"
+
+msgid "Inactive"
+msgstr "Неактивный"
+
+# Chat
+msgid "Chat"
+msgstr "Чат"
+
+msgid "Start Chat"
+msgstr "Начать чат"
+
+msgid "Send Message"
+msgstr "Отправить сообщение"
+
+msgid "Type a message..."
+msgstr "Введите сообщение..."
+
+msgid "Conversation"
+msgstr "Разговор"
+
+msgid "Messages"
+msgstr "Сообщения"
+
+# Platforms
+msgid "Telegram"
+msgstr "Telegram"
+
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+msgid "Instagram"
+msgstr "Instagram"
+
+msgid "Platform Integration"
+msgstr "Интеграция с платформами"
+
+# Admin
+msgid "Users"
+msgstr "Пользователи"
+
+msgid "Grant Access"
+msgstr "Предоставить доступ"
+
+msgid "Revoke Access"
+msgstr "Отозвать доступ"
+
+msgid "Actions History"
+msgstr "История действий"
+
+msgid "Statistics"
+msgstr "Статистика"
+
+msgid "Settings"
+msgstr "Настройки"
+
+# Status Messages
+msgid "Success"
+msgstr "Успех"
+
+msgid "Error"
+msgstr "Ошибка"
+
+msgid "Warning"
+msgstr "Предупреждение"
+
+msgid "Info"
+msgstr "Информация"
+
+msgid "Loading..."
+msgstr "Загрузка..."
+
+msgid "Saving..."
+msgstr "Сохранение..."
+
+msgid "Processing..."
+msgstr "Обработка..."
+
+# Common Actions
+msgid "Save"
+msgstr "Сохранить"
+
+msgid "Cancel"
+msgstr "Отмена"
+
+msgid "Delete"
+msgstr "Удалить"
+
+msgid "Edit"
+msgstr "Редактировать"
+
+msgid "View"
+msgstr "Просмотр"
+
+msgid "Create"
+msgstr "Создать"
+
+msgid "Update"
+msgstr "Обновить"
+
+msgid "Search"
+msgstr "Поиск"
+
+msgid "Filter"
+msgstr "Фильтр"
+
+msgid "Export"
+msgstr "Экспорт"
+
+msgid "Import"
+msgstr "Импорт"
+
+# Forms
+msgid "Required field"
+msgstr "Обязательное поле"
+
+msgid "Invalid email"
+msgstr "Неверный email"
+
+msgid "Password too short"
+msgstr "Пароль слишком короткий"
+
+msgid "Passwords do not match"
+msgstr "Пароли не совпадают"
+
+msgid "Invalid phone number"
+msgstr "Неверный номер телефона"
+
+# Time and Date
+msgid "Today"
+msgstr "Сегодня"
+
+msgid "Yesterday"
+msgstr "Вчера"
+
+msgid "This week"
+msgstr "На этой неделе"
+
+msgid "This month"
+msgstr "В этом месяце"
+
+msgid "Last month"
+msgstr "В прошлом месяце"
+
+msgid "Date"
+msgstr "Дата"
+
+msgid "Time"
+msgstr "Время"
+
+# File Upload
+msgid "Upload File"
+msgstr "Загрузить файл"
+
+msgid "Choose File"
+msgstr "Выбрать файл"
+
+msgid "File uploaded successfully"
+msgstr "Файл успешно загружен"
+
+msgid "File upload failed"
+msgstr "Ошибка загрузки файла"
+
+msgid "Invalid file type"
+msgstr "Неверный тип файла"
+
+msgid "File too large"
+msgstr "Файл слишком большой"
+
+# Knowledge Base
+msgid "Knowledge Base"
+msgstr "База знаний"
+
+msgid "Upload Knowledge"
+msgstr "Загрузить знания"
+
+msgid "Documents"
+msgstr "Документы"
+
+msgid "Text Files"
+msgstr "Текстовые файлы"
+
+# Notifications
+msgid "New message received"
+msgstr "Получено новое сообщение"
+
+msgid "User registered"
+msgstr "Пользователь зарегистрирован"
+
+msgid "Trial expiring soon"
+msgstr "Пробный период скоро истекает"
+
+msgid "Access granted"
+msgstr "Доступ предоставлен"
+
+msgid "Access revoked"
+msgstr "Доступ отозван"
+
+# Error Messages
+msgid "Page not found"
+msgstr "Страница не найдена"
+
+msgid "Access denied"
+msgstr "Доступ запрещен"
+
+msgid "Internal server error"
+msgstr "Внутренняя ошибка сервера"
+
+msgid "Network error"
+msgstr "Сетевая ошибка"
+
+msgid "Timeout error"
+msgstr "Ошибка тайм-аута"
+
+# AI Messages
+msgid "AI is typing..."
+msgstr "ИИ печатает..."
+
+msgid "AI response generated"
+msgstr "Ответ ИИ сгенерирован"
+
+msgid "Failed to generate response"
+msgstr "Не удалось сгенерировать ответ"
+
+msgid "Language detected"
+msgstr "Язык определен"
+
+# Plurals
+msgid "1 user"
+msgid_plural "%d users"
+msgstr[0] "%d пользователь"
+msgstr[1] "%d пользователя"
+msgstr[2] "%d пользователей"
+
+msgid "1 message"
+msgid_plural "%d messages"
+msgstr[0] "%d сообщение"
+msgstr[1] "%d сообщения"
+msgstr[2] "%d сообщений"
+
+msgid "1 day"
+msgid_plural "%d days"
+msgstr[0] "%d день"
+msgstr[1] "%d дня"
+msgstr[2] "%d дней"
+
+msgid "1 bot"
+msgid_plural "%d bots"
+msgstr[0] "%d бот"
+msgstr[1] "%d бота"
+msgstr[2] "%d ботов"
+
+# Help and Instructions
+msgid "Help"
+msgstr "Помощь"
+
+msgid "Instructions"
+msgstr "Инструкции"
+
+msgid "Tutorial"
+msgstr "Учебник"
+
+msgid "FAQ"
+msgstr "Часто задаваемые вопросы"
+
+msgid "Contact Support"
+msgstr "Связаться с поддержкой"
+
+msgid "Documentation"
+msgstr "Документация"
+
+# API and Integration
+msgid "API Key"
+msgstr "API ключ"
+
+msgid "Webhook URL"
+msgstr "Webhook URL"
+
+msgid "Integration Settings"
+msgstr "Настройки интеграции"
+
+msgid "Connection Status"
+msgstr "Статус подключения"
+
+msgid "Connected"
+msgstr "Подключено"
+
+msgid "Disconnected"
+msgstr "Отключено"
+
+msgid "Test Connection"
+msgstr "Проверить подключение"

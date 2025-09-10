@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Tizimga Kirish - AI Chatbot Platform{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white text-center">
+                <h3 class="mb-0">
+                    <i class="fas fa-sign-in-alt me-2"></i>
+                    Tizimga Kirish
+                </h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">
+                            <i class="fas fa-user me-1"></i>
+                            Foydalanuvchi nomi
+                        </label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label">
+                            <i class="fas fa-lock me-1"></i>
+                            Parol
+                        </label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            Kirish
+                        </button>
+                    </div>
+                </form>
+                
+                <hr>
+                
+                <div class="text-center">
+                    <p class="mb-2">Hisobingiz yo'qmi?</p>
+                    <a href="{{ url_for('register') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-user-plus me-2"></i>
+                        Ro'yxatdan o'ting
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Demo credentials info -->
+        <div class="alert alert-info mt-3">
+            <h6><i class="fas fa-info-circle me-1"></i>Demo Uchun:</h6>
+            <p class="mb-0">
+                <strong>Admin:</strong> admin / admin123<br>
+                <small class="text-muted">Yoki yangi hisob yarating va 3 kunlik bepul sinab ko'ring!</small>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

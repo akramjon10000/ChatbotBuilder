@@ -1,0 +1,146 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Statistika - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center border-bottom mb-4 pb-3">
+    <h1 class="h2">
+        <i class="fas fa-chart-bar me-2"></i>
+        Tizim Statistikalari
+    </h1>
+</div>
+
+<!-- Charts Row -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Kunlik Yangi Foydalanuvchilar (30 kun)</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="dailyUsersChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Kunlik Xabarlar (30 kun)</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="dailyMessagesChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Summary Stats -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">So'nggi 30 Kun Xulosasi</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Sana</th>
+                                <th>Yangi Foydalanuvchilar</th>
+                                <th>Xabarlar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stat in daily_stats[-10:] %}
+                            <tr>
+                                <td>{{ stat.date.strftime('%d.%m.%Y') }}</td>
+                                <td>
+                                    <span class="badge bg-primary">{{ stat.new_users }}</span>
+                                </td>
+                                <td>
+                                    {% for msg_stat in message_stats %}
+                                        {% if msg_stat.date == stat.date %}
+                                            <span class="badge bg-info">{{ msg_stat.message_count }}</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Daily Users Chart
+const dailyUsersCtx = document.getElementById('dailyUsersChart').getContext('2d');
+const dailyUsersChart = new Chart(dailyUsersCtx, {
+    type: 'line',
+    data: {
+        labels: [
+            {% for stat in daily_stats %}
+                '{{ stat.date.strftime("%d.%m") }}'{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ],
+        datasets: [{
+            label: 'Yangi Foydalanuvchilar',
+            data: [
+                {% for stat in daily_stats %}
+                    {{ stat.new_users }}{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ],
+            borderColor: '#007bff',
+            backgroundColor: 'rgba(0, 123, 255, 0.1)',
+            fill: true,
+            tension: 0.1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+// Daily Messages Chart
+const dailyMessagesCtx = document.getElementById('dailyMessagesChart').getContext('2d');
+const dailyMessagesChart = new Chart(dailyMessagesCtx, {
+    type: 'bar',
+    data: {
+        labels: [
+            {% for stat in message_stats %}
+                '{{ stat.date.strftime("%d.%m") }}'{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ],
+        datasets: [{
+            label: 'Xabarlar',
+            data: [
+                {% for stat in message_stats %}
+                    {{ stat.message_count }}{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ],
+            backgroundColor: 'rgba(40, 167, 69, 0.8)',
+            borderColor: '#28a745',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

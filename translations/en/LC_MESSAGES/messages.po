@@ -1,0 +1,397 @@
+# English translations for AI Chatbot Platform
+# Copyright (C) 2024
+# This file is distributed under the same license as the AI Chatbot Platform package.
+#
+
+msgid ""
+msgstr ""
+"Project-Id-Version: AI Chatbot Platform 1.0\n"
+"Report-Msgid-Bugs-To: support@chatbot.uz\n"
+"POT-Creation-Date: 2024-01-01 12:00+0000\n"
+"PO-Revision-Date: 2024-01-01 12:00+0000\n"
+"Last-Translator: AI Chatbot Platform Team\n"
+"Language: en\n"
+"Language-Team: en <support@chatbot.uz>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.12.1\n"
+
+# Navigation
+msgid "Home"
+msgstr "Home"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Admin Panel"
+msgstr "Admin Panel"
+
+msgid "Login"
+msgstr "Login"
+
+msgid "Register"
+msgstr "Register"
+
+msgid "Logout"
+msgstr "Logout"
+
+msgid "Profile"
+msgstr "Profile"
+
+# Authentication
+msgid "Username"
+msgstr "Username"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Password"
+msgstr "Password"
+
+msgid "Full Name"
+msgstr "Full Name"
+
+msgid "Phone"
+msgstr "Phone"
+
+msgid "Sign In"
+msgstr "Sign In"
+
+msgid "Sign Up"
+msgstr "Sign Up"
+
+msgid "Forgot Password?"
+msgstr "Forgot Password?"
+
+# Trial System
+msgid "Free Trial"
+msgstr "Free Trial"
+
+msgid "Trial Period"
+msgstr "Trial Period"
+
+msgid "Days Left"
+msgstr "Days Left"
+
+msgid "Trial Expired"
+msgstr "Trial Expired"
+
+msgid "Admin Approval Required"
+msgstr "Admin Approval Required"
+
+msgid "Waiting for Approval"
+msgstr "Waiting for Approval"
+
+msgid "Approved"
+msgstr "Approved"
+
+# Chatbots
+msgid "Chatbot"
+msgstr "Chatbot"
+
+msgid "Create Chatbot"
+msgstr "Create Chatbot"
+
+msgid "Bot Name"
+msgstr "Bot Name"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "System Instructions"
+msgstr "System Instructions"
+
+msgid "Languages"
+msgstr "Languages"
+
+msgid "Active"
+msgstr "Active"
+
+msgid "Inactive"
+msgstr "Inactive"
+
+# Chat
+msgid "Chat"
+msgstr "Chat"
+
+msgid "Start Chat"
+msgstr "Start Chat"
+
+msgid "Send Message"
+msgstr "Send Message"
+
+msgid "Type a message..."
+msgstr "Type a message..."
+
+msgid "Conversation"
+msgstr "Conversation"
+
+msgid "Messages"
+msgstr "Messages"
+
+# Platforms
+msgid "Telegram"
+msgstr "Telegram"
+
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+msgid "Instagram"
+msgstr "Instagram"
+
+msgid "Platform Integration"
+msgstr "Platform Integration"
+
+# Admin
+msgid "Users"
+msgstr "Users"
+
+msgid "Grant Access"
+msgstr "Grant Access"
+
+msgid "Revoke Access"
+msgstr "Revoke Access"
+
+msgid "Actions History"
+msgstr "Actions History"
+
+msgid "Statistics"
+msgstr "Statistics"
+
+msgid "Settings"
+msgstr "Settings"
+
+# Status Messages
+msgid "Success"
+msgstr "Success"
+
+msgid "Error"
+msgstr "Error"
+
+msgid "Warning"
+msgstr "Warning"
+
+msgid "Info"
+msgstr "Info"
+
+msgid "Loading..."
+msgstr "Loading..."
+
+msgid "Saving..."
+msgstr "Saving..."
+
+msgid "Processing..."
+msgstr "Processing..."
+
+# Common Actions
+msgid "Save"
+msgstr "Save"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Delete"
+msgstr "Delete"
+
+msgid "Edit"
+msgstr "Edit"
+
+msgid "View"
+msgstr "View"
+
+msgid "Create"
+msgstr "Create"
+
+msgid "Update"
+msgstr "Update"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "Filter"
+msgstr "Filter"
+
+msgid "Export"
+msgstr "Export"
+
+msgid "Import"
+msgstr "Import"
+
+# Forms
+msgid "Required field"
+msgstr "Required field"
+
+msgid "Invalid email"
+msgstr "Invalid email"
+
+msgid "Password too short"
+msgstr "Password too short"
+
+msgid "Passwords do not match"
+msgstr "Passwords do not match"
+
+msgid "Invalid phone number"
+msgstr "Invalid phone number"
+
+# Time and Date
+msgid "Today"
+msgstr "Today"
+
+msgid "Yesterday"
+msgstr "Yesterday"
+
+msgid "This week"
+msgstr "This week"
+
+msgid "This month"
+msgstr "This month"
+
+msgid "Last month"
+msgstr "Last month"
+
+msgid "Date"
+msgstr "Date"
+
+msgid "Time"
+msgstr "Time"
+
+# File Upload
+msgid "Upload File"
+msgstr "Upload File"
+
+msgid "Choose File"
+msgstr "Choose File"
+
+msgid "File uploaded successfully"
+msgstr "File uploaded successfully"
+
+msgid "File upload failed"
+msgstr "File upload failed"
+
+msgid "Invalid file type"
+msgstr "Invalid file type"
+
+msgid "File too large"
+msgstr "File too large"
+
+# Knowledge Base
+msgid "Knowledge Base"
+msgstr "Knowledge Base"
+
+msgid "Upload Knowledge"
+msgstr "Upload Knowledge"
+
+msgid "Documents"
+msgstr "Documents"
+
+msgid "Text Files"
+msgstr "Text Files"
+
+# Notifications
+msgid "New message received"
+msgstr "New message received"
+
+msgid "User registered"
+msgstr "User registered"
+
+msgid "Trial expiring soon"
+msgstr "Trial expiring soon"
+
+msgid "Access granted"
+msgstr "Access granted"
+
+msgid "Access revoked"
+msgstr "Access revoked"
+
+# Error Messages
+msgid "Page not found"
+msgstr "Page not found"
+
+msgid "Access denied"
+msgstr "Access denied"
+
+msgid "Internal server error"
+msgstr "Internal server error"
+
+msgid "Network error"
+msgstr "Network error"
+
+msgid "Timeout error"
+msgstr "Timeout error"
+
+# AI Messages
+msgid "AI is typing..."
+msgstr "AI is typing..."
+
+msgid "AI response generated"
+msgstr "AI response generated"
+
+msgid "Failed to generate response"
+msgstr "Failed to generate response"
+
+msgid "Language detected"
+msgstr "Language detected"
+
+# Plurals
+msgid "1 user"
+msgid_plural "%d users"
+msgstr[0] "1 user"
+msgstr[1] "%d users"
+
+msgid "1 message"
+msgid_plural "%d messages"
+msgstr[0] "1 message"
+msgstr[1] "%d messages"
+
+msgid "1 day"
+msgid_plural "%d days"
+msgstr[0] "1 day"
+msgstr[1] "%d days"
+
+msgid "1 bot"
+msgid_plural "%d bots"
+msgstr[0] "1 bot"
+msgstr[1] "%d bots"
+
+# Help and Instructions
+msgid "Help"
+msgstr "Help"
+
+msgid "Instructions"
+msgstr "Instructions"
+
+msgid "Tutorial"
+msgstr "Tutorial"
+
+msgid "FAQ"
+msgstr "FAQ"
+
+msgid "Contact Support"
+msgstr "Contact Support"
+
+msgid "Documentation"
+msgstr "Documentation"
+
+# API and Integration
+msgid "API Key"
+msgstr "API Key"
+
+msgid "Webhook URL"
+msgstr "Webhook URL"
+
+msgid "Integration Settings"
+msgstr "Integration Settings"
+
+msgid "Connection Status"
+msgstr "Connection Status"
+
+msgid "Connected"
+msgstr "Connected"
+
+msgid "Disconnected"
+msgstr "Disconnected"
+
+msgid "Test Connection"
+msgstr "Test Connection"

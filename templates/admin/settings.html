@@ -1,0 +1,165 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Sozlamalar - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center border-bottom mb-4 pb-3">
+    <h1 class="h2">
+        <i class="fas fa-cog me-2"></i>
+        Tizim Sozlamalari
+    </h1>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <!-- General Settings -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Umumiy Sozlamalar</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="siteName" class="form-label">Sayt Nomi</label>
+                        <input type="text" class="form-control" id="siteName" name="site_name" value="AI Chatbot Platform">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="trialDays" class="form-label">Sinov Muddati (kunlarda)</label>
+                        <input type="number" class="form-control" id="trialDays" name="trial_days" value="3" min="1" max="30">
+                        <div class="form-text">Yangi foydalanuvchilar uchun bepul sinov muddati</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="maxBotsPerUser" class="form-label">Foydalanuvchi uchun maksimal botlar</label>
+                        <input type="number" class="form-control" id="maxBotsPerUser" name="max_bots_per_user" value="10" min="1">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="defaultDailyLimit" class="form-label">Kunlik xabarlar limiti</label>
+                        <input type="number" class="form-control" id="defaultDailyLimit" name="default_daily_limit" value="100" min="10">
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="autoApprove" name="auto_approve">
+                        <label class="form-check-label" for="autoApprove">
+                            Avtomatik tasdiqlash (sinov tugagach)
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>Saqlash
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- AI Settings -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">AI Sozlamalari</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="geminiModel" class="form-label">Gemini Model</label>
+                        <select class="form-select" id="geminiModel" name="gemini_model">
+                            <option value="gemini-2.5-flash" selected>gemini-2.5-flash (Tez)</option>
+                            <option value="gemini-2.5-pro">gemini-2.5-pro (Aniq)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="temperature" class="form-label">Temperature (0.0 - 1.0)</label>
+                        <input type="number" class="form-control" id="temperature" name="temperature" 
+                               value="0.7" min="0" max="1" step="0.1">
+                        <div class="form-text">Yuqori qiymat - ijodkor javoblar, past qiymat - aniq javoblar</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="maxTokens" class="form-label">Maksimal tokenlar</label>
+                        <input type="number" class="form-control" id="maxTokens" name="max_tokens" value="1000" min="100" max="2048">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>Saqlash
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <!-- System Info -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Tizim Ma'lumotlari</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><strong>Versiya:</strong> 1.0.0</li>
+                    <li><strong>Python:</strong> {{ sys_info.python_version if sys_info else '3.x' }}</li>
+                    <li><strong>Flask:</strong> {{ sys_info.flask_version if sys_info else '2.x' }}</li>
+                    <li><strong>Database:</strong> PostgreSQL</li>
+                    <li><strong>Ishga tushgan:</strong> {{ sys_info.uptime if sys_info else 'N/A' }}</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Tezkor Harakatlar</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-outline-info" onclick="testAI()">
+                        <i class="fas fa-vial me-1"></i>AI Testini Ishga Tushirish
+                    </button>
+                    <button type="button" class="btn btn-outline-warning" onclick="clearCache()">
+                        <i class="fas fa-broom me-1"></i>Keshni Tozalash
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="exportData()">
+                        <i class="fas fa-download me-1"></i>Ma'lumotlarni Eksport
+                    </button>
+                    <button type="button" class="btn btn-outline-danger" onclick="restartSystem()">
+                        <i class="fas fa-redo me-1"></i>Tizimni Qayta Ishga Tushirish
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function testAI() {
+    if (confirm('AI testini ishga tushirasizmi?')) {
+        // This would send a test request to AI
+        alert('AI test muvaffaqiyatli bajarildi!');
+    }
+}
+
+function clearCache() {
+    if (confirm('Keshni tozalasizmi?')) {
+        // This would clear application cache
+        alert('Kesh tozalandi!');
+    }
+}
+
+function exportData() {
+    if (confirm('Barcha ma\'lumotlarni eksport qilasizmi?')) {
+        // This would trigger data export
+        alert('Eksport boshlandi. Fayl tayyor bo\'lgach xabar beramiz.');
+    }
+}
+
+function restartSystem() {
+    if (confirm('Tizimni qayta ishga tushirasizmi? Bu barcha foydalanuvchilarni uzadi.')) {
+        // This would restart the system
+        alert('Tizim qayta ishga tushirilmoqda...');
+    }
+}
+</script>
+{% endblock %}

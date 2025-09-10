@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Yangi Chatbot Yaratish - AI Chatbot Platform{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">
+                    <i class="fas fa-robot me-2"></i>
+                    Yangi Chatbot Yaratish
+                </h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">
+                            <i class="fas fa-tag me-1"></i>
+                            Bot Nomi *
+                        </label>
+                        <input type="text" class="form-control" id="name" name="name" required
+                               placeholder="Masalan: Yordamchi Bot">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Tavsif
+                        </label>
+                        <textarea class="form-control" id="description" name="description" rows="3"
+                                  placeholder="Bot haqida qisqacha ma'lumot..."></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="system_prompt" class="form-label">
+                            <i class="fas fa-brain me-1"></i>
+                            Tizim Ko'rsatmalari
+                        </label>
+                        <textarea class="form-control" id="system_prompt" name="system_prompt" rows="5"
+                                  placeholder="Botga qanday javob berish kerakligini ko'rsating...
+
+Masalan:
+- Siz do'stona va yordamchi botsiz
+- Har doim halol va to'g'ri ma'lumot bering
+- Bilmasangiz, 'Bilmayman' deb javob bering
+- Qisqa va aniq javoblar bering"></textarea>
+                        <div class="form-text">
+                            Bu ko'rsatmalar botingizning xatti-harakatini belgilaydi. 
+                            Aniq va batafsil yozing.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-globe me-1"></i>
+                            Qo'llab-quvvatlanadigan Tillar
+                        </label>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="languages" 
+                                           value="uz" id="lang_uz" checked>
+                                    <label class="form-check-label" for="lang_uz">
+                                        O'zbek tili
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="languages" 
+                                           value="ru" id="lang_ru" checked>
+                                    <label class="form-check-label" for="lang_ru">
+                                        Rus tili
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="languages" 
+                                           value="en" id="lang_en" checked>
+                                    <label class="form-check-label" for="lang_en">
+                                        Ingliz tili
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-text">
+                            Bot avtomatik tilni aniqlaydi va tanlangan tillarda javob beradi.
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Bekor qilish
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i>Chatbot Yaratish
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Help Info -->
+        <div class="alert alert-info mt-4">
+            <h6><i class="fas fa-lightbulb me-1"></i>Maslahatlar:</h6>
+            <ul class="mb-0">
+                <li>Botga aniq va batafsil ko'rsatmalar bering</li>
+                <li>Qaysi sohada ishlashini ko'rsating (masalan: "Siz savdo yordamchisiz")</li>
+                <li>Qanday savollarni javob berishi kerakligini ayting</li>
+                <li>Taqiqlangan mavzularni belgilang</li>
+                <li>Botingizni yaratgach sinab ko'ring</li>
+            </ul>
+        </div>
+        
+        <!-- Examples -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="fas fa-lightbulb me-1"></i>
+                    Ko'rsatma Namunalari
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Savdo Yordamchisi:</h6>
+                        <small class="text-muted">
+                            "Siz do'kon yordamchisiz. Mijozlarga mahsulotlar haqida ma'lumot bering, 
+                            narxlarni aytishingiz mumkin, buyurtma berish jarayonini tushuntiring. 
+                            Har doim xushmuomala bo'ling."
+                        </small>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Ta'lim Yordamchisi:</h6>
+                        <small class="text-muted">
+                            "Siz talabalar uchun yordamchi botsiz. Dars mavzularini tushuntiring, 
+                            mashqlar bering, savollarni javoblarini izoh bilan bering. 
+                            Har doim sabr-toqatli bo'ling."
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

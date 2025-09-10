@@ -1,0 +1,324 @@
+{% extends "base.html" %}
+
+{% block title %}Bosh Sahifa - AI Chatbot Platform{% endblock %}
+
+{% block content %}
+<!-- Trial Status Alert -->
+{% if current_user.is_trial_active and current_user.trial_days_left <= 1 %}
+    <div class="alert alert-warning">
+        <h5><i class="fas fa-exclamation-triangle me-2"></i>Sinov Muddati Tugaydi!</h5>
+        <p class="mb-2">
+            Sizning bepul sinov muddatingiz {{ current_user.trial_days_left }} kun ichida tugaydi.
+            Davom etish uchun admin ruxsatini kutishingiz kerak.
+        </p>
+        <small class="text-muted">
+            Sinov tugagach, admin sizga ruxsat berguncha chatbotlaringiz ishlamaydi.
+        </small>
+    </div>
+{% elif current_user.admin_approved %}
+    <div class="alert alert-success">
+        <h5><i class="fas fa-check-circle me-2"></i>Tasdiqlangan Hisob</h5>
+        <p class="mb-0">Sizning hisobingiz admin tomonidan tasdiqlangan. Barcha xususiyatlardan foydalana olasiz!</p>
+    </div>
+{% endif %}
+
+<!-- Welcome Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="bg-primary text-white p-4 rounded">
+            <h2><i class="fas fa-user-circle me-2"></i>Xush kelibsiz, {{ current_user.full_name or current_user.username }}!</h2>
+            <p class="mb-0">AI chatbot platformasiga xush kelibsiz. Bu yerda o'z botlaringizni boshqarishingiz mumkin.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4>{{ bots|length }}</h4>
+                        <p class="mb-0">Chatbotlar</p>
+                    </div>
+                    <div>
+                        <i class="fas fa-robot fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4>{{ recent_conversations|length }}</h4>
+                        <p class="mb-0">Suhbatlar</p>
+                    </div>
+                    <div>
+                        <i class="fas fa-comments fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        {% if current_user.admin_approved %}
+                            <h4><i class="fas fa-infinity"></i></h4>
+                            <p class="mb-0">Cheksiz</p>
+                        {% else %}
+                            <h4>{{ trial_days_left }}</h4>
+                            <p class="mb-0">Kun qoldi</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <i class="fas fa-calendar fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        {% if current_user.admin_approved %}
+                            <h4><i class="fas fa-check"></i></h4>
+                            <p class="mb-0">Tasdiqlangan</p>
+                        {% else %}
+                            <h4><i class="fas fa-clock"></i></h4>
+                            <p class="mb-0">Sinov</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <i class="fas fa-user-check fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Tezkor Harakatlar</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('create_bot') }}" class="btn btn-primary w-100">
+                            <i class="fas fa-plus me-2"></i>
+                            Yangi Chatbot
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('profile') }}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-user-edit me-2"></i>
+                            Profilni Tahrirlash
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <button class="btn btn-outline-info w-100" data-bs-toggle="modal" data-bs-target="#helpModal">
+                            <i class="fas fa-question-circle me-2"></i>
+                            Yordam
+                        </button>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <button class="btn btn-outline-success w-100" onclick="testAI()">
+                            <i class="fas fa-vial me-2"></i>
+                            AI Sinash
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chatbots List -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-robot me-2"></i>Mening Chatbotlarim</h5>
+                <a href="{{ url_for('create_bot') }}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus me-1"></i>Yangi Bot
+                </a>
+            </div>
+            <div class="card-body">
+                {% if bots %}
+                    <div class="row">
+                        {% for bot in bots %}
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card border">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-robot me-1 text-primary"></i>
+                                        {{ bot.name }}
+                                    </h6>
+                                    <p class="card-text text-muted small">{{ bot.description[:50] }}...</p>
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                            <i class="fas fa-calendar me-1"></i>
+                                            {{ bot.created_at.strftime('%d.%m.%Y') }}
+                                        </small>
+                                    </p>
+                                    <div class="d-flex gap-2">
+                                        <a href="{{ url_for('bot_detail', bot_id=bot.id) }}" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-cog me-1"></i>Sozlash
+                                        </a>
+                                        <a href="{{ url_for('bot_chat', bot_id=bot.id) }}" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-comments me-1"></i>Suhbat
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-robot fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Hali chatbotingiz yo'q</h5>
+                        <p class="text-muted">Birinchi AI chatbotingizni yarating va mijozlaringiz bilan avtomatik suhbat boshlang!</p>
+                        <a href="{{ url_for('create_bot') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Birinchi Chatbot Yaratish
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Conversations -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-history me-2"></i>So'nggi Suhbatlar</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_conversations %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Bot</th>
+                                    <th>Platform</th>
+                                    <th>Foydalanuvchi</th>
+                                    <th>Til</th>
+                                    <th>Oxirgi faollik</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for conv in recent_conversations %}
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-robot me-1 text-primary"></i>
+                                        {{ conv.bot.name }}
+                                    </td>
+                                    <td>
+                                        {% if conv.platform == 'telegram' %}
+                                            <i class="fab fa-telegram text-info me-1"></i>Telegram
+                                        {% elif conv.platform == 'whatsapp' %}
+                                            <i class="fab fa-whatsapp text-success me-1"></i>WhatsApp
+                                        {% elif conv.platform == 'instagram' %}
+                                            <i class="fab fa-instagram text-danger me-1"></i>Instagram
+                                        {% else %}
+                                            <i class="fas fa-globe text-primary me-1"></i>Web
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ conv.platform_username or conv.platform_user_id }}</td>
+                                    <td>
+                                        <span class="badge bg-secondary">
+                                            {% if conv.language == 'uz' %}O'zbek
+                                            {% elif conv.language == 'ru' %}Русский
+                                            {% else %}English{% endif %}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">
+                                            {{ conv.updated_at.strftime('%d.%m.%Y %H:%M') }}
+                                        </small>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-3">
+                        <i class="fas fa-comments fa-2x text-muted mb-2"></i>
+                        <p class="text-muted mb-0">Hali suhbatlar yo'q</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Help Modal -->
+<div class="modal fade" id="helpModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-question-circle me-2"></i>Yordam
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <h6>Qanday boshlash kerak?</h6>
+                <ol>
+                    <li><strong>Chatbot yarating:</strong> "Yangi Chatbot" tugmasini bosing</li>
+                    <li><strong>Sozlang:</strong> Bot nomini va ko'rsatmalarini kiriting</li>
+                    <li><strong>Sinab ko'ring:</strong> Web suhbat orqali botni sinab ko'ring</li>
+                    <li><strong>Platform ulang:</strong> Telegram, WhatsApp yoki Instagram bilan ulang</li>
+                </ol>
+                
+                <h6 class="mt-4">Qo'llab-quvvatlanadigan tillar:</h6>
+                <ul>
+                    <li>O'zbek tili (asosiy)</li>
+                    <li>Rus tili</li>
+                    <li>Ingliz tili</li>
+                </ul>
+                
+                <h6 class="mt-4">Sinov muddati:</h6>
+                <p>Sizda 3 kunlik bepul sinov muddati bor. Sinov tugagach admin ruxsatini so'rang.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Tushundim</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function testAI() {
+    // Simple AI test function
+    const testMessages = [
+        "Salom!",
+        "Привет!",
+        "Hello!"
+    ];
+    const randomMessage = testMessages[Math.floor(Math.random() * testMessages.length)];
+    alert(`AI Test: ${randomMessage}\n\nAI chatbot yaratganingizdan keyin real suhbat qila olasiz!`);
+}
+</script>
+{% endblock %}

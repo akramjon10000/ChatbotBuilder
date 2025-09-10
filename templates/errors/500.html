@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+
+{% block title %}Server Xatoligi - 500{% endblock %}
+
+{% block main_class %}container-fluid{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-6 text-center">
+        <div class="error-page">
+            <!-- Error Icon -->
+            <div class="mb-4">
+                <i class="fas fa-exclamation-triangle fa-5x text-warning pulse"></i>
+            </div>
+            
+            <!-- Error Code -->
+            <h1 class="display-1 fw-bold text-danger mb-3">500</h1>
+            
+            <!-- Error Message -->
+            <h2 class="h3 mb-4">Ichki Server Xatoligi</h2>
+            
+            <p class="lead text-muted mb-4">
+                Kechirasiz, serverda texnik muammo yuz berdi. Biz bu muammoni hal qilish uchun ishlamoqdamiz.
+            </p>
+            
+            <!-- Status Info -->
+            <div class="alert alert-warning mb-4">
+                <h6 class="alert-heading">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Nima sodir bo'ldi?
+                </h6>
+                <p class="mb-0">
+                    Server kutilmagan xatolikka duch keldi va so'rovingizni bajara olmadi. 
+                    Bu vaqtinchalik muammo bo'lishi mumkin.
+                </p>
+            </div>
+            
+            <!-- Actions -->
+            <div class="d-flex flex-column flex-sm-row justify-content-center gap-3 mb-4">
+                <button class="btn btn-primary" onclick="location.reload()">
+                    <i class="fas fa-redo me-2"></i>
+                    Sahifani Yangilash
+                </button>
+                
+                <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-home me-2"></i>
+                    Bosh Sahifa
+                </a>
+                
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-success">
+                        <i class="fas fa-tachometer-alt me-2"></i>
+                        Dashboard
+                    </a>
+                {% endif %}
+            </div>
+            
+            <!-- Technical Details (for admins) -->
+            {% if current_user.is_authenticated and current_user.is_admin %}
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-code me-2"></i>
+                        Texnik Ma'lumotlar (Admin uchun)
+                    </h6>
+                </div>
+                <div class="card-body text-start">
+                    <small class="text-muted">
+                        <strong>Vaqt:</strong> {{ moment().format('DD.MM.YYYY HH:mm:ss') }}<br>
+                        <strong>URL:</strong> {{ request.url }}<br>
+                        <strong>Method:</strong> {{ request.method }}<br>
+                        <strong>User Agent:</strong> {{ request.headers.get('User-Agent', 'Unknown')[:100] }}...
+                    </small>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Help Section -->
+            <div class="mt-4">
+                <h6 class="text-muted mb-3">Nima qilish mumkin:</h6>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <i class="fas fa-clock fa-2x text-info mb-3"></i>
+                                <h6>Biroz Kuting</h6>
+                                <p class="small text-muted mb-0">
+                                    Vaqtinchalik muammo bo'lishi mumkin. 
+                                    Bir necha daqiqa kuting va qaytadan urinib ko'ring.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <i class="fas fa-life-ring fa-2x text-success mb-3"></i>
+                                <h6>Yordam Oling</h6>
+                                <p class="small text-muted mb-2">
+                                    Muammo davom etsa, bizga murojaat qiling:
+                                </p>
+                                <a href="mailto:support@chatbot.uz" class="btn btn-sm btn-outline-success">
+                                    <i class="fas fa-envelope me-1"></i>
+                                    support@chatbot.uz
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Auto Retry -->
+            <div class="mt-4">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            <i class="fas fa-sync-alt me-2 text-primary"></i>
+                            Avtomatik Qayta Urinish
+                        </h6>
+                        <p class="card-text small text-muted mb-2">
+                            Sahifa <span id="countdown">30</span> soniyada avtomatik yangilanadi.
+                        </p>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="clearInterval(countdownInterval)">
+                            <i class="fas fa-stop me-1"></i>
+                            To'xtatish
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Animated Background -->
+<div class="position-fixed top-0 start-0 w-100 h-100" style="z-index: -1; opacity: 0.03;">
+    <div class="error-animation">
+        <div class="error-circle error-circle-1"></div>
+        <div class="error-circle error-circle-2"></div>
+        <div class="error-circle error-circle-3"></div>
+    </div>
+</div>
+
+<style>
+.error-animation {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+}
+
+.error-circle {
+    position: absolute;
+    border: 2px solid #dc3545;
+    border-radius: 50%;
+    animation: pulse-error 3s ease-in-out infinite;
+}
+
+.error-circle-1 {
+    width: 200px;
+    height: 200px;
+    top: 20%;
+    left: 20%;
+    animation-delay: 0s;
+}
+
+.error-circle-2 {
+    width: 150px;
+    height: 150px;
+    top: 50%;
+    right: 30%;
+    animation-delay: 1s;
+}
+
+.error-circle-3 {
+    width: 100px;
+    height: 100px;
+    bottom: 30%;
+    left: 50%;
+    animation-delay: 2s;
+}
+
+@keyframes pulse-error {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.3;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.1;
+    }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.error-page {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+</style>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+let countdownInterval;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Countdown timer for auto-refresh
+    let countdown = 30;
+    const countdownElement = document.getElementById('countdown');
+    
+    countdownInterval = setInterval(function() {
+        countdown--;
+        countdownElement.textContent = countdown;
+        
+        if (countdown <= 0) {
+            location.reload();
+        }
+    }, 1000);
+    
+    // Add error reporting functionality
+    const errorData = {
+        url: window.location.href,
+        userAgent: navigator.userAgent,
+        timestamp: new Date().toISOString(),
+        referrer: document.referrer
+    };
+    
+    // Log error to console for debugging
+    console.error('Server Error 500:', errorData);
+    
+    // Send error report to server (if endpoint exists)
+    fetch('/api/error-report', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(errorData)
+    }).catch(() => {
+        // Silently handle if error reporting endpoint doesn't exist
+    });
+    
+    // Add interactive effects
+    document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.boxShadow = '';
+        });
+    });
+});
+
+// Retry mechanism
+function retryAction() {
+    const retryBtn = document.querySelector('.btn-primary');
+    const originalText = retryBtn.innerHTML;
+    
+    retryBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Qayta urinilmoqda...';
+    retryBtn.disabled = true;
+    
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
+}
+
+// Service worker registration for offline handling
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {
+        // Service worker registration failed, ignore
+    });
+}
+</script>
+{% endblock %}

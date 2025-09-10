@@ -1,0 +1,238 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Chatbotlar - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center border-bottom mb-4 pb-3">
+    <h1 class="h2">
+        <i class="fas fa-robot me-2"></i>
+        Barcha Chatbotlar
+    </h1>
+</div>
+
+<!-- Bots Table -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">
+            Chatbotlar Ro'yxati
+            <span class="badge bg-primary ms-2">{{ bots.total }}</span>
+        </h5>
+    </div>
+    <div class="card-body">
+        {% if bots.items %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Bot Nomi</th>
+                            <th>Egasi</th>
+                            <th>Yaratilgan</th>
+                            <th>Suhbatlar</th>
+                            <th>Holat</th>
+                            <th>Harakatlar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bot in bots.items %}
+                        <tr>
+                            <td>
+                                <div>
+                                    <strong>{{ bot.name }}</strong>
+                                    {% if bot.description %}
+                                        <br><small class="text-muted">{{ bot.description[:50] }}{% if bot.description|length > 50 %}...{% endif %}</small>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <strong>{{ bot.owner.username }}</strong>
+                                {% if bot.owner.full_name %}
+                                    <br><small class="text-muted">{{ bot.owner.full_name }}</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <small>{{ bot.created_at.strftime('%d.%m.%Y %H:%M') }}</small>
+                            </td>
+                            <td>
+                                <span class="badge bg-info">{{ bot.conversations|length }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-{{ 'success' if bot.is_active else 'danger' }}">
+                                    {{ 'Faol' if bot.is_active else 'Faolsiz' }}
+                                </span>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-sm" 
+                                        data-bs-toggle="modal" data-bs-target="#botModal{{ bot.id }}">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Bot Details Modal -->
+                        <div class="modal fade" id="botModal{{ bot.id }}" tabindex="-1">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">{{ bot.name }} - Tafsilotlar</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h6>Bot Ma'lumotlari:</h6>
+                                                <ul class="list-unstyled">
+                                                    <li><strong>Nom:</strong> {{ bot.name }}</li>
+                                                    <li><strong>Tavsif:</strong> {{ bot.description or "Tavsif yo'q" }}</li>
+                                                    <li><strong>Egasi:</strong> {{ bot.owner.username }}</li>
+                                                    <li><strong>Yaratilgan:</strong> {{ bot.created_at.strftime('%d.%m.%Y %H:%M') }}</li>
+                                                    <li><strong>Oxirgi yangilangan:</strong> {{ bot.updated_at.strftime('%d.%m.%Y %H:%M') }}</li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h6>Sozlamalar:</h6>
+                                                <ul class="list-unstyled">
+                                                    <li><strong>Tillar:</strong> {{ bot.languages }}</li>
+                                                    <li><strong>Holat:</strong> 
+                                                        <span class="badge bg-{{ 'success' if bot.is_active else 'danger' }}">
+                                                            {{ 'Faol' if bot.is_active else 'Faolsiz' }}
+                                                        </span>
+                                                    </li>
+                                                    <li><strong>Kunlik limit:</strong> {{ bot.max_daily_messages }}</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                        {% if bot.system_prompt %}
+                                        <h6 class="mt-3">Tizim Ko'rsatmalari:</h6>
+                                        <div class="bg-light p-3 rounded">
+                                            <small>{{ bot.system_prompt }}</small>
+                                        </div>
+                                        {% endif %}
+
+                                        <h6 class="mt-3">Platform Integratsiyalari:</h6>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="text-center p-2 border rounded">
+                                                    <i class="fab fa-telegram fa-2x {{ 'text-info' if bot.telegram_token else 'text-muted' }}"></i>
+                                                    <br><small>{{ 'Ulangan' if bot.telegram_token else 'Ulanmagan' }}</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="text-center p-2 border rounded">
+                                                    <i class="fab fa-whatsapp fa-2x {{ 'text-success' if bot.whatsapp_token else 'text-muted' }}"></i>
+                                                    <br><small>{{ 'Ulangan' if bot.whatsapp_token else 'Ulanmagan' }}</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="text-center p-2 border rounded">
+                                                    <i class="fab fa-instagram fa-2x {{ 'text-danger' if bot.instagram_token else 'text-muted' }}"></i>
+                                                    <br><small>{{ 'Ulangan' if bot.instagram_token else 'Ulanmagan' }}</small>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <h6 class="mt-3">Suhbatlar ({{ bot.conversations|length }}):</h6>
+                                        {% if bot.conversations %}
+                                            <div class="table-responsive">
+                                                <table class="table table-sm">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Platform</th>
+                                                            <th>Foydalanuvchi</th>
+                                                            <th>Til</th>
+                                                            <th>Oxirgi faollik</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for conv in bot.conversations[:5] %}
+                                                        <tr>
+                                                            <td>
+                                                                {% if conv.platform == 'telegram' %}
+                                                                    <i class="fab fa-telegram text-info"></i> Telegram
+                                                                {% elif conv.platform == 'whatsapp' %}
+                                                                    <i class="fab fa-whatsapp text-success"></i> WhatsApp
+                                                                {% elif conv.platform == 'instagram' %}
+                                                                    <i class="fab fa-instagram text-danger"></i> Instagram
+                                                                {% else %}
+                                                                    <i class="fas fa-globe text-primary"></i> Web
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>{{ conv.platform_username or conv.platform_user_id }}</td>
+                                                            <td>
+                                                                <span class="badge bg-secondary">{{ conv.language.upper() }}</span>
+                                                            </td>
+                                                            <td>
+                                                                <small>{{ conv.updated_at.strftime('%d.%m.%Y %H:%M') }}</small>
+                                                            </td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        {% else %}
+                                            <p class="text-muted">Suhbatlar yo'q</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yopish</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if bots.pages > 1 %}
+                <nav aria-label="Sahifalar">
+                    <ul class="pagination justify-content-center">
+                        {% if bots.has_prev %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin_bots', page=bots.prev_num) }}">
+                                    Oldingi
+                                </a>
+                            </li>
+                        {% endif %}
+                        
+                        {% for page_num in bots.iter_pages() %}
+                            {% if page_num %}
+                                {% if page_num != bots.page %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for('admin_bots', page=page_num) }}">
+                                            {{ page_num }}
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ page_num }}</span>
+                                    </li>
+                                {% endif %}
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if bots.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin_bots', page=bots.next_num) }}">
+                                    Keyingi
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        {% else %}
+            <div class="text-center py-4">
+                <i class="fas fa-robot fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">Chatbotlar yo'q</h5>
+                <p class="text-muted">Hali hech kim chatbot yaratmagan.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

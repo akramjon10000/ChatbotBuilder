@@ -1,0 +1,137 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Harakatlar Tarixi - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center border-bottom mb-4 pb-3">
+    <h1 class="h2">
+        <i class="fas fa-history me-2"></i>
+        Admin Harakatlari Tarixi
+    </h1>
+</div>
+
+<!-- Actions Table -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">
+            Harakatlar Ro'yxati
+            <span class="badge bg-primary ms-2">{{ actions.total }}</span>
+        </h5>
+    </div>
+    <div class="card-body">
+        {% if actions.items %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Sana</th>
+                            <th>Admin</th>
+                            <th>Foydalanuvchi</th>
+                            <th>Harakat</th>
+                            <th>Sabab</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for action in actions.items %}
+                        <tr>
+                            <td>
+                                <small>{{ action.action_date.strftime('%d.%m.%Y %H:%M') }}</small>
+                            </td>
+                            <td>
+                                <strong>{{ action.admin.username }}</strong>
+                                {% if action.admin.full_name %}
+                                    <br><small class="text-muted">{{ action.admin.full_name }}</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <strong>{{ action.target_user.username }}</strong>
+                                {% if action.target_user.full_name %}
+                                    <br><small class="text-muted">{{ action.target_user.full_name }}</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if action.action_type == 'GRANT_ACCESS' %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check me-1"></i>Dostup Berildi
+                                    </span>
+                                {% elif action.action_type == 'REVOKE_ACCESS' %}
+                                    <span class="badge bg-warning">
+                                        <i class="fas fa-ban me-1"></i>Dostup Bekor Qilindi
+                                    </span>
+                                {% elif action.action_type == 'ACTIVATE_USER' %}
+                                    <span class="badge bg-info">
+                                        <i class="fas fa-play me-1"></i>Faollashtirildi
+                                    </span>
+                                {% elif action.action_type == 'DEACTIVATE_USER' %}
+                                    <span class="badge bg-danger">
+                                        <i class="fas fa-pause me-1"></i>Faolsizlashtirildi
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ action.action_type }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if action.reason %}
+                                    <small>{{ action.reason }}</small>
+                                {% else %}
+                                    <small class="text-muted">Sabab ko'rsatilmagan</small>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if actions.pages > 1 %}
+                <nav aria-label="Sahifalar">
+                    <ul class="pagination justify-content-center">
+                        {% if actions.has_prev %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin_actions', page=actions.prev_num) }}">
+                                    Oldingi
+                                </a>
+                            </li>
+                        {% endif %}
+                        
+                        {% for page_num in actions.iter_pages() %}
+                            {% if page_num %}
+                                {% if page_num != actions.page %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for('admin_actions', page=page_num) }}">
+                                            {{ page_num }}
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ page_num }}</span>
+                                    </li>
+                                {% endif %}
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if actions.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin_actions', page=actions.next_num) }}">
+                                    Keyingi
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        {% else %}
+            <div class="text-center py-4">
+                <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">Harakatlar yo'q</h5>
+                <p class="text-muted">Hali hech qanday admin harakati amalga oshirilmagan.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

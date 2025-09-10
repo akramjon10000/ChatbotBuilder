@@ -1,0 +1,362 @@
+{% extends "base.html" %}
+
+{% block title %}{{ bot.name }} - Suhbat{% endblock %}
+
+{% block extra_head %}
+<style>
+.chat-container {
+    height: 60vh;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+}
+
+.message {
+    margin-bottom: 15px;
+    max-width: 70%;
+}
+
+.message.user {
+    margin-left: auto;
+}
+
+.message.bot {
+    margin-right: auto;
+}
+
+.message-content {
+    padding: 10px 15px;
+    border-radius: 18px;
+    word-wrap: break-word;
+}
+
+.message.user .message-content {
+    background-color: #007bff;
+    color: white;
+    border-bottom-right-radius: 5px;
+}
+
+.message.bot .message-content {
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-bottom-left-radius: 5px;
+}
+
+.message-time {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-top: 5px;
+}
+
+.message.user .message-time {
+    text-align: right;
+}
+
+.message.bot .message-time {
+    text-align: left;
+}
+
+.typing-indicator {
+    display: none;
+    margin-bottom: 15px;
+}
+
+.typing-indicator .dots {
+    display: inline-block;
+    background-color: white;
+    border: 1px solid #dee2e6;
+    padding: 10px 15px;
+    border-radius: 18px;
+    border-bottom-left-radius: 5px;
+}
+
+.typing-indicator .dots span {
+    height: 8px;
+    width: 8px;
+    background-color: #007bff;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 3px;
+    animation: typing 1.4s infinite ease-in-out;
+}
+
+.typing-indicator .dots span:nth-child(1) { animation-delay: -0.32s; }
+.typing-indicator .dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typing {
+    0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+    40% { transform: scale(1); opacity: 1; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <!-- Bot Header -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">
+                            <i class="fas fa-robot me-2"></i>
+                            {{ bot.name }}
+                        </h4>
+                        <small>{{ bot.description }}</small>
+                    </div>
+                    <div>
+                        <a href="{{ url_for('bot_detail', bot_id=bot.id) }}" class="btn btn-light btn-sm">
+                            <i class="fas fa-cog me-1"></i>Sozlamalar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Interface -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-comments me-2"></i>
+                    Suhbat
+                    <small class="text-muted">- Istalgan tilda yozing (O'zbek, Rus, Ingliz)</small>
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <!-- Chat Messages -->
+                <div class="chat-container" id="chatContainer">
+                    {% if messages %}
+                        {% for message in messages %}
+                        <div class="message {{ 'user' if message.is_from_user else 'bot' }}">
+                            <div class="message-content">
+                                {{ message.content }}
+                            </div>
+                            <div class="message-time">
+                                {% if message.is_from_user %}
+                                    <i class="fas fa-user me-1"></i>Siz
+                                {% else %}
+                                    <i class="fas fa-robot me-1"></i>{{ bot.name }}
+                                    {% if message.response_time %}
+                                        <small>({{ "%.2f"|format(message.response_time) }}s)</small>
+                                    {% endif %}
+                                {% endif %}
+                                <span class="ms-2">{{ message.created_at.strftime('%H:%M') }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">Suhbat boshlang!</h5>
+                            <p class="text-muted">Bu yerda {{ bot.name }} bilan suhbatlasha olasiz. Istalgan tilda yozing.</p>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Typing Indicator -->
+                    <div class="typing-indicator" id="typingIndicator">
+                        <div class="dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Message Input -->
+                <div class="border-top p-3">
+                    <form method="POST" id="chatForm">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="message" id="messageInput" 
+                                   placeholder="Xabar yozing... (O'zbek, Rus yoki Ingliz tilida)" 
+                                   autocomplete="off" required>
+                            <button class="btn btn-primary" type="submit" id="sendButton">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- Quick Suggestions -->
+                    <div class="mt-2">
+                        <small class="text-muted">Tezkor savollar:</small>
+                        <div class="mt-1">
+                            <button type="button" class="btn btn-outline-secondary btn-sm me-1 quick-message" data-message="Salom!">
+                                Salom!
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm me-1 quick-message" data-message="Yordam kerak">
+                                Yordam kerak
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm me-1 quick-message" data-message="Bu qanday ishlaydi?">
+                                Bu qanday ishlaydi?
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bot Info -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="fas fa-info-circle me-1"></i>Bot Ma'lumotlari</h6>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Nom:</strong> {{ bot.name }}</p>
+                        <p><strong>Tavsif:</strong> {{ bot.description or "Tavsif yo'q" }}</p>
+                        <p><strong>Tillar:</strong> 
+                            {% for lang in bot.languages.split(',') %}
+                                <span class="badge bg-secondary me-1">
+                                    {% if lang.strip() == 'uz' %}O'zbek
+                                    {% elif lang.strip() == 'ru' %}Русский
+                                    {% else %}English{% endif %}
+                                </span>
+                            {% endfor %}
+                        </p>
+                        <p><strong>Yaratilgan:</strong> {{ bot.created_at.strftime('%d.%m.%Y %H:%M') }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="fas fa-chart-bar me-1"></i>Statistika</h6>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Suhbatlar:</strong> {{ bot.conversations|length }}</p>
+                        <p><strong>Xabarlar:</strong> 
+                            {% set total_messages = bot.conversations|sum(attribute='messages')|length %}
+                            {{ total_messages }}
+                        </p>
+                        <p><strong>Oxirgi faollik:</strong> 
+                            {% if bot.conversations %}
+                                {{ bot.conversations|sort(attribute='updated_at', reverse=true)|first.updated_at.strftime('%d.%m.%Y %H:%M') }}
+                            {% else %}
+                                Faollik yo'q
+                            {% endif %}
+                        </p>
+                        <p><strong>Holat:</strong> 
+                            <span class="badge bg-{{ 'success' if bot.is_active else 'danger' }}">
+                                {{ 'Faol' if bot.is_active else 'Faolsiz' }}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatContainer = document.getElementById('chatContainer');
+    const chatForm = document.getElementById('chatForm');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+    const typingIndicator = document.getElementById('typingIndicator');
+    
+    // Auto-scroll to bottom
+    function scrollToBottom() {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+    
+    // Initial scroll
+    scrollToBottom();
+    
+    // Quick message buttons
+    document.querySelectorAll('.quick-message').forEach(button => {
+        button.addEventListener('click', function() {
+            messageInput.value = this.dataset.message;
+            messageInput.focus();
+        });
+    });
+    
+    // Form submission
+    chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const message = messageInput.value.trim();
+        if (!message) return;
+        
+        // Disable form
+        sendButton.disabled = true;
+        messageInput.disabled = true;
+        
+        // Add user message to chat
+        addMessage(message, true);
+        
+        // Clear input
+        messageInput.value = '';
+        
+        // Show typing indicator
+        typingIndicator.style.display = 'block';
+        scrollToBottom();
+        
+        // Submit form
+        const formData = new FormData(chatForm);
+        formData.append('message', message);
+        
+        fetch(window.location.href, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(html => {
+            // Hide typing indicator
+            typingIndicator.style.display = 'none';
+            
+            // Reload page to show new messages
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            typingIndicator.style.display = 'none';
+            addMessage('Xatolik yuz berdi. Iltimos, qaytadan urinib ko\'ring.', false);
+        })
+        .finally(() => {
+            // Re-enable form
+            sendButton.disabled = false;
+            messageInput.disabled = false;
+            messageInput.focus();
+        });
+    });
+    
+    // Add message to chat (for immediate feedback)
+    function addMessage(content, isUser) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+        
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit' });
+        
+        messageDiv.innerHTML = `
+            <div class="message-content">${content}</div>
+            <div class="message-time">
+                <i class="fas fa-${isUser ? 'user' : 'robot'} me-1"></i>
+                ${isUser ? 'Siz' : '{{ bot.name }}'}
+                <span class="ms-2">${timeString}</span>
+            </div>
+        `;
+        
+        // Insert before typing indicator
+        chatContainer.insertBefore(messageDiv, typingIndicator);
+        scrollToBottom();
+    }
+    
+    // Focus on input
+    messageInput.focus();
+    
+    // Enter key handling
+    messageInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            chatForm.dispatchEvent(new Event('submit'));
+        }
+    });
+});
+</script>
+{% endblock %}

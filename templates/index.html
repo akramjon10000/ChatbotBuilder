@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}AI Chatbot Generator Platform{% endblock %}
+
+{% block content %}
+<div class="hero-section bg-primary text-white py-5 mb-5 rounded">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">
+                    <i class="fas fa-robot me-3"></i>
+                    AI Chatbot Platform
+                </h1>
+                <p class="lead mb-4">
+                    O'zbek tilida AI chatbot yarating va uch tilda (O'zbek, Rus, Ingliz) 
+                    foydalanuvchilar bilan suhbat qiling. Telegram, WhatsApp va Instagram 
+                    bilan integratsiya.
+                </p>
+                <div class="d-flex gap-3">
+                    {% if not current_user.is_authenticated %}
+                        <a href="{{ url_for('register') }}" class="btn btn-light btn-lg">
+                            <i class="fas fa-rocket me-2"></i>
+                            3 Kun Bepul Sinab Ko'ring
+                        </a>
+                        <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            Kirish
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-light btn-lg">
+                            <i class="fas fa-tachometer-alt me-2"></i>
+                            Bosh Sahifaga O'tish
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="text-center">
+                    <i class="fas fa-comments display-1 opacity-75"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="row mb-5">
+    <div class="col-12">
+        <h2 class="text-center mb-5">Asosiy Xususiyatlar</h2>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <i class="fas fa-brain fa-3x text-primary mb-3"></i>
+                <h4 class="card-title">AI Intellekt</h4>
+                <p class="card-text">
+                    Google Gemini AI texnologiyasi yordamida aqlli va 
+                    tabiiy javoblar beruvchi chatbotlar yarating.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <i class="fas fa-globe fa-3x text-success mb-3"></i>
+                <h4 class="card-title">Uch Tilda Qo'llab-quvvatlash</h4>
+                <p class="card-text">
+                    O'zbek, Rus va Ingliz tillarida avtomatik til 
+                    aniqlash va javob berish imkoniyati.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <i class="fas fa-share-alt fa-3x text-info mb-3"></i>
+                <h4 class="card-title">Platform Integratsiyasi</h4>
+                <p class="card-text">
+                    Telegram, WhatsApp va Instagram bilan to'g'ridan-to'g'ri 
+                    ulanish va bir vaqtda ishlash.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works Section -->
+<div class="row mb-5">
+    <div class="col-12">
+        <h2 class="text-center mb-5">Qanday Ishlaydi</h2>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="text-center">
+            <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                <span class="fw-bold fs-4">1</span>
+            </div>
+            <h5 class="mt-3">Ro'yxatdan O'ting</h5>
+            <p class="text-muted">3 kunlik bepul sinov bilan boshlang</p>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="text-center">
+            <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                <span class="fw-bold fs-4">2</span>
+            </div>
+            <h5 class="mt-3">Chatbot Yarating</h5>
+            <p class="text-muted">O'zingizning AI botingizni sozlang</p>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="text-center">
+            <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                <span class="fw-bold fs-4">3</span>
+            </div>
+            <h5 class="mt-3">Platform Ulang</h5>
+            <p class="text-muted">Telegram, WhatsApp yoki Instagram bilan ulang</p>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="text-center">
+            <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                <span class="fw-bold fs-4">4</span>
+            </div>
+            <h5 class="mt-3">Foydalaning</h5>
+            <p class="text-muted">Mijozlaringiz bilan avtomatik suhbat qiling</p>
+        </div>
+    </div>
+</div>
+
+<!-- Pricing Section -->
+<div class="row mb-5">
+    <div class="col-12">
+        <h2 class="text-center mb-5">Obuna Tizimlari</h2>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-light">
+                <h4 class="text-center mb-0">Bepul Sinov</h4>
+            </div>
+            <div class="card-body text-center">
+                <h2 class="text-primary">3 Kun</h2>
+                <p class="text-muted">Bepul sinab ko'rish</p>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i>1 ta chatbot</li>
+                    <li><i class="fas fa-check text-success me-2"></i>100 xabar/kun</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Barcha tillar</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Asosiy qo'llab-quvvatlash</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 border-primary">
+            <div class="card-header bg-primary text-white">
+                <h4 class="text-center mb-0">Admin Ruxsati</h4>
+            </div>
+            <div class="card-body text-center">
+                <h2 class="text-primary">Tasdiq</h2>
+                <p class="text-muted">Admin tomonidan ruxsat</p>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i>Cheksiz chatbotlar</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Cheksiz xabarlar</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Barcha platformalar</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Premium qo'llab-quvvatlash</li>
+                </ul>
+                <p class="text-muted small">
+                    <i class="fas fa-info-circle me-1"></i>
+                    3 kunlik sinov tugagach admin ruxsati talab qilinadi
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-warning">
+                <h4 class="text-center mb-0">Kutish Rejimi</h4>
+            </div>
+            <div class="card-body text-center">
+                <h2 class="text-warning">Kutish</h2>
+                <p class="text-muted">Admin tasdiqini kutish</p>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-times text-danger me-2"></i>Dostup yo'q</li>
+                    <li><i class="fas fa-clock text-warning me-2"></i>Admin javobini kutish</li>
+                    <li><i class="fas fa-envelope text-info me-2"></i>Bildirishnoma keladi</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+{% if not current_user.is_authenticated %}
+<div class="row">
+    <div class="col-12">
+        <div class="bg-gradient text-white p-5 rounded text-center" style="background: linear-gradient(45deg, #007bff, #6f42c1);">
+            <h3 class="mb-4">Bugun Boshlayin!</h3>
+            <p class="lead mb-4">
+                3 kunlik bepul sinov bilan o'z AI chatbotingizni yarating. 
+                Hech qanday to'lov talab qilinmaydi.
+            </p>
+            <a href="{{ url_for('register') }}" class="btn btn-light btn-lg">
+                <i class="fas fa-rocket me-2"></i>
+                Hozir Ro'yxatdan O'ting
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
