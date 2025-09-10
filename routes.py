@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
 import os
 import logging
+import csv
 
 from app import app, db
 from models import User, Bot, Conversation, Message, KnowledgeBase, AdminAction
@@ -335,6 +336,13 @@ def upload_knowledge(bot_id):
             if filename.endswith('.txt'):
                 with open(file_path, 'r', encoding='utf-8') as f:
                     content = f.read()
+            elif filename.endswith('.csv'):
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    csv_reader = csv.reader(f)
+                    rows = []
+                    for row in csv_reader:
+                        rows.append(','.join(row))
+                    content = '\n'.join(rows)
             
             # Create knowledge base entry
             kb = KnowledgeBase(

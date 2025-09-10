@@ -75,8 +75,7 @@ with app.app_context():
     # Import models
     import models
     
-    # Drop all tables and recreate with new structure
-    db.drop_all()
+    # Create tables if they don't exist
     db.create_all()
     
     # Create admin user if not exists
