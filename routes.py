@@ -422,7 +422,7 @@ def telegram_webhook(bot_id):
                 bot_id=bot.id,
                 platform='telegram',
                 platform_user_id=str(chat_id),
-                user_name=message['from'].get('first_name', 'Unknown'),
+                platform_username=message['from'].get('first_name', 'Unknown'),
                 language=detected_language
             )
             db.session.add(conversation)

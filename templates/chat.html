@@ -547,7 +547,7 @@
                         <div class="col-6">
                             <div class="stat-item text-center">
                                 <h4 class="mb-1">
-                                    {% set total_messages = bot.conversations|sum(attribute='messages')|length %}
+                                    {% set total_messages = bot.conversations|map(attribute='messages')|map('length')|sum %}
                                     {{ total_messages }}
                                 </h4>
                                 <small class="opacity-75">Xabarlar</small>
