@@ -193,16 +193,23 @@ def bot_detail(bot_id):
         platform = request.form.get('platform')
         
         if platform == 'instagram':
-            # Handle Instagram token update
+            # Handle Instagram token and page_id update
             instagram_token = request.form.get('instagram_token', '').strip()
-            if instagram_token:
+            instagram_page_id = request.form.get('instagram_page_id', '').strip()
+            
+            if instagram_token and instagram_page_id:
                 bot.instagram_token = instagram_token
+                bot.instagram_page_id = instagram_page_id
                 db.session.commit()
-                flash('Instagram token muvaffaqiyatli saqlandi!', 'success')
+                
+                # Instagram webhook URL - user needs to set this in Facebook Developer Console
+                webhook_url = f"{request.host_url}webhook/instagram/{bot.id}"
+                flash(f'Instagram token va Page ID saqlandi! Webhook URL: {webhook_url}', 'success')
             else:
                 bot.instagram_token = None
+                bot.instagram_page_id = None
                 db.session.commit()
-                flash('Instagram token o\'chirildi', 'info')
+                flash('Instagram ma\'lumotlari o\'chirildi', 'info')
         
         elif platform == 'whatsapp':
             # Handle WhatsApp token update
@@ -561,6 +568,139 @@ def telegram_webhook(bot_id):
             
     except Exception as e:
         logging.error(f"Telegram webhook error: {e}")
+        db.session.rollback()
+        return "Error", 500
+
+@app.route('/webhook/instagram/<int:bot_id>', methods=['GET', 'POST'])
+def instagram_webhook(bot_id):
+    """Instagram webhook handler"""
+    
+    # Handle GET request for webhook verification
+    if request.method == 'GET':
+        verify_token = "your_verify_token"  # This should match your Instagram webhook config
+        
+        challenge = request.args.get('hub.challenge')
+        verify_token_param = request.args.get('hub.verify_token')
+        
+        if verify_token_param == verify_token:
+            return challenge
+        else:
+            return "Forbidden", 403
+    
+    # Handle POST request for incoming messages
+    try:
+        # Get bot
+        bot = Bot.query.get_or_404(bot_id)
+        
+        # Check if bot has instagram token
+        if not bot.instagram_token:
+            logging.error(f"Bot {bot_id} has no Instagram token")
+            return "No token", 400
+        
+        # Get incoming message data
+        data = request.get_json()
+        
+        if not data or 'entry' not in data:
+            return "No entry", 400
+        
+        # Process each entry
+        for entry in data['entry']:
+            if 'messaging' in entry:
+                for messaging_event in entry['messaging']:
+                    if 'message' in messaging_event:
+                        message = messaging_event['message']
+                        sender_id = messaging_event['sender']['id']
+                        
+                        # Skip if no text in message
+                        if 'text' not in message:
+                            continue
+                            
+                        user_message = message['text']
+                        
+                        # Create or get conversation
+                        conversation = Conversation.query.filter_by(
+                            bot_id=bot.id,
+                            platform='instagram',
+                            platform_user_id=str(sender_id)
+                        ).first()
+                        
+                        if not conversation:
+                            # Detect language for new conversations
+                            detected_language = detect_language(user_message)
+                            conversation = Conversation(
+                                bot_id=bot.id,
+                                platform='instagram',
+                                platform_user_id=str(sender_id),
+                                platform_username='Instagram User',
+                                language=detected_language
+                            )
+                            db.session.add(conversation)
+                            db.session.commit()
+                        
+                        # Use the conversation's language preference
+                        user_language = conversation.language
+                        
+                        # Save user message
+                        user_msg = Message(
+                            conversation_id=conversation.id,
+                            content=user_message,
+                            is_from_user=True
+                        )
+                        db.session.add(user_msg)
+                        
+                        # Get conversation history for context
+                        history = Message.query.filter_by(
+                            conversation_id=conversation.id
+                        ).order_by(Message.created_at.desc()).limit(10).all()
+                        
+                        # Generate AI response using user's language preference and knowledge base
+                        try:
+                            if len(history) > 1:
+                                response_text = ai_service.generate_response_with_context(
+                                    user_message, 
+                                    history[1:], 
+                                    bot.system_prompt,
+                                    user_language,
+                                    bot.id
+                                )
+                            else:
+                                response_text = ai_service.generate_response(
+                                    user_message,
+                                    bot.system_prompt,
+                                    user_language,
+                                    bot.id
+                                )
+                        except Exception as e:
+                            logging.error(f"AI service error: {e}")
+                            response_text = ai_service._get_fallback_response(user_language)
+                        
+                        # Save bot response
+                        bot_msg = Message(
+                            conversation_id=conversation.id,
+                            content=response_text,
+                            is_from_user=False
+                        )
+                        db.session.add(bot_msg)
+                        
+                        # Update conversation
+                        conversation.updated_at = datetime.utcnow()
+                        db.session.commit()
+                        
+                        # Send response via Instagram
+                        # Use the stored page_id for Instagram service
+                        if bot.instagram_page_id:
+                            instagram_service = InstagramService(bot.instagram_token, bot.instagram_page_id)
+                            result = instagram_service.send_message(sender_id, response_text)
+                            
+                            if result:
+                                logging.info(f"Instagram message sent successfully to user {sender_id}")
+                            else:
+                                logging.error(f"Failed to send Instagram message to user {sender_id}")
+        
+        return "OK", 200
+            
+    except Exception as e:
+        logging.error(f"Instagram webhook error: {e}")
         db.session.rollback()
         return "Error", 500
 

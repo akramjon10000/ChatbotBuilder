@@ -120,6 +120,7 @@ class Bot(db.Model):
     telegram_webhook_url = db.Column(db.String(300))
     whatsapp_token = db.Column(db.String(500))
     instagram_token = db.Column(db.String(500))
+    instagram_page_id = db.Column(db.String(100))
     
     # Settings
     is_active = db.Column(db.Boolean, default=True)
