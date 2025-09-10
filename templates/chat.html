@@ -4,244 +4,573 @@
 
 {% block extra_head %}
 <style>
-.chat-container {
-    height: 60vh;
+/* Modern Chat Styles */
+.chat-interface {
+    max-width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 0 0 24px 24px;
+    overflow: hidden;
+    position: relative;
+}
+
+.chat-header {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1.5rem;
+    color: white;
+    position: relative;
+    z-index: 10;
+}
+
+.bot-avatar {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.bot-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background: #4ecdc4;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.3);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(78, 205, 196, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(78, 205, 196, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(78, 205, 196, 0); }
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 2rem;
     overflow-y: auto;
-    border: 1px solid #dee2e6;
-    padding: 15px;
-    background-color: #f8f9fa;
-    border-radius: 10px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+    backdrop-filter: blur(20px);
+    max-height: calc(100vh - 280px);
+    position: relative;
+}
+
+.chat-messages::-webkit-scrollbar {
+    width: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
 }
 
 .message {
-    margin-bottom: 15px;
-    max-width: 70%;
+    margin-bottom: 1.5rem;
+    animation: slideIn 0.3s ease-out;
+    max-width: 75%;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .message.user {
     margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
 }
 
 .message.bot {
     margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
-.message-content {
-    padding: 10px 15px;
-    border-radius: 18px;
+.message-bubble {
+    padding: 1rem 1.5rem;
+    border-radius: 20px;
     word-wrap: break-word;
+    position: relative;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 100%;
 }
 
-.message.user .message-content {
-    background-color: #007bff;
+.message.user .message-bubble {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    border-bottom-right-radius: 5px;
+    border-bottom-right-radius: 8px;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
 }
 
-.message.bot .message-content {
-    background-color: white;
-    border: 1px solid #dee2e6;
-    border-bottom-left-radius: 5px;
+.message.bot .message-bubble {
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    border-bottom-left-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
-.message-time {
+.message-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 0.5rem;
     font-size: 0.75rem;
-    color: #6c757d;
-    margin-top: 5px;
+    opacity: 0.7;
+    color: white;
 }
 
-.message.user .message-time {
-    text-align: right;
+.message.user .message-info {
+    justify-content: flex-end;
 }
 
-.message.bot .message-time {
-    text-align: left;
+.message.bot .message-info {
+    justify-content: flex-start;
 }
 
 .typing-indicator {
     display: none;
-    margin-bottom: 15px;
+    margin-bottom: 1.5rem;
+    max-width: 75%;
 }
 
-.typing-indicator .dots {
-    display: inline-block;
-    background-color: white;
-    border: 1px solid #dee2e6;
-    padding: 10px 15px;
-    border-radius: 18px;
-    border-bottom-left-radius: 5px;
+.typing-bubble {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 1rem 1.5rem;
+    border-radius: 20px;
+    border-bottom-left-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
-.typing-indicator .dots span {
-    height: 8px;
+.typing-dot {
     width: 8px;
-    background-color: #007bff;
+    height: 8px;
+    background: #667eea;
     border-radius: 50%;
-    display: inline-block;
-    margin-right: 3px;
-    animation: typing 1.4s infinite ease-in-out;
+    animation: typing 1.4s infinite;
 }
 
-.typing-indicator .dots span:nth-child(1) { animation-delay: -0.32s; }
-.typing-indicator .dots span:nth-child(2) { animation-delay: -0.16s; }
+.typing-dot:nth-child(1) { animation-delay: 0s; }
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
 
 @keyframes typing {
-    0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
-    40% { transform: scale(1); opacity: 1; }
+    0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.5;
+    }
+    30% {
+        transform: translateY(-10px);
+        opacity: 1;
+    }
+}
+
+.chat-input-area {
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.input-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 25px;
+    padding: 0.75rem 1.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.message-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 1rem;
+    resize: none;
+    min-height: 20px;
+    max-height: 120px;
+    overflow-y: auto;
+    line-height: 1.4;
+}
+
+.message-input::placeholder {
+    color: #999;
+}
+
+.send-button {
+    background: var(--gradient-primary);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+}
+
+.send-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.send-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.quick-suggestions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.quick-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.quick-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.empty-chat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.empty-chat-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    backdrop-filter: blur(20px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .chat-interface {
+        height: calc(100vh - 80px);
+        border-radius: 0;
+    }
+    
+    .chat-messages {
+        padding: 1rem;
+        max-height: calc(100vh - 240px);
+    }
+    
+    .message {
+        max-width: 85%;
+    }
+    
+    .chat-input-area {
+        padding: 1rem;
+    }
+    
+    .quick-suggestions {
+        justify-content: center;
+    }
+}
+
+/* Bot info cards modern style */
+.info-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    color: white;
+}
+
+.info-card .card-header {
+    background: rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px 20px 0 0;
 }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <!-- Bot Header -->
-        <div class="card mb-4">
-            <div class="card-header bg-primary text-white">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h4 class="mb-0">
-                            <i class="fas fa-robot me-2"></i>
-                            {{ bot.name }}
-                        </h4>
-                        <small>{{ bot.description }}</small>
-                    </div>
-                    <div>
-                        <a href="{{ url_for('bot_detail', bot_id=bot.id) }}" class="btn btn-light btn-sm">
-                            <i class="fas fa-cog me-1"></i>Sozlamalar
-                        </a>
+<div class="container-fluid p-0">
+    <div class="row g-0">
+        <div class="col-12">
+            <!-- Modern Chat Interface -->
+            <div class="chat-interface">
+                <!-- Chat Header -->
+                <div class="chat-header">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <div class="bot-avatar me-3">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+                                    <circle cx="9" cy="9" r="1" fill="currentColor"/>
+                                    <circle cx="15" cy="9" r="1" fill="currentColor"/>
+                                    <path d="M8 13s1 2 4 2 4-2 4-2" stroke="currentColor" stroke-width="1.5"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="mb-0 fw-bold">{{ bot.name }}</h4>
+                                <div class="bot-status">
+                                    <div class="status-dot"></div>
+                                    <small class="opacity-75">Online • AI Assistant</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="{{ url_for('bot_detail', bot_id=bot.id) }}" class="btn btn-light btn-sm rounded-pill">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Sozlamalar
+                            </a>
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-light btn-sm rounded-pill">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                                    <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Dashboard
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Chat Interface -->
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="fas fa-comments me-2"></i>
-                    Suhbat
-                    <small class="text-muted">- Istalgan tilda yozing (O'zbek, Rus, Ingliz)</small>
-                </h5>
-            </div>
-            <div class="card-body p-0">
                 <!-- Chat Messages -->
-                <div class="chat-container" id="chatContainer">
+                <div class="chat-messages" id="chatContainer">
                     {% if messages %}
                         {% for message in messages %}
                         <div class="message {{ 'user' if message.is_from_user else 'bot' }}">
-                            <div class="message-content">
-                                {{ message.content }}
+                            <div class="message-bubble">
+                                {{ message.content|replace('\n', '<br>')|safe }}
                             </div>
-                            <div class="message-time">
+                            <div class="message-info">
                                 {% if message.is_from_user %}
-                                    <i class="fas fa-user me-1"></i>Siz
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/>
+                                        <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    <span>Siz</span>
                                 {% else %}
-                                    <i class="fas fa-robot me-1"></i>{{ bot.name }}
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+                                        <circle cx="9" cy="9" r="1" fill="currentColor"/>
+                                        <circle cx="15" cy="9" r="1" fill="currentColor"/>
+                                        <path d="M8 13s1 2 4 2 4-2 4-2" stroke="currentColor" stroke-width="1.5"/>
+                                    </svg>
+                                    <span>{{ bot.name }}</span>
                                     {% if message.response_time %}
-                                        <small>({{ "%.2f"|format(message.response_time) }}s)</small>
+                                        <span class="opacity-50">({{ "%.1f"|format(message.response_time) }}s)</span>
                                     {% endif %}
                                 {% endif %}
-                                <span class="ms-2">{{ message.created_at.strftime('%H:%M') }}</span>
+                                <span class="opacity-50">{{ message.created_at.strftime('%H:%M') }}</span>
                             </div>
                         </div>
                         {% endfor %}
                     {% else %}
-                        <div class="text-center py-4">
-                            <i class="fas fa-comments fa-3x text-muted mb-3"></i>
-                            <h5 class="text-muted">Suhbat boshlang!</h5>
-                            <p class="text-muted">Bu yerda {{ bot.name }} bilan suhbatlasha olasiz. Istalgan tilda yozing.</p>
+                        <div class="empty-chat">
+                            <div class="empty-chat-icon">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M13 8H7" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M17 12H7" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                            </div>
+                            <h5 class="mb-2">🚀 Suhbat boshlang!</h5>
+                            <p class="mb-4">{{ bot.name }} bilan suhbatlasha olasiz.<br/>Istalgan tilda (O'zbek, Rus, Ingliz) yozing.</p>
                         </div>
                     {% endif %}
                     
                     <!-- Typing Indicator -->
                     <div class="typing-indicator" id="typingIndicator">
-                        <div class="dots">
-                            <span></span>
-                            <span></span>
-                            <span></span>
+                        <div class="typing-bubble">
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Message Input -->
-                <div class="border-top p-3">
+                <!-- Chat Input -->
+                <div class="chat-input-area">
                     <form method="POST" id="chatForm">
-                        <div class="input-group">
-                            <input type="text" class="form-control" name="message" id="messageInput" 
-                                   placeholder="Xabar yozing... (O'zbek, Rus yoki Ingliz tilida)" 
-                                   autocomplete="off" required>
-                            <button class="btn btn-primary" type="submit" id="sendButton">
-                                <i class="fas fa-paper-plane"></i>
+                        <div class="input-container">
+                            <textarea 
+                                class="message-input" 
+                                name="message" 
+                                id="messageInput" 
+                                placeholder="Xabar yozing... (O'zbek, Rus yoki Ingliz tilida)" 
+                                rows="1"
+                                autocomplete="off" 
+                                required></textarea>
+                            <button class="send-button" type="submit" id="sendButton">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <line x1="22" y1="2" x2="11" y2="13" stroke="currentColor" stroke-width="2"/>
+                                    <polygon points="22,2 15,22 11,13 2,9 22,2" fill="currentColor"/>
+                                </svg>
                             </button>
                         </div>
                     </form>
                     
                     <!-- Quick Suggestions -->
-                    <div class="mt-2">
-                        <small class="text-muted">Tezkor savollar:</small>
-                        <div class="mt-1">
-                            <button type="button" class="btn btn-outline-secondary btn-sm me-1 quick-message" data-message="Salom!">
-                                Salom!
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary btn-sm me-1 quick-message" data-message="Yordam kerak">
-                                Yordam kerak
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary btn-sm me-1 quick-message" data-message="Bu qanday ishlaydi?">
-                                Bu qanday ishlaydi?
-                            </button>
-                        </div>
+                    <div class="quick-suggestions">
+                        <button type="button" class="quick-btn" data-message="Salom! 👋">
+                            Salom! 👋
+                        </button>
+                        <button type="button" class="quick-btn" data-message="Yordam kerak 🆘">
+                            Yordam kerak
+                        </button>
+                        <button type="button" class="quick-btn" data-message="Bu qanday ishlaydi? 🤔">
+                            Bu qanday ishlaydi?
+                        </button>
+                        <button type="button" class="quick-btn" data-message="Rahmat! 🙏">
+                            Rahmat!
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
 
-        <!-- Bot Info -->
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h6 class="mb-0"><i class="fas fa-info-circle me-1"></i>Bot Ma'lumotlari</h6>
+<!-- Bot Information (Below chat) -->
+<div class="container mt-4">
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card info-card border-0 shadow-lg">
+                <div class="card-header border-0">
+                    <h6 class="mb-0 d-flex align-items-center">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        Bot Ma'lumotlari
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong class="opacity-75">Nom:</strong>
+                        <p class="mb-0">{{ bot.name }}</p>
                     </div>
-                    <div class="card-body">
-                        <p><strong>Nom:</strong> {{ bot.name }}</p>
-                        <p><strong>Tavsif:</strong> {{ bot.description or "Tavsif yo'q" }}</p>
-                        <p><strong>Tillar:</strong> 
+                    <div class="mb-3">
+                        <strong class="opacity-75">Tavsif:</strong>
+                        <p class="mb-0">{{ bot.description or "Tavsif yo'q" }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <strong class="opacity-75">Qo'llab-quvvatlanadigan tillar:</strong>
+                        <div class="mt-2">
                             {% for lang in bot.languages.split(',') %}
-                                <span class="badge bg-secondary me-1">
-                                    {% if lang.strip() == 'uz' %}O'zbek
-                                    {% elif lang.strip() == 'ru' %}Русский
-                                    {% else %}English{% endif %}
+                                <span class="badge bg-light bg-opacity-20 border border-light border-opacity-30 me-1">
+                                    {% if lang.strip() == 'uz' %}🇺🇿 O'zbek
+                                    {% elif lang.strip() == 'ru' %}🇷🇺 Русский
+                                    {% else %}🇺🇸 English{% endif %}
                                 </span>
                             {% endfor %}
-                        </p>
-                        <p><strong>Yaratilgan:</strong> {{ bot.created_at.strftime('%d.%m.%Y %H:%M') }}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <strong class="opacity-75">Yaratilgan:</strong>
+                        <p class="mb-0">{{ bot.created_at.strftime('%d.%m.%Y %H:%M') }}</p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h6 class="mb-0"><i class="fas fa-chart-bar me-1"></i>Statistika</h6>
-                    </div>
-                    <div class="card-body">
-                        <p><strong>Suhbatlar:</strong> {{ bot.conversations|length }}</p>
-                        <p><strong>Xabarlar:</strong> 
-                            {% set total_messages = bot.conversations|sum(attribute='messages')|length %}
-                            {{ total_messages }}
-                        </p>
-                        <p><strong>Oxirgi faollik:</strong> 
-                            {% if bot.conversations %}
-                                {{ bot.conversations|sort(attribute='updated_at', reverse=true)|first.updated_at.strftime('%d.%m.%Y %H:%M') }}
-                            {% else %}
-                                Faollik yo'q
-                            {% endif %}
-                        </p>
-                        <p><strong>Holat:</strong> 
-                            <span class="badge bg-{{ 'success' if bot.is_active else 'danger' }}">
-                                {{ 'Faol' if bot.is_active else 'Faolsiz' }}
-                            </span>
-                        </p>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="card info-card border-0 shadow-lg">
+                <div class="card-header border-0">
+                    <h6 class="mb-0 d-flex align-items-center">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                            <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        Statistika
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="stat-item text-center">
+                                <h4 class="mb-1">{{ bot.conversations|length }}</h4>
+                                <small class="opacity-75">Suhbatlar</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-item text-center">
+                                <h4 class="mb-1">
+                                    {% set total_messages = bot.conversations|sum(attribute='messages')|length %}
+                                    {{ total_messages }}
+                                </h4>
+                                <small class="opacity-75">Xabarlar</small>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="mt-3">
+                                <strong class="opacity-75">Oxirgi faollik:</strong>
+                                <p class="mb-0">
+                                    {% if bot.conversations %}
+                                        {{ bot.conversations|sort(attribute='updated_at', reverse=true)|first.updated_at.strftime('%d.%m.%Y %H:%M') }}
+                                    {% else %}
+                                        Faollik yo'q
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="mt-2">
+                                <strong class="opacity-75">Holat:</strong>
+                                <span class="badge bg-{{ 'success' if bot.is_active else 'danger' }} bg-opacity-20 border border-{{ 'success' if bot.is_active else 'danger' }} border-opacity-30 ms-2">
+                                    {% if bot.is_active %}✅ Faol{% else %}❌ Faolsiz{% endif %}
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -265,13 +594,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Initial scroll
-    scrollToBottom();
+    setTimeout(scrollToBottom, 100);
+    
+    // Auto-resize textarea
+    messageInput.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+    });
     
     // Quick message buttons
-    document.querySelectorAll('.quick-message').forEach(button => {
+    document.querySelectorAll('.quick-btn').forEach(button => {
         button.addEventListener('click', function() {
             messageInput.value = this.dataset.message;
             messageInput.focus();
+            messageInput.dispatchEvent(new Event('input'));
         });
     });
     
@@ -286,18 +622,19 @@ document.addEventListener('DOMContentLoaded', function() {
         sendButton.disabled = true;
         messageInput.disabled = true;
         
-        // Add user message to chat
+        // Add user message to chat immediately
         addMessage(message, true);
         
         // Clear input
         messageInput.value = '';
+        messageInput.style.height = 'auto';
         
         // Show typing indicator
         typingIndicator.style.display = 'block';
         scrollToBottom();
         
         // Submit form
-        const formData = new FormData(chatForm);
+        const formData = new FormData();
         formData.append('message', message);
         
         fetch(window.location.href, {
@@ -306,16 +643,29 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.text())
         .then(html => {
-            // Hide typing indicator
-            typingIndicator.style.display = 'none';
+            // Parse the response to get the new message
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const messages = doc.querySelectorAll('.message.bot');
             
-            // Reload page to show new messages
-            window.location.reload();
+            if (messages.length > 0) {
+                const lastBotMessage = messages[messages.length - 1];
+                const content = lastBotMessage.querySelector('.message-bubble').innerHTML;
+                
+                // Hide typing indicator
+                typingIndicator.style.display = 'none';
+                
+                // Add bot response
+                addMessage(content, false);
+            } else {
+                // Fallback: reload page
+                window.location.reload();
+            }
         })
         .catch(error => {
             console.error('Error:', error);
             typingIndicator.style.display = 'none';
-            addMessage('Xatolik yuz berdi. Iltimos, qaytadan urinib ko\'ring.', false);
+            addMessage('❌ Xatolik yuz berdi. Iltimos, qaytadan urinib ko\'ring.', false);
         })
         .finally(() => {
             // Re-enable form
@@ -333,12 +683,24 @@ document.addEventListener('DOMContentLoaded', function() {
         const now = new Date();
         const timeString = now.toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit' });
         
+        const userIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/>
+            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+        </svg>`;
+        
+        const botIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+            <circle cx="9" cy="9" r="1" fill="currentColor"/>
+            <circle cx="15" cy="9" r="1" fill="currentColor"/>
+            <path d="M8 13s1 2 4 2 4-2 4-2" stroke="currentColor" stroke-width="1.5"/>
+        </svg>`;
+        
         messageDiv.innerHTML = `
-            <div class="message-content">${content}</div>
-            <div class="message-time">
-                <i class="fas fa-${isUser ? 'user' : 'robot'} me-1"></i>
-                ${isUser ? 'Siz' : '{{ bot.name }}'}
-                <span class="ms-2">${timeString}</span>
+            <div class="message-bubble">${content}</div>
+            <div class="message-info">
+                ${isUser ? userIcon : botIcon}
+                <span>${isUser ? 'Siz' : '{{ bot.name }}'}</span>
+                <span class="opacity-50">${timeString}</span>
             </div>
         `;
         
@@ -350,7 +712,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Focus on input
     messageInput.focus();
     
-    // Enter key handling
+    // Enter key handling (Shift+Enter for new line)
     messageInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
