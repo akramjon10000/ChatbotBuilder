@@ -8,20 +8,27 @@
     
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js">
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
     <!-- Custom CSS -->
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/pricing.css') }}" rel="stylesheet">
     
     {% block extra_head %}{% endblock %}
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background: var(--gradient-primary); backdrop-filter: blur(10px);">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('index') }}">
-                <i class="fas fa-robot me-2"></i>
-                AI Chatbot Platform
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="fw-bold">AI Chatbot Platform</span>
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -32,15 +39,23 @@
                 <ul class="navbar-nav me-auto">
                     {% if current_user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('dashboard') }}">
-                                <i class="fas fa-tachometer-alt me-1"></i>
+                            <a class="nav-link d-flex align-items-center" href="{{ url_for('dashboard') }}">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                                    <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                                    <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                                    <rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                                    <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                                </svg>
                                 Bosh sahifa
                             </a>
                         </li>
                         {% if current_user.is_admin %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
-                                    <i class="fas fa-cog me-1"></i>
+                                <a class="nav-link d-flex align-items-center" href="{{ url_for('admin_dashboard') }}">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
                                     Admin Panel
                                 </a>
                             </li>
@@ -51,8 +66,12 @@
                 <ul class="navbar-nav">
                     <!-- Language Selector -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-globe me-1"></i>
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                <line x1="2" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="2"/>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke="currentColor" stroke-width="2"/>
+                            </svg>
                             {% if get_locale() == 'uz' %}O'zbek{% elif get_locale() == 'ru' %}Русский{% else %}English{% endif %}
                         </a>
                         <ul class="dropdown-menu">
@@ -64,8 +83,11 @@
                     
                     {% if current_user.is_authenticated %}
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user me-1"></i>
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/>
+                                    <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                                </svg>
                                 {{ current_user.username }}
                                 {% if not current_user.has_access %}
                                     <span class="badge bg-danger ms-1">Sinov tugagan</span>
@@ -74,24 +96,40 @@
                                 {% endif %}
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ url_for('profile') }}">
-                                    <i class="fas fa-user-edit me-1"></i>Profil
+                                <li><a class="dropdown-item d-flex align-items-center" href="{{ url_for('profile') }}">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2"/>
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2"/>
+                                    </svg>Profil
                                 </a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{{ url_for('logout') }}">
-                                    <i class="fas fa-sign-out-alt me-1"></i>Chiqish
+                                <li><a class="dropdown-item d-flex align-items-center" href="{{ url_for('logout') }}">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2"/>
+                                        <polyline points="16,17 21,12 16,7" stroke="currentColor" stroke-width="2"/>
+                                        <line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2"/>
+                                    </svg>Chiqish
                                 </a></li>
                             </ul>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('login') }}">
-                                <i class="fas fa-sign-in-alt me-1"></i>Kirish
+                            <a class="nav-link d-flex align-items-center" href="{{ url_for('login') }}">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" stroke="currentColor" stroke-width="2"/>
+                                    <polyline points="10,17 15,12 10,7" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="15" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2"/>
+                                </svg>Kirish
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('register') }}">
-                                <i class="fas fa-user-plus me-1"></i>Ro'yxatdan o'tish
+                            <a class="nav-link d-flex align-items-center" href="{{ url_for('register') }}">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/>
+                                    <circle cx="8.5" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="20" y1="8" x2="20" y2="14" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="23" y1="11" x2="17" y2="11" stroke="currentColor" stroke-width="2"/>
+                                </svg>Ro'yxatdan o'tish
                             </a>
                         </li>
                     {% endif %}

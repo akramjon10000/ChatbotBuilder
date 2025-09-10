@@ -1,0 +1,91 @@
+/* Pricing Cards */
+.pricing-card {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pricing-card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.pricing-featured {
+    transform: scale(1.05);
+    z-index: 2;
+}
+
+.pricing-featured:hover {
+    transform: scale(1.05) translateY(-12px);
+}
+
+.pricing-features li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.pricing-features li:last-child {
+    border-bottom: none;
+}
+
+.pricing-features li:hover {
+    background: rgba(102, 126, 234, 0.05);
+    padding-left: 1rem;
+    margin: 0 -1rem;
+    border-radius: 8px;
+}
+
+/* CTA Section */
+.cta-section {
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
+    z-index: 1;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive for pricing */
+@media (max-width: 992px) {
+    .pricing-featured {
+        transform: none;
+        margin-top: 2rem;
+    }
+    
+    .pricing-featured:hover {
+        transform: translateY(-8px);
+    }
+}
+
+@media (max-width: 768px) {
+    .pricing-card {
+        margin-bottom: 2rem;
+    }
+    
+    .cta-section {
+        margin: 0 -15px;
+        border-radius: 0 !important;
+    }
+    
+    .cta-section h2 {
+        font-size: 2rem !important;
+    }
+}

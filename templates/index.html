@@ -3,40 +3,77 @@
 {% block title %}AI Chatbot Generator Platform{% endblock %}
 
 {% block content %}
-<div class="hero-section bg-primary text-white py-5 mb-5 rounded">
-    <div class="container">
-        <div class="row align-items-center">
+<div class="hero-section text-white py-5 mb-5 rounded position-relative overflow-hidden">
+    <div class="container hero-content">
+        <div class="row align-items-center min-vh-50">
             <div class="col-lg-6">
-                <h1 class="display-4 fw-bold mb-4">
-                    <i class="fas fa-robot me-3"></i>
-                    AI Chatbot Platform
-                </h1>
-                <p class="lead mb-4">
-                    O'zbek tilida AI chatbot yarating va uch tilda (O'zbek, Rus, Ingliz) 
-                    foydalanuvchilar bilan suhbat qiling. Telegram, WhatsApp va Instagram 
-                    bilan integratsiya.
-                </p>
-                <div class="d-flex gap-3">
-                    {% if not current_user.is_authenticated %}
-                        <a href="{{ url_for('register') }}" class="btn btn-light btn-lg">
-                            <i class="fas fa-rocket me-2"></i>
-                            3 Kun Bepul Sinab Ko'ring
-                        </a>
-                        <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg">
-                            <i class="fas fa-sign-in-alt me-2"></i>
-                            Kirish
-                        </a>
-                    {% else %}
-                        <a href="{{ url_for('dashboard') }}" class="btn btn-light btn-lg">
-                            <i class="fas fa-tachometer-alt me-2"></i>
-                            Bosh Sahifaga O'tish
-                        </a>
-                    {% endif %}
+                <div class="animate__animated animate__fadeInLeft">
+                    <h1 class="display-3 fw-bold mb-4 lh-1">
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-3 d-inline-block">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="currentColor"/>
+                            <circle cx="9" cy="9" r="1" fill="currentColor"/>
+                            <circle cx="15" cy="9" r="1" fill="currentColor"/>
+                            <path d="M8 13s1 2 4 2 4-2 4-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        AI Chatbot<br/>
+                        <span class="text-warning">Platform</span>
+                    </h1>
+                    <p class="lead mb-4 fs-5">
+                        🇺🇿 O'zbek tilida AI chatbot yarating va uch tilda suhbat qiling.<br/>
+                        📱 Telegram, WhatsApp va Instagram bilan to'liq integratsiya.
+                    </p>
+                    <div class="d-flex flex-column flex-md-row gap-3">
+                        {% if not current_user.is_authenticated %}
+                            <a href="{{ url_for('register') }}" class="btn btn-warning btn-lg px-4 py-3 rounded-pill fw-semibold">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                3 Kun Bepul Sinab Ko'ring
+                            </a>
+                            <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg px-4 py-3 rounded-pill fw-semibold">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" stroke="currentColor" stroke-width="2"/>
+                                    <polyline points="10,17 15,12 10,7" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="15" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Kirish
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-warning btn-lg px-4 py-3 rounded-pill fw-semibold">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                                    <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                                    <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                                    <rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                                    <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Bosh Sahifaga O'tish
+                            </a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
             <div class="col-lg-6">
-                <div class="text-center">
-                    <i class="fas fa-comments display-1 opacity-75"></i>
+                <div class="text-center animate__animated animate__fadeInRight">
+                    <div class="hero-illustration position-relative">
+                        <svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg" class="img-fluid">
+                            <!-- Chat bubbles -->
+                            <rect x="50" y="50" width="120" height="40" rx="20" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                            <rect x="230" y="90" width="100" height="40" rx="20" fill="rgba(255,255,255,0.3)" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+                            <rect x="70" y="140" width="140" height="40" rx="20" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                            <rect x="250" y="180" width="110" height="40" rx="20" fill="rgba(255,255,255,0.3)" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+                            
+                            <!-- Robot icon -->
+                            <circle cx="200" cy="240" r="30" fill="rgba(255,255,255,0.9)"/>
+                            <circle cx="190" cy="235" r="3" fill="#667eea"/>
+                            <circle cx="210" cy="235" r="3" fill="#667eea"/>
+                            <path d="M190 250h20" stroke="#667eea" stroke-width="2" stroke-linecap="round"/>
+                            
+                            <!-- Floating elements -->
+                            <circle cx="80" cy="30" r="4" fill="rgba(255,255,255,0.4)" class="floating-1"/>
+                            <circle cx="320" cy="60" r="3" fill="rgba(255,255,255,0.3)" class="floating-2"/>
+                            <circle cx="350" cy="120" r="5" fill="rgba(255,255,255,0.4)" class="floating-3"/>
+                        </svg>
+                    </div>
                 </div>
             </div>
         </div>
@@ -44,176 +81,361 @@
 </div>
 
 <!-- Features Section -->
-<div class="row mb-5">
-    <div class="col-12">
-        <h2 class="text-center mb-5">Asosiy Xususiyatlar</h2>
+<div class="container my-5">
+    <div class="text-center mb-5">
+        <h2 class="display-5 fw-bold mb-3">🚀 Asosiy Xususiyatlar</h2>
+        <p class="lead text-muted">Zamonaviy AI texnologiyalari bilan quvvatlanган platform</p>
     </div>
     
-    <div class="col-md-4 mb-4">
-        <div class="card h-100 text-center">
-            <div class="card-body">
-                <i class="fas fa-brain fa-3x text-primary mb-3"></i>
-                <h4 class="card-title">AI Intellekt</h4>
-                <p class="card-text">
-                    Google Gemini AI texnologiyasi yordamida aqlli va 
-                    tabiiy javoblar beruvchi chatbotlar yarating.
-                </p>
+    <div class="row g-4">
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 border-0 shadow-lg feature-card">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon mb-4">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-primary">
+                            <path d="M12 2a3 3 0 0 0-3 3c0 1.642-1.358 3-3 3s-3 1.358-3 3 1.358 3 3 3c1.642 0 3 1.358 3 3a3 3 0 0 0 6 0c0-1.642 1.358-3 3-3s3-1.358 3-3-1.358-3-3-3c-1.642 0-3-1.358-3-3a3 3 0 0 0-3-3z" fill="currentColor" opacity="0.3"/>
+                            <circle cx="12" cy="12" r="2" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h4 class="fw-bold mb-3">🧠 AI Intellekt</h4>
+                    <p class="text-muted mb-0">
+                        Google Gemini AI texnologiyasi yordamida aqlli va 
+                        tabiiy javoblar beruvchi chatbotlar yarating.
+                    </p>
+                </div>
             </div>
         </div>
-    </div>
-    
-    <div class="col-md-4 mb-4">
-        <div class="card h-100 text-center">
-            <div class="card-body">
-                <i class="fas fa-globe fa-3x text-success mb-3"></i>
-                <h4 class="card-title">Uch Tilda Qo'llab-quvvatlash</h4>
-                <p class="card-text">
-                    O'zbek, Rus va Ingliz tillarida avtomatik til 
-                    aniqlash va javob berish imkoniyati.
-                </p>
+        
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 border-0 shadow-lg feature-card">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon mb-4">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-success">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+                            <line x1="2" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke="currentColor" stroke-width="2" fill="currentColor" opacity="0.3"/>
+                        </svg>
+                    </div>
+                    <h4 class="fw-bold mb-3">🌍 Uch Tilda Qo'llab-quvvatlash</h4>
+                    <p class="text-muted mb-0">
+                        O'zbek, Rus va Ingliz tillarida avtomatik til 
+                        aniqlash va javob berish imkoniyati.
+                    </p>
+                </div>
             </div>
         </div>
-    </div>
-    
-    <div class="col-md-4 mb-4">
-        <div class="card h-100 text-center">
-            <div class="card-body">
-                <i class="fas fa-share-alt fa-3x text-info mb-3"></i>
-                <h4 class="card-title">Platform Integratsiyasi</h4>
-                <p class="card-text">
-                    Telegram, WhatsApp va Instagram bilan to'g'ridan-to'g'ri 
-                    ulanish va bir vaqtda ishlash.
-                </p>
+        
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 border-0 shadow-lg feature-card">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon mb-4">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-info">
+                            <path d="M5 12h14" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 5l7 7-7 7" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="5" cy="12" r="3" fill="currentColor" opacity="0.3"/>
+                            <circle cx="19" cy="12" r="3" fill="currentColor" opacity="0.3"/>
+                        </svg>
+                    </div>
+                    <h4 class="fw-bold mb-3">📱 Platform Integratsiyasi</h4>
+                    <p class="text-muted mb-0">
+                        Telegram, WhatsApp va Instagram bilan to'g'ridan-to'g'ri 
+                        ulanish va bir vaqtda ishlash.
+                    </p>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <!-- How It Works Section -->
-<div class="row mb-5">
-    <div class="col-12">
-        <h2 class="text-center mb-5">Qanday Ishlaydi</h2>
+<div class="container my-5 py-5" style="background: linear-gradient(135deg, #f8fafc 0%, #e3f2fd 100%); border-radius: 24px;">
+    <div class="text-center mb-5">
+        <h2 class="display-5 fw-bold mb-3">⚡ Qanday Ishlaydi</h2>
+        <p class="lead text-muted">4 ta oddiy qadam bilan AI chatbotingizni ishga tushiring</p>
     </div>
     
-    <div class="col-md-3 mb-4">
-        <div class="text-center">
-            <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                <span class="fw-bold fs-4">1</span>
+    <div class="row g-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="text-center step-card">
+                <div class="step-number mb-4">
+                    <div class="position-relative">
+                        <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center shadow-lg" style="width: 80px; height: 80px; background: var(--gradient-primary) !important;">
+                            <span class="fw-bold fs-3">1</span>
+                        </div>
+                        <div class="position-absolute top-0 start-100 translate-middle">
+                            <span class="badge bg-success rounded-pill">Bepul</span>
+                        </div>
+                    </div>
+                </div>
+                <h5 class="fw-bold mb-3">📝 Ro'yxatdan O'ting</h5>
+                <p class="text-muted">3 kunlik bepul sinov bilan boshlang. Hech qanday to'lov talab qilinmaydi.</p>
             </div>
-            <h5 class="mt-3">Ro'yxatdan O'ting</h5>
-            <p class="text-muted">3 kunlik bepul sinov bilan boshlang</p>
         </div>
-    </div>
-    
-    <div class="col-md-3 mb-4">
-        <div class="text-center">
-            <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                <span class="fw-bold fs-4">2</span>
+        
+        <div class="col-lg-3 col-md-6">
+            <div class="text-center step-card">
+                <div class="step-number mb-4">
+                    <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center shadow-lg" style="width: 80px; height: 80px; background: var(--gradient-success) !important;">
+                        <span class="fw-bold fs-3">2</span>
+                    </div>
+                </div>
+                <h5 class="fw-bold mb-3">🤖 Chatbot Yarating</h5>
+                <p class="text-muted">O'zingizning AI botingizni sozlang va shaxsiylashtiring.</p>
             </div>
-            <h5 class="mt-3">Chatbot Yarating</h5>
-            <p class="text-muted">O'zingizning AI botingizni sozlang</p>
         </div>
-    </div>
-    
-    <div class="col-md-3 mb-4">
-        <div class="text-center">
-            <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                <span class="fw-bold fs-4">3</span>
+        
+        <div class="col-lg-3 col-md-6">
+            <div class="text-center step-card">
+                <div class="step-number mb-4">
+                    <div class="bg-warning text-dark rounded-circle d-inline-flex align-items-center justify-content-center shadow-lg" style="width: 80px; height: 80px; background: var(--gradient-warning) !important;">
+                        <span class="fw-bold fs-3">3</span>
+                    </div>
+                </div>
+                <h5 class="fw-bold mb-3">🔗 Platform Ulang</h5>
+                <p class="text-muted">Telegram, WhatsApp yoki Instagram bilan bog'lang.</p>
             </div>
-            <h5 class="mt-3">Platform Ulang</h5>
-            <p class="text-muted">Telegram, WhatsApp yoki Instagram bilan ulang</p>
         </div>
-    </div>
-    
-    <div class="col-md-3 mb-4">
-        <div class="text-center">
-            <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                <span class="fw-bold fs-4">4</span>
+        
+        <div class="col-lg-3 col-md-6">
+            <div class="text-center step-card">
+                <div class="step-number mb-4">
+                    <div class="bg-danger text-white rounded-circle d-inline-flex align-items-center justify-content-center shadow-lg" style="width: 80px; height: 80px; background: var(--gradient-danger) !important;">
+                        <span class="fw-bold fs-3">4</span>
+                    </div>
+                </div>
+                <h5 class="fw-bold mb-3">🚀 Foydalaning</h5>
+                <p class="text-muted">Mijozlaringiz bilan avtomatik suhbat qiling va vaqtingizni tejang.</p>
             </div>
-            <h5 class="mt-3">Foydalaning</h5>
-            <p class="text-muted">Mijozlaringiz bilan avtomatik suhbat qiling</p>
         </div>
     </div>
 </div>
 
 <!-- Pricing Section -->
-<div class="row mb-5">
-    <div class="col-12">
-        <h2 class="text-center mb-5">Obuna Tizimlari</h2>
+<div class="container my-5 py-5">
+    <div class="text-center mb-5">
+        <h2 class="display-5 fw-bold mb-3">💎 Obuna Tizimlari</h2>
+        <p class="lead text-muted">O'zingizga mos rejani tanlang va AI chatbot sayohatini boshlang</p>
     </div>
     
-    <div class="col-md-4 mb-4">
-        <div class="card h-100">
-            <div class="card-header bg-light">
-                <h4 class="text-center mb-0">Bepul Sinov</h4>
-            </div>
-            <div class="card-body text-center">
-                <h2 class="text-primary">3 Kun</h2>
-                <p class="text-muted">Bepul sinab ko'rish</p>
-                <ul class="list-unstyled">
-                    <li><i class="fas fa-check text-success me-2"></i>1 ta chatbot</li>
-                    <li><i class="fas fa-check text-success me-2"></i>100 xabar/kun</li>
-                    <li><i class="fas fa-check text-success me-2"></i>Barcha tillar</li>
-                    <li><i class="fas fa-check text-success me-2"></i>Asosiy qo'llab-quvvatlash</li>
-                </ul>
+    <div class="row g-4 justify-content-center">
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 pricing-card border-0 shadow-lg">
+                <div class="card-header bg-light border-0 text-center py-4">
+                    <div class="pricing-badge mb-3">
+                        <span class="badge bg-success fs-6 px-3 py-2 rounded-pill">🆓 BEPUL</span>
+                    </div>
+                    <h4 class="fw-bold mb-0">Bepul Sinov</h4>
+                </div>
+                <div class="card-body text-center px-4 py-4">
+                    <div class="pricing-value mb-4">
+                        <h1 class="display-4 fw-bold text-success mb-1">3</h1>
+                        <p class="text-muted fs-5">kun bepul</p>
+                    </div>
+                    <ul class="list-unstyled pricing-features">
+                        <li class="mb-3">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-success me-2">
+                                <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            1 ta chatbot
+                        </li>
+                        <li class="mb-3">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-success me-2">
+                                <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            100 xabar/kun
+                        </li>
+                        <li class="mb-3">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-success me-2">
+                                <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Barcha tillar
+                        </li>
+                        <li class="mb-3">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-success me-2">
+                                <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Asosiy qo'llab-quvvatlash
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
-    </div>
-    
-    <div class="col-md-4 mb-4">
-        <div class="card h-100 border-primary">
-            <div class="card-header bg-primary text-white">
-                <h4 class="text-center mb-0">Admin Ruxsati</h4>
-            </div>
-            <div class="card-body text-center">
-                <h2 class="text-primary">Tasdiq</h2>
-                <p class="text-muted">Admin tomonidan ruxsat</p>
-                <ul class="list-unstyled">
-                    <li><i class="fas fa-check text-success me-2"></i>Cheksiz chatbotlar</li>
-                    <li><i class="fas fa-check text-success me-2"></i>Cheksiz xabarlar</li>
-                    <li><i class="fas fa-check text-success me-2"></i>Barcha platformalar</li>
-                    <li><i class="fas fa-check text-success me-2"></i>Premium qo'llab-quvvatlash</li>
-                </ul>
-                <p class="text-muted small">
-                    <i class="fas fa-info-circle me-1"></i>
-                    3 kunlik sinov tugagach admin ruxsati talab qilinadi
-                </p>
+        
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 pricing-card border-0 shadow-lg pricing-featured">
+                <div class="card-header text-white border-0 text-center py-4" style="background: var(--gradient-primary);">
+                    <div class="pricing-badge mb-3">
+                        <span class="badge bg-warning text-dark fs-6 px-3 py-2 rounded-pill">⭐ MASHHUR</span>
+                    </div>
+                    <h4 class="fw-bold mb-0">Admin Ruxsati</h4>
+                </div>
+                <div class="card-body text-center px-4 py-4">
+                    <div class="pricing-value mb-4">
+                        <h1 class="display-4 fw-bold text-primary mb-1">∞</h1>
+                        <p class="text-muted fs-5">cheksiz imkoniyat</p>
+                    </div>
+                    <ul class="list-unstyled pricing-features">
+                        <li class="mb-3">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-success me-2">
+                                <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Cheksiz chatbotlar
+                        </li>
+                        <li class="mb-3">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-success me-2">
+                                <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Cheksiz xabarlar
+                        </li>
+                        <li class="mb-3">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-success me-2">
+                                <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Barcha platformalar
+                        </li>
+                        <li class="mb-3">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-success me-2">
+                                <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Premium qo'llab-quvvatlash
+                        </li>
+                    </ul>
+                    <div class="alert alert-info border-0 mt-4">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                            <line x1="12" y1="16" x2="12" y2="12" stroke="currentColor" stroke-width="2"/>
+                            <line x1="12" y1="8" x2="12.01" y2="8" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        3 kunlik sinov tugagach admin ruxsati talab qilinadi
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    
-    <div class="col-md-4 mb-4">
-        <div class="card h-100">
-            <div class="card-header bg-warning">
-                <h4 class="text-center mb-0">Kutish Rejimi</h4>
-            </div>
-            <div class="card-body text-center">
-                <h2 class="text-warning">Kutish</h2>
-                <p class="text-muted">Admin tasdiqini kutish</p>
-                <ul class="list-unstyled">
-                    <li><i class="fas fa-times text-danger me-2"></i>Dostup yo'q</li>
-                    <li><i class="fas fa-clock text-warning me-2"></i>Admin javobini kutish</li>
-                    <li><i class="fas fa-envelope text-info me-2"></i>Bildirishnoma keladi</li>
-                </ul>
+        
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 pricing-card border-0 shadow-lg">
+                <div class="card-header bg-warning border-0 text-center py-4">
+                    <div class="pricing-badge mb-3">
+                        <span class="badge bg-dark fs-6 px-3 py-2 rounded-pill">⏳ KUTISH</span>
+                    </div>
+                    <h4 class="fw-bold mb-0 text-dark">Kutish Rejimi</h4>
+                </div>
+                <div class="card-body text-center px-4 py-4">
+                    <div class="pricing-value mb-4">
+                        <h1 class="display-4 fw-bold text-warning mb-1">⏰</h1>
+                        <p class="text-muted fs-5">admin tasdiqini kutish</p>
+                    </div>
+                    <ul class="list-unstyled pricing-features">
+                        <li class="mb-3">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-danger me-2">
+                                <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+                                <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            Hozir dostup yo'q
+                        </li>
+                        <li class="mb-3">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-warning me-2">
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                <polyline points="12,6 12,12 16,14" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            Admin javobini kutish
+                        </li>
+                        <li class="mb-3">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-info me-2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="2"/>
+                                <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            Email orqali xabar keladi
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- CTA Section -->
+<!-- Enhanced CTA Section -->
 {% if not current_user.is_authenticated %}
-<div class="row">
-    <div class="col-12">
-        <div class="bg-gradient text-white p-5 rounded text-center" style="background: linear-gradient(45deg, #007bff, #6f42c1);">
-            <h3 class="mb-4">Bugun Boshlayin!</h3>
-            <p class="lead mb-4">
-                3 kunlik bepul sinov bilan o'z AI chatbotingizni yarating. 
-                Hech qanday to'lov talab qilinmaydi.
-            </p>
-            <a href="{{ url_for('register') }}" class="btn btn-light btn-lg">
-                <i class="fas fa-rocket me-2"></i>
-                Hozir Ro'yxatdan O'ting
-            </a>
+<div class="container my-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="cta-section text-white p-5 rounded-4 position-relative overflow-hidden text-center" style="background: var(--gradient-primary); min-height: 300px;">
+                <!-- Background Pattern -->
+                <div class="position-absolute top-0 start-0 w-100 h-100 opacity-10">
+                    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <pattern id="cta-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                                <circle cx="20" cy="20" r="2" fill="white" opacity="0.3"/>
+                            </pattern>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#cta-pattern)"/>
+                    </svg>
+                </div>
+                
+                <!-- Content -->
+                <div class="position-relative z-3">
+                    <div class="mb-4">
+                        <span class="badge bg-warning text-dark fs-6 px-4 py-2 rounded-pill mb-3">🚀 BUGUN BOSHLAYIN</span>
+                    </div>
+                    <h2 class="display-4 fw-bold mb-4">AI chatbotingizni yarating!</h2>
+                    <p class="lead mb-4 fs-5">
+                        💳 Hech qanday to'lov talab qilinmaydi<br/>
+                        ⚡ 3 daqiqada sozlash<br/>
+                        🎯 3 kunlik to'liq bepul sinov
+                    </p>
+                    
+                    <div class="d-flex flex-column flex-md-row gap-3 justify-content-center align-items-center">
+                        <a href="{{ url_for('register') }}" class="btn btn-warning btn-lg px-5 py-3 rounded-pill fw-bold fs-5 btn-modern">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Hozir Ro'yxatdan O'ting
+                        </a>
+                        
+                        <div class="text-center">
+                            <small class="opacity-75">💬 Savollaringiz bormi?</small><br/>
+                            <a href="#" class="text-white text-decoration-none">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Live chat orqali so'rang
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Trust Indicators -->
+                    <div class="mt-5 pt-4 border-top border-white border-opacity-25">
+                        <div class="row g-4 text-center">
+                            <div class="col-md-4">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2 text-warning">
+                                        <path d="M12 1l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="currentColor"/>
+                                    </svg>
+                                    <small class="opacity-75">Yuqori sifat kafolati</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2 text-warning">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="currentColor" stroke-width="2" fill="currentColor" opacity="0.3"/>
+                                        <circle cx="12" cy="16" r="1" fill="currentColor"/>
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    <small class="opacity-75">100% xavfsiz</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2 text-warning">
+                                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="currentColor" stroke-width="2" fill="none"/>
+                                    </svg>
+                                    <small class="opacity-75">Tez va oson</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

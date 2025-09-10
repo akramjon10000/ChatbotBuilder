@@ -1,25 +1,39 @@
-/* AI Chatbot Platform - Custom Styles */
+/* AI Chatbot Platform - Modern Design */
 
 :root {
-    --primary-color: #007bff;
-    --secondary-color: #6c757d;
-    --success-color: #28a745;
-    --warning-color: #ffc107;
-    --danger-color: #dc3545;
-    --info-color: #17a2b8;
-    --light-color: #f8f9fa;
-    --dark-color: #343a40;
-    --font-family: 'Segoe UI', 'Roboto', 'Arial', 'Helvetica Neue', 'DejaVu Sans', sans-serif;
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+    --success-color: #4ecdc4;
+    --warning-color: #ffe066;
+    --danger-color: #ff6b6b;
+    --info-color: #4fc3f7;
+    --light-color: #f8fafc;
+    --dark-color: #2d3748;
+    --font-family: 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-success: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+    --gradient-warning: linear-gradient(135deg, #ffe066 0%, #ffa726 100%);
+    --gradient-danger: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 4px 12px rgba(0,0,0,0.12);
+    --shadow-lg: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
 }
 
 /* Global Styles */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 body {
     font-family: var(--font-family) !important;
-    background-color: #f5f5f5 !important;
-    color: #212529 !important;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
+    background-attachment: fixed !important;
+    color: var(--dark-color) !important;
     line-height: 1.6 !important;
     font-size: 16px !important;
     font-weight: 400 !important;
+    min-height: 100vh !important;
 }
 
 /* Force text visibility for all elements */
@@ -72,17 +86,76 @@ h1, h2, h3, h4, h5, h6, p, span, div, li, td, th, a {
     transform: translateY(-1px);
 }
 
-/* Card Enhancements */
+/* Modern Card Enhancements */
 .card {
     border: none;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
 }
 
 .card:hover {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-8px) scale(1.02);
+}
+
+.feature-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(102, 126, 234, 0.05) 100%);
+    transition: all 0.4s ease;
+    opacity: 0;
+}
+
+.feature-card:hover::before {
+    opacity: 1;
+}
+
+.feature-icon {
+    position: relative;
+    z-index: 2;
+}
+
+.step-card {
+    padding: 2rem 1rem;
+    border-radius: var(--radius-md);
+    transition: all 0.3s ease;
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+}
+
+.step-number {
+    position: relative;
+}
+
+.step-number::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    width: 50px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-color), transparent);
+    transform: translateY(-50%);
+}
+
+@media (max-width: 991px) {
+    .step-number::after {
+        display: none;
+    }
 }
 
 .card-header {
@@ -126,9 +199,29 @@ h1, h2, h3, h4, h5, h6, p, span, div, li, td, th, a {
 
 /* Hero Section */
 .hero-section {
-    background: linear-gradient(135deg, var(--primary-color), #6f42c1);
-    border-radius: 15px;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-lg);
     overflow: hidden;
+    position: relative;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="hero-pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23hero-pattern)"/></svg>');
+    opacity: 0.3;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
 }
 
 /* Form Enhancements */
@@ -303,11 +396,11 @@ h1, h2, h3, h4, h5, h6, p, span, div, li, td, th, a {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Animations */
+/* Enhanced Animations */
 @keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(30px);
     }
     to {
         opacity: 1;
@@ -327,8 +420,95 @@ h1, h2, h3, h4, h5, h6, p, span, div, li, td, th, a {
     }
 }
 
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .pulse {
     animation: pulse 2s infinite;
+}
+
+.floating-1 {
+    animation: float 3s ease-in-out infinite;
+}
+
+.floating-2 {
+    animation: float 4s ease-in-out infinite;
+    animation-delay: 1s;
+}
+
+.floating-3 {
+    animation: float 5s ease-in-out infinite;
+    animation-delay: 2s;
+}
+
+.animate__animated {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+}
+
+.animate__fadeInLeft {
+    animation-name: fadeInLeft;
+}
+
+.animate__fadeInRight {
+    animation-name: fadeInRight;
+}
+
+.animate__slideInUp {
+    animation-name: slideInUp;
+}
+
+/* Scroll animations */
+@media (prefers-reduced-motion: no-preference) {
+    .scroll-animation {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .scroll-animation.animate {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Loading Spinner */
@@ -344,20 +524,25 @@ footer {
     margin-top: auto;
 }
 
-/* Responsive Enhancements */
+/* Enhanced Responsive Design */
 @media (max-width: 768px) {
     .hero-section {
         margin: 0 -15px;
         border-radius: 0;
+        min-height: 400px;
+    }
+    
+    .hero-section h1 {
+        font-size: 2.5rem !important;
     }
     
     .card {
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
     }
     
     .btn {
         width: 100%;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.75rem;
     }
     
     .btn-group .btn {
@@ -371,6 +556,62 @@ footer {
     
     .chat-container {
         max-height: 50vh;
+    }
+    
+    .step-card {
+        padding: 1.5rem 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .feature-card {
+        margin-bottom: 2rem;
+    }
+    
+    .display-3 {
+        font-size: 2.5rem !important;
+    }
+    
+    .display-5 {
+        font-size: 2rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-section {
+        padding: 3rem 0 !important;
+    }
+    
+    .hero-section h1 {
+        font-size: 2rem !important;
+        line-height: 1.2 !important;
+    }
+    
+    .hero-section .lead {
+        font-size: 1rem !important;
+    }
+    
+    .step-number div {
+        width: 60px !important;
+        height: 60px !important;
+    }
+    
+    .step-number .fs-3 {
+        font-size: 1.5rem !important;
+    }
+}
+
+/* Extra large screens */
+@media (min-width: 1400px) {
+    .container {
+        max-width: 1320px;
+    }
+    
+    .hero-section {
+        min-height: 600px;
+    }
+    
+    .hero-section h1 {
+        font-size: 4rem !important;
     }
 }
 
@@ -673,9 +914,105 @@ ul, ol, li, p, span, div {
 @media (prefers-contrast: high) {
     .card {
         border: 2px solid #000;
+        background: #fff !important;
     }
     
     .btn {
         border: 2px solid #000;
     }
+    
+    .hero-section {
+        background: #000 !important;
+        color: #fff !important;
+    }
+}
+
+/* Custom Utilities */
+.min-vh-50 {
+    min-height: 50vh;
+}
+
+.hero-illustration {
+    filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.2));
+}
+
+.text-gradient {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.bg-glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.border-gradient {
+    border: 2px solid;
+    border-image: var(--gradient-primary) 1;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Focus improvements */
+.btn:focus-visible,
+.form-control:focus,
+.nav-link:focus-visible {
+    outline: 2px solid var(--warning-color);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(255, 224, 102, 0.2);
+}
+
+/* Loading states */
+.btn.loading {
+    position: relative;
+    color: transparent !important;
+}
+
+.btn.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Modern button styles */
+.btn-modern {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.btn-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+    z-index: -1;
+}
+
+.btn-modern:hover::before {
+    left: 100%;
 }
