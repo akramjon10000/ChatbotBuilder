@@ -558,7 +558,8 @@
                                 <strong class="opacity-75">Oxirgi faollik:</strong>
                                 <p class="mb-0">
                                     {% if bot.conversations %}
-                                        {{ bot.conversations|sort(attribute='updated_at', reverse=true)|first.updated_at.strftime('%d.%m.%Y %H:%M') }}
+                                        {% set latest_conversation = bot.conversations|sort(attribute='updated_at', reverse=true)|first %}
+                                        {{ latest_conversation.updated_at.strftime('%d.%m.%Y %H:%M') }}
                                     {% else %}
                                         Faollik yo'q
                                     {% endif %}

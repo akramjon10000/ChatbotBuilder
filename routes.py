@@ -432,8 +432,7 @@ def telegram_webhook(bot_id):
         user_msg = Message(
             conversation_id=conversation.id,
             content=user_message,
-            is_from_user=True,
-            language=detected_language
+            is_from_user=True
         )
         db.session.add(user_msg)
         
@@ -465,8 +464,7 @@ def telegram_webhook(bot_id):
         bot_msg = Message(
             conversation_id=conversation.id,
             content=response_text,
-            is_from_user=False,
-            language=detected_language
+            is_from_user=False
         )
         db.session.add(bot_msg)
         
