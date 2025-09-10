@@ -188,6 +188,56 @@ def bot_detail(bot_id):
         flash('Bu chatbotga ruxsatingiz yo\'q', 'error')
         return redirect(url_for('dashboard'))
     
+    # Handle POST requests for bot updates and platform integrations
+    if request.method == 'POST':
+        platform = request.form.get('platform')
+        
+        if platform == 'instagram':
+            # Handle Instagram token update
+            instagram_token = request.form.get('instagram_token', '').strip()
+            if instagram_token:
+                bot.instagram_token = instagram_token
+                db.session.commit()
+                flash('Instagram token muvaffaqiyatli saqlandi!', 'success')
+            else:
+                bot.instagram_token = None
+                db.session.commit()
+                flash('Instagram token o\'chirildi', 'info')
+        
+        elif platform == 'whatsapp':
+            # Handle WhatsApp token update
+            whatsapp_token = request.form.get('whatsapp_token', '').strip()
+            if whatsapp_token:
+                bot.whatsapp_token = whatsapp_token
+                db.session.commit()
+                flash('WhatsApp token muvaffaqiyatli saqlandi!', 'success')
+            else:
+                bot.whatsapp_token = None
+                db.session.commit()
+                flash('WhatsApp token o\'chirildi', 'info')
+        
+        else:
+            # Handle regular bot updates (name, description, etc.)
+            name = request.form.get('name')
+            description = request.form.get('description')
+            system_prompt = request.form.get('system_prompt')
+            languages = ','.join(request.form.getlist('languages'))
+            max_daily_messages = request.form.get('max_daily_messages', type=int)
+            is_active = 'is_active' in request.form
+            
+            if name:
+                bot.name = name
+                bot.description = description
+                bot.system_prompt = system_prompt
+                bot.languages = languages
+                bot.max_daily_messages = max_daily_messages
+                bot.is_active = is_active
+                bot.updated_at = datetime.utcnow()
+                db.session.commit()
+                flash('Bot ma\'lumotlari yangilandi!', 'success')
+        
+        return redirect(url_for('bot_detail', bot_id=bot.id))
+    
     # Get conversations
     conversations = Conversation.query.filter_by(bot_id=bot.id).order_by(
         Conversation.updated_at.desc()
