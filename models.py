@@ -64,6 +64,11 @@ class User(UserMixin, db.Model):
     phone = db.Column(db.String(20))
     preferred_language = db.Column(db.String(5), default='uz')
     
+    # TELEGRAM MARKETING
+    telegram_chat_id = db.Column(db.String(50))  # Foydalanuvchining Telegram chat ID
+    marketing_opt_out = db.Column(db.Boolean, default=False)  # Marketing xabarlardan chiqish
+    marketing_last_sent_at = db.Column(db.DateTime)  # Oxirgi marketing xabari yuborilgan vaqt
+    
     # ADMIN VA HOLAT
     is_admin = db.Column(db.Boolean, default=False)
     _is_active = db.Column('is_active', db.Boolean, default=True)
