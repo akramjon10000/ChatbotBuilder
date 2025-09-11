@@ -215,6 +215,7 @@ class Bot(db.Model):
 class Conversation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     bot_id = db.Column(db.Integer, db.ForeignKey('bot.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # Add user link
     platform = db.Column(db.String(20), nullable=False)  # telegram, whatsapp, instagram
     platform_user_id = db.Column(db.String(100), nullable=False)
     platform_username = db.Column(db.String(100))

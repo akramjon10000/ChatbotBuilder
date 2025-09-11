@@ -1,4 +1,4 @@
-modules = ["web", "python-3.11", "nodejs-20"]
+modules = ["web", "python-3.11", "nodejs-20", "postgresql-16"]
 
 [nix]
 channel = "stable-25_05"
@@ -34,12 +34,12 @@ localPort = 5000
 externalPort = 80
 
 [[ports]]
-localPort = 35873
-externalPort = 3001
-
-[[ports]]
 localPort = 37807
 externalPort = 3000
+
+[[ports]]
+localPort = 40623
+externalPort = 3001
 
 [agent]
 integrations = ["python_gemini:1.0.0", "python_database:1.0.0", "python_sendgrid:1.0.0"]
