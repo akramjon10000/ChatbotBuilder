@@ -122,6 +122,10 @@ class Bot(db.Model):
     instagram_token = db.Column(db.String(500))
     instagram_page_id = db.Column(db.String(100))
     
+    # Monitoring settings
+    admin_chat_id = db.Column(db.String(100))  # Admin's personal Telegram chat ID
+    notification_channel = db.Column(db.String(100))  # Telegram channel for team notifications
+    
     # Settings
     is_active = db.Column(db.Boolean, default=True)
     max_daily_messages = db.Column(db.Integer, default=100)
