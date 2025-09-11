@@ -138,7 +138,10 @@ def dashboard():
     return render_template('dashboard.html', 
                          bots=bots,
                          recent_conversations=recent_conversations,
-                         trial_days_left=current_user.trial_days_left)
+                         trial_days_left=current_user.trial_days_left,
+                         subscription_days_left=current_user.subscription_days_left,
+                         is_subscription_member=current_user.is_subscription_member,
+                         subscription_label=current_user.subscription_label)
 
 @app.route('/trial_expired')
 @login_required

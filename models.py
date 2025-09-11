@@ -80,6 +80,28 @@ class User(UserMixin, db.Model):
         return 0
     
     @property
+    def subscription_days_left(self):
+        """Obuna kunlari qolganini hisoblash"""
+        if self.access_status in [AccessStatus.MONTHLY, AccessStatus.YEARLY] and self.subscription_end_date:
+            days_left = (self.subscription_end_date.date() - datetime.utcnow().date()).days
+            return max(0, days_left)
+        return 0
+    
+    @property
+    def is_subscription_member(self):
+        """Foydalanuvchi obunachi ekanligini tekshirish"""
+        return self.access_status in [AccessStatus.MONTHLY, AccessStatus.YEARLY]
+    
+    @property
+    def subscription_label(self):
+        """Obuna turini aniqlash"""
+        if self.access_status == AccessStatus.MONTHLY:
+            return "Oylik obuna"
+        elif self.access_status == AccessStatus.YEARLY:
+            return "Yillik obuna"
+        return ""
+    
+    @property
     def has_access(self):
         """Foydalanuvchi dostupini tekshirish"""
         if self.is_admin:
