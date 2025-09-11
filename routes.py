@@ -503,6 +503,10 @@ def telegram_webhook(bot_id):
             platform_user_id=str(chat_id)
         ).first()
         
+        # Extract username from message
+        telegram_username = message['from'].get('username')
+        user_display_name = message['from'].get('first_name', 'Unknown')
+        
         if not conversation:
             # Detect language for new conversations
             detected_language = detect_language(user_message)
@@ -510,11 +514,16 @@ def telegram_webhook(bot_id):
                 bot_id=bot.id,
                 platform='telegram',
                 platform_user_id=str(chat_id),
-                platform_username=message['from'].get('username') or message['from'].get('first_name', 'Unknown'),
+                platform_username=telegram_username or user_display_name,
                 language=detected_language
             )
             db.session.add(conversation)
             db.session.commit()
+        else:
+            # Update username if it exists and is different
+            if telegram_username and conversation.platform_username != telegram_username:
+                conversation.platform_username = telegram_username
+                db.session.commit()
         
         # Use the conversation's language preference
         user_language = conversation.language
@@ -786,15 +795,25 @@ def handle_telegram_command(bot, chat_id, command, message):
         ).first()
         
         if not conversation:
+            # Extract username from message  
+            telegram_username = message['from'].get('username')
+            user_display_name = message['from'].get('first_name', 'Unknown')
+            
             conversation = Conversation(
                 bot_id=bot.id,
                 platform='telegram',
                 platform_user_id=str(chat_id),
-                platform_username=message['from'].get('username') or message['from'].get('first_name', 'Unknown'),
+                platform_username=telegram_username or user_display_name,
                 language='uz'  # Default to Uzbek
             )
             db.session.add(conversation)
             db.session.commit()
+        else:
+            # Update username if it exists and is different
+            telegram_username = message['from'].get('username')
+            if telegram_username and conversation.platform_username != telegram_username:
+                conversation.platform_username = telegram_username
+                db.session.commit()
         
         if command.startswith('/start'):
             # Welcome message with language selection
