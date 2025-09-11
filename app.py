@@ -118,7 +118,9 @@ talisman = Talisman(
             'api.telegram.org',
             'graph.facebook.com',
             'graph.instagram.com'
-        ]
+        ],
+        'worker-src': "'self'",
+        'child-src': "'self'"
     },
     content_security_policy_nonce_in=['script-src', 'style-src'],
     referrer_policy='strict-origin-when-cross-origin',

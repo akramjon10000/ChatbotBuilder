@@ -9,6 +9,7 @@ import csv
 import hashlib
 import hmac
 
+from flask import send_from_directory
 from app import app, db, limiter, csrf
 from models import User, Bot, Conversation, Message, KnowledgeBase, AdminAction
 from services.ai_service import AIService
@@ -24,6 +25,11 @@ def index():
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
     return render_template('index.html')
+
+@app.route('/service-worker.js')
+def service_worker():
+    """PWA Service Worker"""
+    return send_from_directory('.', 'service-worker.js', mimetype='application/javascript')
 
 @app.route('/set_language/<language>')
 def set_language(language):
