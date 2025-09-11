@@ -498,24 +498,20 @@ def send_notification():
                         target_users.extend(approved_users)
                 
                 # Get chat IDs for users who have interacted via Telegram with proper filtering
-                logging.info(f"DEBUG: Searching for chat IDs with filters: all={target_all_users}, trial={target_trial_users}, subscription={target_subscription_users}, approved={target_approved_users}")
                 chat_ids = get_user_chat_ids_from_conversations(
                     target_all_users=target_all_users,
                     target_trial_users=target_trial_users,
                     target_subscription_users=target_subscription_users,
                     target_approved_users=target_approved_users
                 )
-                logging.info(f"DEBUG: Found chat IDs: {chat_ids}")
                 
                 if chat_ids:
-                    logging.info(f"DEBUG: Sending message to {len(chat_ids)} chat IDs")
                     formatted_message = f"<b>{title}</b>\n\n{message}"
                     bulk_result = telegram_service.send_bulk_messages(
                         chat_ids,
                         formatted_message,
                         'HTML'
                     )
-                    logging.info(f"DEBUG: Bulk send result: {bulk_result}")
                     
                     sent_count += bulk_result['sent']
                     failed_count += bulk_result['failed']
@@ -540,7 +536,7 @@ def send_notification():
                     db.session.commit()
                     
             except Exception as e:
-                logging.error(f"DEBUG: Direct message exception: {e}")
+                logging.error(f"Direct message error: {e}")
                 failed_count += len(chat_ids) if 'chat_ids' in locals() else 1
         
         # Update notification status
