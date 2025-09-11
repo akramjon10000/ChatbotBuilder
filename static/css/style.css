@@ -78,9 +78,15 @@ a:hover {
 
 /* Navigation text fixes */
 .navbar * {
-    color: #000000 !important;
+    color: rgba(255, 255, 255, 0.95) !important;
     font-weight: 600 !important;
-    text-shadow: none;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* Navbar background adjustment for better contrast */
+.navbar {
+    background: var(--gradient-primary) !important;
+    backdrop-filter: blur(10px);
 }
 
 /* Card content visibility */
