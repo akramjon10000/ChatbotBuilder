@@ -9,7 +9,7 @@ import csv
 import hashlib
 import hmac
 
-from app import app, db, limiter
+from app import app, db, limiter, csrf
 from models import User, Bot, Conversation, Message, KnowledgeBase, AdminAction
 from services.ai_service import AIService
 from services.platform_service import TelegramService, InstagramService, PlatformManager
@@ -468,6 +468,7 @@ def knowledge_guide():
 # Platform integrations and webhook handlers
 
 @app.route('/webhook/telegram/<int:bot_id>', methods=['POST'])
+@csrf.exempt
 @limiter.limit("100 per minute")
 def telegram_webhook(bot_id):
     """Telegram webhook handler"""
