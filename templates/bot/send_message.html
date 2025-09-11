@@ -1,0 +1,314 @@
+{% extends "base.html" %}
+
+{% block title %}Mijozlarga Xabar Yuborish - {{ bot.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <!-- Header -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0">
+                            <i class="fas fa-paper-plane me-2"></i>
+                            Mijozlarga Xabar Yuborish
+                        </h3>
+                        <p class="mb-0 mt-2">{{ bot.name }} - Aktiv suhbatlar</p>
+                    </div>
+                    <div>
+                        <a href="{{ url_for('bot_detail', bot_id=bot.id) }}" class="btn btn-outline-light">
+                            <i class="fas fa-arrow-left me-1"></i>Orqaga
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Send Message Form -->
+        <div class="row">
+            <!-- Conversation List -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-users me-2"></i>
+                            Aktiv Suhbatlar
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if conversations %}
+                            <div class="list-group">
+                                {% for conversation in conversations %}
+                                <div class="list-group-item list-group-item-action conversation-item" 
+                                     data-conversation-id="{{ conversation.id }}"
+                                     data-platform="{{ conversation.platform }}"
+                                     data-user-id="{{ conversation.platform_user_id }}"
+                                     data-username="{{ conversation.platform_username }}">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">
+                                                <i class="fab fa-{{ conversation.platform }} me-1"></i>
+                                                @{{ conversation.platform_username }}
+                                            </h6>
+                                            <p class="mb-1 text-muted small">
+                                                <i class="fas fa-id-card me-1"></i>
+                                                ID: {{ conversation.platform_user_id }}
+                                            </p>
+                                            <p class="mb-0 text-muted small">
+                                                <i class="fas fa-language me-1"></i>
+                                                {% if conversation.language == 'uz' %}O'zbek
+                                                {% elif conversation.language == 'ru' %}Русский
+                                                {% elif conversation.language == 'en' %}English
+                                                {% else %}{{ conversation.language }}{% endif %}
+                                            </p>
+                                        </div>
+                                        <div class="text-end">
+                                            <small class="text-muted">
+                                                {{ conversation.updated_at.strftime('%d.%m.%Y %H:%M') }}
+                                            </small>
+                                            <br>
+                                            <span class="badge bg-{{ 'success' if conversation.platform == 'telegram' else 'info' if conversation.platform == 'instagram' else 'primary' }}">
+                                                {{ conversation.platform.title() }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                                <h6 class="text-muted">Aktiv suhbatlar yo'q</h6>
+                                <p class="text-muted">Hali mijozlar bilan suhbat boshlanmagan.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Message Composition -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-edit me-2"></i>
+                            Xabar Yozish
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="messageForm" method="POST">
+                            <input type="hidden" id="conversationId" name="conversation_id" value="">
+                            <input type="hidden" id="platform" name="platform" value="">
+                            <input type="hidden" id="platformUserId" name="platform_user_id" value="">
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Tanlangan mijoz:</label>
+                                <div id="selectedUser" class="alert alert-light">
+                                    <i class="fas fa-hand-pointer me-1"></i>
+                                    Chapdan suhbatni tanlang
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="messageText" class="form-label">Xabar matni:</label>
+                                <textarea class="form-control" id="messageText" name="message" rows="5" 
+                                          placeholder="Bu yerga xabaringizni yozing..." required disabled></textarea>
+                                <div class="form-text">Maksimal 4000 belgi</div>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary" id="sendButton" disabled>
+                                    <i class="fas fa-paper-plane me-1"></i>
+                                    Xabar Yuborish
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Recent Messages -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="fas fa-clock me-1"></i>
+                            So'nggi xabarlar
+                        </h6>
+                    </div>
+                    <div class="card-body" id="recentMessages">
+                        <p class="text-muted">Suhbatni tanlang</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success/Error Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050">
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+                    <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' }} me-1"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const conversationItems = document.querySelectorAll('.conversation-item');
+    const selectedUser = document.getElementById('selectedUser');
+    const messageText = document.getElementById('messageText');
+    const sendButton = document.getElementById('sendButton');
+    const conversationId = document.getElementById('conversationId');
+    const platform = document.getElementById('platform');
+    const platformUserId = document.getElementById('platformUserId');
+    const recentMessages = document.getElementById('recentMessages');
+
+    conversationItems.forEach(item => {
+        item.addEventListener('click', function() {
+            // Remove active class from all items
+            conversationItems.forEach(i => i.classList.remove('active'));
+            // Add active class to clicked item
+            this.classList.add('active');
+
+            // Get conversation data
+            const convId = this.dataset.conversationId;
+            const platformType = this.dataset.platform;
+            const userId = this.dataset.userId;
+            const username = this.dataset.username;
+
+            // Update form fields
+            conversationId.value = convId;
+            platform.value = platformType;
+            platformUserId.value = userId;
+
+            // Update selected user display
+            selectedUser.innerHTML = `
+                <i class="fab fa-${platformType} me-1"></i>
+                <strong>@${username}</strong> (${platformType.toUpperCase()})
+                <br><small class="text-muted">ID: ${userId}</small>
+            `;
+            selectedUser.className = 'alert alert-info';
+
+            // Enable form elements
+            messageText.disabled = false;
+            sendButton.disabled = false;
+
+            // Load recent messages
+            loadRecentMessages(convId);
+        });
+    });
+
+    function loadRecentMessages(convId) {
+        recentMessages.innerHTML = '<p class="text-muted">Yuklanmoqda...</p>';
+        
+        fetch(`/conversation/${convId}/messages`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.messages && data.messages.length > 0) {
+                    const messagesHtml = data.messages.slice(-5).map(msg => `
+                        <div class="border-bottom pb-2 mb-2">
+                            <div class="d-flex justify-content-between">
+                                <strong class="small">${msg.is_from_user ? 'Mijoz' : 'Bot'}</strong>
+                                <small class="text-muted">${new Date(msg.created_at).toLocaleString('uz-UZ')}</small>
+                            </div>
+                            <p class="small mb-0">${msg.content}</p>
+                        </div>
+                    `).join('');
+                    recentMessages.innerHTML = messagesHtml;
+                } else {
+                    recentMessages.innerHTML = '<p class="text-muted">Xabarlar yo\'q</p>';
+                }
+            })
+            .catch(error => {
+                recentMessages.innerHTML = '<p class="text-danger">Xabarlarni yuklab bo\'lmadi</p>';
+            });
+    }
+
+    // Form submission
+    document.getElementById('messageForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        sendButton.disabled = true;
+        sendButton.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Yuborilmoqda...';
+
+        fetch(window.location.href, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Clear form
+                messageText.value = '';
+                // Show success message
+                showMessage('Xabar muvaffaqiyatli yuborildi!', 'success');
+                // Reload recent messages
+                if (conversationId.value) {
+                    loadRecentMessages(conversationId.value);
+                }
+            } else {
+                showMessage(data.error || 'Xabar yuborishda xatolik yuz berdi', 'error');
+            }
+        })
+        .catch(error => {
+            showMessage('Tarmoq xatoligi', 'error');
+        })
+        .finally(() => {
+            sendButton.disabled = false;
+            sendButton.innerHTML = '<i class="fas fa-paper-plane me-1"></i>Xabar Yuborish';
+        });
+    });
+
+    function showMessage(text, type) {
+        const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+        const iconClass = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+        
+        const alert = document.createElement('div');
+        alert.className = `alert ${alertClass} alert-dismissible fade show`;
+        alert.innerHTML = `
+            <i class="fas ${iconClass} me-1"></i>
+            ${text}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        const container = document.querySelector('.position-fixed') || document.body;
+        container.appendChild(alert);
+        
+        setTimeout(() => alert.remove(), 5000);
+    }
+});
+</script>
+
+<style>
+.conversation-item {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.conversation-item:hover {
+    background-color: var(--bs-light);
+}
+
+.conversation-item.active {
+    background-color: var(--bs-primary);
+    color: white;
+}
+
+.conversation-item.active .text-muted {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+#recentMessages {
+    max-height: 200px;
+    overflow-y: auto;
+}
+</style>
+{% endblock %}

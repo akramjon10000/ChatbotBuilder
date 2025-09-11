@@ -1011,6 +1011,99 @@ def disconnect_telegram(bot_id):
     
     return redirect(url_for('bot_detail', bot_id=bot_id))
 
+@app.route('/bot/<int:bot_id>/send-message', methods=['GET', 'POST'])
+@login_required
+def send_manual_message(bot_id):
+    """Send manual message to customers"""
+    if not current_user.has_access:
+        return redirect(url_for('trial_expired'))
+        
+    bot = Bot.query.get_or_404(bot_id)
+    
+    # Check ownership
+    if bot.user_id != current_user.id:
+        flash('Bu chatbotga ruxsatingiz yo\'q', 'error')
+        return redirect(url_for('dashboard'))
+    
+    if request.method == 'POST':
+        try:
+            conversation_id = request.form.get('conversation_id')
+            platform = request.form.get('platform')
+            platform_user_id = request.form.get('platform_user_id')
+            message_text = request.form.get('message')
+            
+            if not all([conversation_id, platform, platform_user_id, message_text]):
+                return jsonify({'success': False, 'error': 'Barcha maydonlar to\'ldirilishi kerak'})
+            
+            conversation = Conversation.query.get_or_404(conversation_id)
+            
+            # Check if conversation belongs to this bot
+            if conversation.bot_id != bot.id:
+                return jsonify({'success': False, 'error': 'Suhbat bu botga tegishli emas'})
+            
+            # Send message through appropriate platform
+            success = False
+            if platform == 'telegram' and bot.telegram_token:
+                telegram_service = TelegramService(bot.telegram_token)
+                success = telegram_service.send_message(platform_user_id, message_text)
+            elif platform == 'instagram' and bot.instagram_access_token:
+                instagram_service = InstagramService(bot.instagram_access_token, bot.instagram_page_id)
+                success = instagram_service.send_message(platform_user_id, message_text)
+            # Add WhatsApp support here later
+            
+            if success:
+                # Save message to database
+                message = Message(
+                    conversation_id=conversation.id,
+                    content=message_text,
+                    is_from_user=False,  # This is from admin/bot
+                    created_at=datetime.utcnow()
+                )
+                db.session.add(message)
+                conversation.updated_at = datetime.utcnow()
+                db.session.commit()
+                
+                return jsonify({'success': True, 'message': 'Xabar muvaffaqiyatli yuborildi'})
+            else:
+                return jsonify({'success': False, 'error': 'Xabar yuborishda xatolik yuz berdi'})
+                
+        except Exception as e:
+            logging.error(f"Manual message send error: {e}")
+            return jsonify({'success': False, 'error': 'Server xatoligi'})
+    
+    # GET request - show message sending page
+    conversations = Conversation.query.filter_by(bot_id=bot.id).order_by(Conversation.updated_at.desc()).all()
+    
+    return render_template('bot/send_message.html', bot=bot, conversations=conversations)
+
+@app.route('/conversation/<int:conversation_id>/messages')
+@login_required
+def get_conversation_messages(conversation_id):
+    """Get messages for a conversation"""
+    if not current_user.has_access:
+        return jsonify({'error': 'Access denied'}), 403
+        
+    conversation = Conversation.query.get_or_404(conversation_id)
+    
+    # Check if conversation belongs to user's bot
+    if conversation.bot.user_id != current_user.id:
+        return jsonify({'error': 'Access denied'}), 403
+    
+    messages = Message.query.filter_by(conversation_id=conversation_id)\
+                           .order_by(Message.created_at.desc())\
+                           .limit(10).all()
+    
+    messages_data = []
+    for message in reversed(messages):  # Reverse to show oldest first
+        messages_data.append({
+            'id': message.id,
+            'content': message.content,
+            'is_from_user': message.is_from_user,
+            'created_at': message.created_at.isoformat()
+        })
+    
+    return jsonify({'messages': messages_data})
+
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('errors/404.html'), 404
