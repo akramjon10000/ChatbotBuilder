@@ -5,7 +5,7 @@ Bu xizmat sinov tizimi va admin nazoratini boshqaradi
 
 from datetime import datetime, timedelta
 from app import db
-from models import User, AdminAction, AccessStatus, AdminActionType
+from models import User, AdminAction, AccessStatus, AdminActionType, SubscriptionType
 import logging
 
 class AccessControlService:
@@ -56,6 +56,60 @@ class AccessControlService:
         db.session.commit()
         
         logging.info(f"Admin {admin_user.username} granted access to {target_user.username}")
+        return True
+    
+    @staticmethod
+    def grant_monthly_subscription(admin_user, target_user, reason=None):
+        """Oylik obuna berish"""
+        if not admin_user.is_admin:
+            raise ValueError("Faqat adminlar obuna bera oladi")
+        
+        target_user.access_status = AccessStatus.MONTHLY
+        target_user.subscription_type = SubscriptionType.MONTHLY
+        target_user.subscription_start_date = datetime.utcnow()
+        target_user.subscription_end_date = datetime.utcnow() + timedelta(days=30)
+        target_user.subscription_granted_by = admin_user.id
+        target_user.is_trial_active = False
+        target_user.admin_approved = True
+        target_user.access_granted_date = datetime.utcnow()
+        
+        # Admin harakatini yozib olish
+        action = AdminAction()
+        action.admin_id = admin_user.id
+        action.target_user_id = target_user.id
+        action.action_type = AdminActionType.GRANT_MONTHLY
+        action.reason = reason
+        db.session.add(action)
+        db.session.commit()
+        
+        logging.info(f"Admin {admin_user.username} granted monthly subscription to {target_user.username}")
+        return True
+    
+    @staticmethod
+    def grant_yearly_subscription(admin_user, target_user, reason=None):
+        """Yillik obuna berish"""
+        if not admin_user.is_admin:
+            raise ValueError("Faqat adminlar obuna bera oladi")
+        
+        target_user.access_status = AccessStatus.YEARLY
+        target_user.subscription_type = SubscriptionType.YEARLY
+        target_user.subscription_start_date = datetime.utcnow()
+        target_user.subscription_end_date = datetime.utcnow() + timedelta(days=365)
+        target_user.subscription_granted_by = admin_user.id
+        target_user.is_trial_active = False
+        target_user.admin_approved = True
+        target_user.access_granted_date = datetime.utcnow()
+        
+        # Admin harakatini yozib olish
+        action = AdminAction()
+        action.admin_id = admin_user.id
+        action.target_user_id = target_user.id
+        action.action_type = AdminActionType.GRANT_YEARLY
+        action.reason = reason
+        db.session.add(action)
+        db.session.commit()
+        
+        logging.info(f"Admin {admin_user.username} granted yearly subscription to {target_user.username}")
         return True
     
     @staticmethod

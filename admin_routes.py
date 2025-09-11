@@ -134,6 +134,52 @@ def grant_user_access(user_id):
     flash(f'{user.username} ga dostup berildi!', 'success')
     return redirect(url_for('admin_users'))
 
+
+@app.route('/admin/users/<int:user_id>/grant_monthly', methods=['POST'])
+@login_required
+@admin_required
+def grant_monthly_subscription(user_id):
+    """Foydalanuvchiga oylik obuna berish"""
+    from services.access_control import AccessControlService
+    
+    user = User.query.get_or_404(user_id)
+    reason = request.form.get('reason', '')
+    
+    if user.is_admin:
+        flash('Admin foydalanuvchisiga obuna berish mumkin emas', 'error')
+        return redirect(url_for('admin_users'))
+    
+    try:
+        AccessControlService.grant_monthly_subscription(current_user, user, reason)
+        flash(f'{user.username}ga oylik obuna berildi', 'success')
+    except Exception as e:
+        flash(f'Xatolik: {str(e)}', 'error')
+    
+    return redirect(url_for('admin_users'))
+
+
+@app.route('/admin/users/<int:user_id>/grant_yearly', methods=['POST'])
+@login_required
+@admin_required
+def grant_yearly_subscription(user_id):
+    """Foydalanuvchiga yillik obuna berish"""
+    from services.access_control import AccessControlService
+    
+    user = User.query.get_or_404(user_id)
+    reason = request.form.get('reason', '')
+    
+    if user.is_admin:
+        flash('Admin foydalanuvchisiga obuna berish mumkin emas', 'error')
+        return redirect(url_for('admin_users'))
+    
+    try:
+        AccessControlService.grant_yearly_subscription(current_user, user, reason)
+        flash(f'{user.username}ga yillik obuna berildi', 'success')
+    except Exception as e:
+        flash(f'Xatolik: {str(e)}', 'error')
+    
+    return redirect(url_for('admin_users'))
+
 @app.route('/admin/users/<int:user_id>/revoke_access', methods=['POST'])
 @login_required
 @admin_required

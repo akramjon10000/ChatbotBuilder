@@ -120,6 +120,20 @@
                                         </button>
                                     {% endif %}
                                     
+                                    <!-- Monthly Subscription Button -->
+                                    <button type="button" class="btn btn-primary btn-sm" 
+                                            data-bs-toggle="modal" data-bs-target="#monthlyModal{{ user.id }}"
+                                            title="Oylik obuna berish">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </button>
+                                    
+                                    <!-- Yearly Subscription Button -->
+                                    <button type="button" class="btn btn-info btn-sm" 
+                                            data-bs-toggle="modal" data-bs-target="#yearlyModal{{ user.id }}"
+                                            title="Yillik obuna berish">
+                                        <i class="fas fa-calendar"></i>
+                                    </button>
+                                    
                                     {% if user.admin_approved %}
                                         <!-- Revoke Access Button -->
                                         <button type="button" class="btn btn-warning btn-sm" 
@@ -184,6 +198,70 @@
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
                                                     <button type="submit" class="btn btn-warning">Dostupni bekor qilish</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Monthly Subscription Modal -->
+                                <div class="modal fade" id="monthlyModal{{ user.id }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Oylik Obuna Berish</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <form method="POST" action="{{ url_for('grant_monthly_subscription', user_id=user.id) }}">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                                <div class="modal-body">
+                                                    <p><strong>{{ user.username }}</strong> ga 30 kunlik (oylik) obuna berasizmi?</p>
+                                                    <div class="alert alert-info">
+                                                        <i class="fas fa-info-circle me-2"></i>
+                                                        Obuna muddati: <strong>30 kun</strong>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="monthlyReason{{ user.id }}" class="form-label">Sabab (ixtiyoriy)</label>
+                                                        <textarea name="reason" id="monthlyReason{{ user.id }}" class="form-control" rows="3" placeholder="Oylik obuna berish sababi..."></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <i class="fas fa-calendar-alt me-1"></i>Oylik Obuna Berish
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Yearly Subscription Modal -->
+                                <div class="modal fade" id="yearlyModal{{ user.id }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Yillik Obuna Berish</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <form method="POST" action="{{ url_for('grant_yearly_subscription', user_id=user.id) }}">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                                <div class="modal-body">
+                                                    <p><strong>{{ user.username }}</strong> ga 365 kunlik (yillik) obuna berasizmi?</p>
+                                                    <div class="alert alert-success">
+                                                        <i class="fas fa-check-circle me-2"></i>
+                                                        Obuna muddati: <strong>365 kun (1 yil)</strong>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="yearlyReason{{ user.id }}" class="form-label">Sabab (ixtiyoriy)</label>
+                                                        <textarea name="reason" id="yearlyReason{{ user.id }}" class="form-control" rows="3" placeholder="Yillik obuna berish sababi..."></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                                                    <button type="submit" class="btn btn-info">
+                                                        <i class="fas fa-calendar me-1"></i>Yillik Obuna Berish
+                                                    </button>
                                                 </div>
                                             </form>
                                         </div>

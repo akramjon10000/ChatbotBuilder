@@ -6,14 +6,24 @@ import enum
 class AccessStatus(enum.Enum):
     TRIAL = "trial"           # 3 kunlik sinov
     PENDING = "pending"       # Sinov tugagan, admin ruxsatini kutmoqda
-    APPROVED = "approved"     # Admin ruxsat bergan
+    APPROVED = "approved"     # Admin ruxsat bergan (doimiy)
+    MONTHLY = "monthly"       # Oylik obuna
+    YEARLY = "yearly"         # Yillik obuna
     SUSPENDED = "suspended"   # Admin dostupni to'xtatgan
+
+
+class SubscriptionType(enum.Enum):
+    NONE = "none"
+    MONTHLY = "monthly"
+    YEARLY = "yearly"
 
 class AdminActionType(enum.Enum):
     GRANT_ACCESS = "grant_access"
     REVOKE_ACCESS = "revoke_access"
     EXTEND_TRIAL = "extend_trial"
     SUSPEND_USER = "suspend_user"
+    GRANT_MONTHLY = "grant_monthly"
+    GRANT_YEARLY = "grant_yearly"
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -30,6 +40,12 @@ class User(UserMixin, db.Model):
     admin_approved = db.Column(db.Boolean, default=False)
     access_granted_date = db.Column(db.DateTime)
     access_status = db.Column(db.Enum(AccessStatus), default=AccessStatus.TRIAL)
+    
+    # OBUNA TIZIMI
+    subscription_type = db.Column(db.Enum(SubscriptionType), default=SubscriptionType.NONE)
+    subscription_start_date = db.Column(db.DateTime)
+    subscription_end_date = db.Column(db.DateTime)
+    subscription_granted_by = db.Column(db.Integer, db.ForeignKey('user.id'))
     
     # FOYDALANUVCHI MA'LUMOTLARI
     full_name = db.Column(db.String(100))
@@ -72,6 +88,11 @@ class User(UserMixin, db.Model):
             return True
         if self.access_status == AccessStatus.TRIAL:
             return self.trial_days_left > 0
+        if self.access_status in [AccessStatus.MONTHLY, AccessStatus.YEARLY]:
+            # Subscription access
+            if self.subscription_end_date:
+                return datetime.utcnow() < self.subscription_end_date
+            return False
         return False
     
     @property
@@ -88,6 +109,22 @@ class User(UserMixin, db.Model):
             return "Admin ruxsatini kutmoqda"
         elif self.access_status == AccessStatus.APPROVED:
             return "Tasdiqlangan"
+        elif self.access_status == AccessStatus.MONTHLY:
+            if self.subscription_end_date:
+                days_left = (self.subscription_end_date - datetime.utcnow()).days
+                if days_left > 0:
+                    return f"Oylik obuna ({days_left} kun qoldi)"
+                else:
+                    return "Oylik obuna tugagan"
+            return "Oylik obuna"
+        elif self.access_status == AccessStatus.YEARLY:
+            if self.subscription_end_date:
+                days_left = (self.subscription_end_date - datetime.utcnow()).days
+                if days_left > 0:
+                    return f"Yillik obuna ({days_left} kun qoldi)"
+                else:
+                    return "Yillik obuna tugagan"
+            return "Yillik obuna"
         elif self.access_status == AccessStatus.SUSPENDED:
             return "To'xtatilgan"
         return "Noma'lum"
