@@ -459,6 +459,7 @@
                             <!-- Notification Settings -->
                             <h6 class="mb-3"><i class="fas fa-bell me-1"></i>Bildirishnoma sozlamalari</h6>
                             <form method="POST" action="{{ url_for('bot_detail', bot_id=bot.id) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                 <input type="hidden" name="platform" value="telegram_notifications">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -490,6 +491,7 @@
                             <hr class="my-3">
                             
                             <form method="POST" action="{{ url_for('disconnect_telegram', bot_id=bot.id) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                 <button type="submit" class="btn btn-outline-danger btn-sm" 
                                         onclick="return confirm('Telegram botni uzishni xohlaysizmi?')">
                                     <i class="fas fa-unlink me-1"></i>Uzish
@@ -497,6 +499,7 @@
                             </form>
                         {% else %}
                             <form method="POST" action="{{ url_for('deploy_telegram', bot_id=bot.id) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                 <div class="mb-3">
                                     <label for="telegramToken" class="form-label">Bot Token</label>
                                     <input type="text" class="form-control" id="telegramToken" name="telegram_token" 
@@ -548,6 +551,7 @@
                     </div>
                     <div class="card-body">
                         <form method="POST" action="{{ url_for('bot_detail', bot_id=bot.id) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <input type="hidden" name="platform" value="whatsapp">
                             <div class="mb-3">
                                 <label for="whatsappToken" class="form-label">Access Token</label>
@@ -574,6 +578,7 @@
                     </div>
                     <div class="card-body">
                         <form method="POST" action="{{ url_for('bot_detail', bot_id=bot.id) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <input type="hidden" name="platform" value="instagram">
                             <div class="mb-3">
                                 <label for="instagramToken" class="form-label">Page Access Token</label>
