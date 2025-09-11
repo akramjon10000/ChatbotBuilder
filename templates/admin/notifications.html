@@ -1,6 +1,6 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Telegram Xabarlar - AI Chatbot Platform{% endblock %}
+{% block title %}Marketing Xabarlar - AI Chatbot Platform{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
@@ -8,8 +8,8 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="mb-0">
-                    <i class="fab fa-telegram me-2 text-primary"></i>
-                    Telegram Xabarlar
+                    <i class="fas fa-envelope me-2 text-primary"></i>
+                    Marketing Xabarlar
                 </h2>
             </div>
         </div>
@@ -26,53 +26,61 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="{{ url_for('send_notification') }}">
+                    <form method="POST" action="{{ url_for('send_marketing_email') }}">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <!-- Title and Message -->
                         <div class="mb-3">
-                            <label for="title" class="form-label">Sarlavha *</label>
-                            <input type="text" class="form-control" id="title" name="title" required placeholder="Xabar sarlavhasi...">
+                            <label for="subject" class="form-label">Email sarlavhasi *</label>
+                            <input type="text" class="form-control" id="subject" name="subject" required placeholder="Email sarlavhasi...">
                         </div>
                         
                         <div class="mb-3">
-                            <label for="message" class="form-label">Xabar matni *</label>
-                            <textarea class="form-control" id="message" name="message" rows="4" required placeholder="Xabar matnini kiriting..."></textarea>
+                            <label for="content" class="form-label">Email matni *</label>
+                            <textarea class="form-control" id="content" name="content" rows="6" required placeholder="Email matnini kiriting..."></textarea>
+                            <small class="text-muted">HTML formatda yozishingiz mumkin</small>
                         </div>
                         
-                        <!-- Bot Selection -->
+                        <!-- Target Audience -->
                         <div class="mb-3">
-                            <label for="telegram_bot_id" class="form-label">Telegram Bot *</label>
-                            <select class="form-select" id="telegram_bot_id" name="telegram_bot_id" required>
-                                <option value="">Bot tanlang...</option>
-                                {% for bot in telegram_bots %}
-                                <option value="{{ bot.id }}">{{ bot.name }} ({{ bot.telegram_username or 'Username yo\'q' }})</option>
-                                {% endfor %}
-                            </select>
-                            {% if not telegram_bots %}
-                            <div class="alert alert-warning mt-2">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                Hech qanday Telegram token sozlangan bot mavjud emas. Avval botlaringizga Telegram token qo'shing.
-                            </div>
-                            {% endif %}
-                        </div>
-                        
-                        <!-- Delivery Method -->
-                        <div class="mb-3">
-                            <label class="form-label">Yuborish usuli</label>
+                            <label class="form-label">Maqsadli auditoriya</label>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="send_direct_messages" name="send_direct_messages" value="1" checked>
-                                <label class="form-check-label" for="send_direct_messages">
-                                    <i class="fas fa-paper-plane me-1"></i>
-                                    Barcha foydalanuvchilarga yuborish
+                                <input class="form-check-input" type="radio" id="target_trial_expired" name="target_audience" value="trial_expired" checked>
+                                <label class="form-check-label" for="target_trial_expired">
+                                    <i class="fas fa-clock me-1"></i>
+                                    Sinov muddati tugagan foydalanuvchilar
                                 </label>
-                                <small class="text-muted d-block">Telegram orqali chatbot bilan muloqot qilgan barcha foydalanuvchilarga yuboriladi</small>
+                                <small class="text-muted d-block">3 kunlik bepul sinov foydalangan va muddati tugagan foydalanuvchilar</small>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="target_trial_active" name="target_audience" value="trial_active">
+                                <label class="form-check-label" for="target_trial_active">
+                                    <i class="fas fa-user-clock me-1"></i>
+                                    Faol sinov foydalanuvchilari
+                                </label>
+                                <small class="text-muted d-block">Hozir 3 kunlik sinov davomida foydalanayotgan foydalanuvchilar</small>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="target_all" name="target_audience" value="all">
+                                <label class="form-check-label" for="target_all">
+                                    <i class="fas fa-users me-1"></i>
+                                    Barcha foydalanuvchilar
+                                </label>
+                                <small class="text-muted d-block">Barcha ro'yxatdan o'tgan foydalanuvchilar</small>
                             </div>
                         </div>
                         
-                        <!-- Hidden inputs for simplified interface -->
-                        <input type="hidden" name="notification_type" value="general">
-                        <input type="hidden" name="target_all_users" value="1">
-                        <input type="hidden" name="send_to_channel" value="0">
+                        <!-- Contact Information Section -->
+                        <div class="mb-3">
+                            <label class="form-label">To'liq dostup uchun aloqa ma'lumotlari</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="include_contact" name="include_contact" value="1" checked>
+                                <label class="form-check-label" for="include_contact">
+                                    <i class="fas fa-phone me-1"></i>
+                                    Aloqa ma'lumotlarini qo'shish
+                                </label>
+                                <small class="text-muted d-block">+998 99 644 84 44 va https://t.me/Akramjon1984 ma'lumotlarini qo'shadi</small>
+                            </div>
+                        </div>
                         
                         <div class="d-flex justify-content-between">
                             <button type="button" class="btn btn-outline-secondary" onclick="window.location.href='{{ url_for('admin_dashboard') }}'">
@@ -80,8 +88,8 @@
                                 Orqaga
                             </button>
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-paper-plane me-2"></i>
-                                Xabar Yuborish
+                                <i class="fas fa-envelope me-2"></i>
+                                Email Yuborish
                             </button>
                         </div>
                     </form>
@@ -130,36 +138,34 @@
             <div class="card border-0 shadow-sm mt-3">
                 <div class="card-header bg-light">
                     <h6 class="card-title mb-0">
-                        <i class="fab fa-telegram me-2"></i>
-                        Mavjud Telegram Botlar
+                        <i class="fas fa-info-circle me-2"></i>
+                        To'liq Dostup Uchun Aloqa
                     </h6>
                 </div>
                 <div class="card-body">
-                    {% if telegram_bots %}
-                        {% for bot in telegram_bots %}
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fas fa-robot text-primary me-2"></i>
-                            <div class="flex-grow-1">
-                                <strong>{{ bot.name }}</strong>
-                                {% if bot.telegram_username %}
-                                <br><small class="text-muted">@{{ bot.telegram_username }}</small>
-                                {% endif %}
-                                {% if bot.notification_channel %}
-                                <br><small class="text-success">Kanal: {{ bot.notification_channel }}</small>
-                                {% endif %}
-                            </div>
-                            <span class="badge bg-success">
-                                <i class="fas fa-check"></i>
-                            </span>
+                    <div class="text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-phone fa-2x text-primary mb-2"></i>
+                            <h6>Telefon raqami:</h6>
+                            <a href="tel:+998996448444" class="btn btn-outline-primary">
+                                <i class="fas fa-phone me-2"></i>
+                                +998 99 644 84 44
+                            </a>
                         </div>
-                        {% if not loop.last %}<hr>{% endif %}
-                        {% endfor %}
-                    {% else %}
-                        <div class="text-center text-muted">
-                            <i class="fas fa-robot fa-2x mb-2"></i>
-                            <p>Hech qanday Telegram bot sozlanmagan</p>
+                        <hr>
+                        <div class="mb-3">
+                            <i class="fab fa-telegram fa-2x text-info mb-2"></i>
+                            <h6>Telegram:</h6>
+                            <a href="https://t.me/Akramjon1984" target="_blank" class="btn btn-outline-info">
+                                <i class="fab fa-telegram me-2"></i>
+                                @Akramjon1984
+                            </a>
                         </div>
-                    {% endif %}
+                        <div class="alert alert-info mt-3">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <small>To'liq dostup uchun aloqa chiqing</small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
