@@ -595,7 +595,7 @@ def telegram_webhook(bot_id):
         telegram_service = TelegramService(bot.telegram_token)
         result = telegram_service.send_message(chat_id, response_text)
         
-        if result and result.get('ok'):
+        if result and result.success:
             logging.info(f"Telegram message sent successfully to chat {chat_id}")
             
             # Send monitoring notification if configured
