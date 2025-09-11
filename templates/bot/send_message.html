@@ -236,16 +236,27 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('messageForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
+        console.log('Form submission started');
+        console.log('Conversation ID:', conversationId.value);
+        console.log('Platform:', platform.value);
+        console.log('Platform User ID:', platformUserId.value);
+        console.log('Message:', messageText.value);
+        
         const formData = new FormData(this);
         sendButton.disabled = true;
         sendButton.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Yuborilmoqda...';
 
+        console.log('Sending POST request to:', window.location.href);
         fetch(window.location.href, {
             method: 'POST',
             body: formData
         })
-        .then(response => response.json())
+        .then(response => {
+            console.log('Response status:', response.status);
+            return response.json();
+        })
         .then(data => {
+            console.log('Response data:', data);
             if (data.success) {
                 // Clear form
                 messageText.value = '';
@@ -260,6 +271,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
+            console.error('Fetch error:', error);
             showMessage('Tarmoq xatoligi', 'error');
         })
         .finally(() => {
