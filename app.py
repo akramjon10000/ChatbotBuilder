@@ -5,6 +5,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_babel import Babel
 from flask_wtf.csrf import CSRFProtect
+from flask_talisman import Talisman
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -18,11 +21,22 @@ db = SQLAlchemy(model_class=Base)
 login_manager = LoginManager()
 babel = Babel()
 csrf = CSRFProtect()
+limiter = Limiter(
+    app=None,
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"]
+)
 
 # Create the app
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+
+# Security configuration
+app.config['SESSION_COOKIE_SECURE'] = True  # HTTPS only
+app.config['SESSION_COOKIE_HTTPONLY'] = True  # No JavaScript access
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  # CSRF protection
+app.config['PERMANENT_SESSION_LIFETIME'] = 86400  # 24 hours
 
 # Configure the database
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///chatbot_platform.db")
@@ -44,6 +58,59 @@ app.config['BABEL_DEFAULT_TIMEZONE'] = 'UTC'
 db.init_app(app)
 login_manager.init_app(app)
 csrf.init_app(app)
+limiter.init_app(app)
+
+# Initialize Talisman for security headers
+talisman = Talisman(
+    app,
+    force_https=True,
+    strict_transport_security=True,
+    strict_transport_security_max_age=31536000,  # 1 year
+    content_security_policy={
+        'default-src': "'self'",
+        'script-src': [
+            "'self'",
+            "'unsafe-inline'",  # Needed for Bootstrap and some inline scripts
+            'cdn.jsdelivr.net',
+            'unpkg.com',
+            'cdnjs.cloudflare.com',
+            'code.jquery.com'
+        ],
+        'style-src': [
+            "'self'",
+            "'unsafe-inline'",  # Needed for inline styles
+            'cdn.jsdelivr.net',
+            'fonts.googleapis.com',
+            'cdnjs.cloudflare.com'
+        ],
+        'font-src': [
+            "'self'",
+            'fonts.gstatic.com',
+            'cdn.jsdelivr.net'
+        ],
+        'img-src': [
+            "'self'",
+            'data:',
+            'blob:',
+            '*.telegram.org',
+            '*.facebook.com',
+            '*.instagram.com'
+        ],
+        'connect-src': [
+            "'self'",
+            'api.telegram.org',
+            'graph.facebook.com',
+            'graph.instagram.com'
+        ]
+    },
+    content_security_policy_nonce_in=['script-src', 'style-src'],
+    referrer_policy='strict-origin-when-cross-origin',
+    permissions_policy={
+        'geolocation': '()',
+        'microphone': '()',
+        'camera': '()'
+    }
+)
 
 # Login manager settings
 login_manager.login_view = 'login'

@@ -7,7 +7,7 @@ import os
 import logging
 import csv
 
-from app import app, db
+from app import app, db, limiter
 from models import User, Bot, Conversation, Message, KnowledgeBase, AdminAction
 from services.ai_service import AIService
 from services.platform_service import TelegramService, InstagramService, PlatformManager
@@ -31,6 +31,7 @@ def set_language(language):
     return redirect(request.referrer or url_for('index'))
 
 @app.route('/register', methods=['GET', 'POST'])
+@limiter.limit("5 per minute")
 def register():
     """Ro'yxatdan o'tish"""
     if request.method == 'POST':
@@ -76,6 +77,7 @@ def register():
     return render_template('auth/register.html')
 
 @app.route('/login', methods=['GET', 'POST'])
+@limiter.limit("10 per minute")
 def login():
     """Tizimga kirish"""
     if request.method == 'POST':
@@ -464,6 +466,7 @@ def knowledge_guide():
 # Platform integrations and webhook handlers
 
 @app.route('/webhook/telegram/<int:bot_id>', methods=['POST'])
+@limiter.limit("100 per minute")
 def telegram_webhook(bot_id):
     """Telegram webhook handler"""
     try:
@@ -647,6 +650,7 @@ def send_monitoring_notification(bot, conversation, user_message, bot_response, 
         logging.error(f"Monitoring notification error: {e}")
 
 @app.route('/webhook/instagram/<int:bot_id>', methods=['GET', 'POST'])
+@limiter.limit("100 per minute")
 def instagram_webhook(bot_id):
     """Instagram webhook handler"""
     
