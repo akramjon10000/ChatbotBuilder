@@ -19,4 +19,5 @@ dependencies = [
     "flask-wtf>=1.2.2",
     "flask-limiter>=3.12",
     "flask-talisman>=1.1.0",
+    "flask-migrate>=4.1.0",
 ]

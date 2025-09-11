@@ -6,6 +6,8 @@ from datetime import datetime, timedelta
 import os
 import logging
 import csv
+import hashlib
+import hmac
 
 from app import app, db, limiter
 from models import User, Bot, Conversation, Message, KnowledgeBase, AdminAction
@@ -472,6 +474,17 @@ def telegram_webhook(bot_id):
     try:
         # Get bot
         bot = Bot.query.get_or_404(bot_id)
+        
+        # Verify webhook signature for security
+        if bot.telegram_token:
+            telegram_secret = hashlib.sha256(bot.telegram_token.encode()).digest()
+            signature = request.headers.get('X-Telegram-Bot-Api-Secret-Token')
+            if signature:
+                # Verify the signature matches
+                expected = hmac.new(telegram_secret, request.get_data(), hashlib.sha256).hexdigest()
+                if not hmac.compare_digest(signature, expected):
+                    logging.warning(f"Invalid Telegram webhook signature for bot {bot_id}")
+                    return "Unauthorized", 401
         
         # Check if bot has telegram token
         if not bot.telegram_token:

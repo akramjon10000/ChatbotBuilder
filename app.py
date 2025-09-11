@@ -8,16 +8,25 @@ from flask_wtf.csrf import CSRFProtect
 from flask_talisman import Talisman
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from flask_migrate import Migrate
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-# Configure logging
-logging.basicConfig(level=logging.DEBUG)
+# Configure logging for production
+log_level = os.environ.get("LOG_LEVEL", "INFO").upper()
+logging.basicConfig(
+    level=getattr(logging, log_level),
+    format='%(asctime)s %(levelname)s %(name)s %(message)s',
+    handlers=[
+        logging.StreamHandler()
+    ]
+)
 
 class Base(DeclarativeBase):
     pass
 
 db = SQLAlchemy(model_class=Base)
+migrate = Migrate()
 login_manager = LoginManager()
 babel = Babel()
 csrf = CSRFProtect()
@@ -33,10 +42,17 @@ app.secret_key = os.environ.get("SESSION_SECRET")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # Security configuration
-app.config['SESSION_COOKIE_SECURE'] = True  # HTTPS only
+is_production = os.environ.get('FLASK_ENV') == 'production'
+app.config['SESSION_COOKIE_SECURE'] = is_production  # HTTPS only in production
 app.config['SESSION_COOKIE_HTTPONLY'] = True  # No JavaScript access
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  # CSRF protection
 app.config['PERMANENT_SESSION_LIFETIME'] = 86400  # 24 hours
+
+# Environment-specific settings
+if is_production:
+    app.config['PREFERRED_URL_SCHEME'] = 'https'
+else:
+    app.config['PREFERRED_URL_SCHEME'] = 'http'
 
 # Configure the database
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///chatbot_platform.db")
@@ -56,6 +72,7 @@ app.config['BABEL_DEFAULT_TIMEZONE'] = 'UTC'
 
 # Initialize extensions
 db.init_app(app)
+migrate.init_app(app, db)
 login_manager.init_app(app)
 csrf.init_app(app)
 limiter.init_app(app)
@@ -63,7 +80,7 @@ limiter.init_app(app)
 # Initialize Talisman for security headers
 talisman = Talisman(
     app,
-    force_https=True,
+    force_https=is_production,  # Only force HTTPS in production
     strict_transport_security=True,
     strict_transport_security_max_age=31536000,  # 1 year
     content_security_policy={
