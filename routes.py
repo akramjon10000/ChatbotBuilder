@@ -571,6 +571,10 @@ def telegram_webhook(bot_id):
         
         if result and result.get('ok'):
             logging.info(f"Telegram message sent successfully to chat {chat_id}")
+            
+            # Send monitoring notification if configured
+            send_monitoring_notification(bot, conversation, user_message, response_text, 'telegram')
+            
             return "OK", 200
         else:
             logging.error(f"Failed to send Telegram message: {result}")
@@ -580,6 +584,52 @@ def telegram_webhook(bot_id):
         logging.error(f"Telegram webhook error: {e}")
         db.session.rollback()
         return "Error", 500
+
+def send_monitoring_notification(bot, conversation, user_message, bot_response, platform):
+    """Send monitoring notification to admin chat or channel"""
+    try:
+        if not bot.telegram_token:
+            return
+            
+        telegram_service = TelegramService(bot.telegram_token)
+        
+        # Format notification message
+        platform_emoji = {'telegram': '💬', 'instagram': '📸', 'whatsapp': '💚'}.get(platform, '🤖')
+        
+        notification_text = f"""
+{platform_emoji} **{platform.title()} Conversation**
+
+👤 **Foydalanuvchi:** {conversation.platform_username or 'Noma\'lum'}
+🆔 **Chat ID:** {conversation.platform_user_id}
+🤖 **Bot:** {bot.name}
+
+📝 **Foydalanuvchi xabari:**
+{user_message}
+
+🤖 **Bot javobi:**
+{bot_response}
+
+🕐 **Vaqt:** {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} UTC
+"""
+
+        # Send to admin chat if configured
+        if bot.admin_chat_id:
+            try:
+                telegram_service.send_message(bot.admin_chat_id, notification_text)
+                logging.info(f"Monitoring notification sent to admin chat {bot.admin_chat_id}")
+            except Exception as e:
+                logging.error(f"Failed to send notification to admin chat: {e}")
+        
+        # Send to notification channel if configured
+        if bot.notification_channel:
+            try:
+                telegram_service.send_message(bot.notification_channel, notification_text)
+                logging.info(f"Monitoring notification sent to channel {bot.notification_channel}")
+            except Exception as e:
+                logging.error(f"Failed to send notification to channel: {e}")
+                
+    except Exception as e:
+        logging.error(f"Monitoring notification error: {e}")
 
 @app.route('/webhook/instagram/<int:bot_id>', methods=['GET', 'POST'])
 def instagram_webhook(bot_id):
@@ -704,6 +754,9 @@ def instagram_webhook(bot_id):
                             
                             if result:
                                 logging.info(f"Instagram message sent successfully to user {sender_id}")
+                                
+                                # Send monitoring notification if configured
+                                send_monitoring_notification(bot, conversation, user_message, response_text, 'instagram')
                             else:
                                 logging.error(f"Failed to send Instagram message to user {sender_id}")
         
