@@ -441,69 +441,11 @@ def send_notification():
         sent_count = 0
         failed_count = 0
         
-        # Send to channel if requested
-        if send_to_channel:
-            if not bot.notification_channel:
-                failed_count += 1
-                logging.error(f"Channel sending requested but bot {bot.name} has no notification_channel configured")
-                flash('Kanalga yuborish tanlangan lekin bot sozlamalarida kanal ko\'rsatilmagan!', 'warning')
-            else:
-                try:
-                    formatted_message = f"<b>{title}</b>\n\n{message}"
-                    result = telegram_service.send_channel_message(
-                        bot.notification_channel, 
-                        formatted_message,
-                        'HTML'
-                    )
-                    
-                    if result['success']:
-                        sent_count += 1
-                        logging.info(f"Channel message sent successfully to {bot.notification_channel}")
-                    else:
-                        failed_count += 1
-                        logging.error(f"Failed to send channel message: {result.get('error_description')}")
-                        
-                except Exception as e:
-                    failed_count += 1
-                    logging.error(f"Channel message error: {e}")
-        
-        # Send direct messages if requested
+        # Send direct messages (simplified - always send to all users)
         if send_direct_messages:
             try:
-                # Get target users
-                target_users = []
-                
-                if target_all_users:
-                    target_users = User.query.filter_by(is_admin=False).all()
-                else:
-                    if target_trial_users:
-                        trial_users = User.query.filter(
-                            User.access_status == AccessStatus.TRIAL,
-                            User.is_admin == False
-                        ).all()
-                        target_users.extend(trial_users)
-                    
-                    if target_subscription_users:
-                        sub_users = User.query.filter(
-                            User.access_status.in_([AccessStatus.MONTHLY, AccessStatus.YEARLY]),
-                            User.is_admin == False
-                        ).all()
-                        target_users.extend(sub_users)
-                    
-                    if target_approved_users:
-                        approved_users = User.query.filter(
-                            User.access_status == AccessStatus.APPROVED,
-                            User.is_admin == False
-                        ).all()
-                        target_users.extend(approved_users)
-                
-                # Get chat IDs for users who have interacted via Telegram with proper filtering
-                chat_ids = get_user_chat_ids_from_conversations(
-                    target_all_users=target_all_users,
-                    target_trial_users=target_trial_users,
-                    target_subscription_users=target_subscription_users,
-                    target_approved_users=target_approved_users
-                )
+                # Get all chat IDs from Telegram conversations
+                chat_ids = get_user_chat_ids_from_conversations(target_all_users=True)
                 
                 if chat_ids:
                     formatted_message = f"<b>{title}</b>\n\n{message}"
@@ -516,28 +458,13 @@ def send_notification():
                     sent_count += bulk_result['sent']
                     failed_count += bulk_result['failed']
                     
-                    # Create UserNotification records for successful sends
-                    for chat_id in bulk_result['successful_chat_ids']:
-                        # Find user by chat_id (from conversations)
-                        conversation = Conversation.query.filter_by(
-                            platform='telegram',
-                            platform_user_id=chat_id
-                        ).first()
-                        
-                        if conversation:
-                            user_notification = UserNotification(
-                                user_id=conversation.user_id,
-                                notification_id=notification.id,
-                                is_telegram_sent=True,
-                                telegram_sent_at=datetime.utcnow()
-                            )
-                            db.session.add(user_notification)
-                    
-                    db.session.commit()
+                    logging.info(f"Bulk message sent: {bulk_result['sent']} successful, {bulk_result['failed']} failed")
+                else:
+                    logging.warning("No chat IDs found for sending messages")
                     
             except Exception as e:
                 logging.error(f"Direct message error: {e}")
-                failed_count += len(chat_ids) if 'chat_ids' in locals() else 1
+                failed_count += 1
         
         # Update notification status
         notification.sent_count = sent_count

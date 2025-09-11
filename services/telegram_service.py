@@ -6,10 +6,18 @@ import os
 import sys
 import time
 import requests
-from typing import List, Dict, Optional, Tuple
+from typing import List, Dict, Optional, Tuple, Any
 import logging
 
 logger = logging.getLogger(__name__)
+
+class ServiceResponse:
+    """Standard response object for all platform services"""
+    def __init__(self, success: bool, data: Any = None, error_message: Optional[str] = None, status_code: Optional[int] = None):
+        self.success = success
+        self.data = data
+        self.error_message = error_message
+        self.status_code = status_code
 
 class TelegramService:
     """Telegram Bot API bilan ishlash uchun servis"""
