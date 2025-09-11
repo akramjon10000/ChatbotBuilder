@@ -6,7 +6,7 @@ from sqlalchemy import func
 from app import app, db
 from models import User, Bot, Conversation, Message, AdminAction, SystemStats, Notification, UserNotification, NotificationStatus, NotificationType, AccessStatus
 from utils.helpers import admin_required
-from services.telegram_service import TelegramService, get_user_chat_ids_from_conversations
+from services.marketing_service import MarketingEmailService, get_trial_expired_users, get_active_trial_users, get_all_users
 import logging
 
 @app.route('/admin')
@@ -339,149 +339,121 @@ def admin_settings():
     
     return render_template('admin/settings.html')
 
-@app.route('/admin/notifications')
+@app.route('/admin/marketing')
 @login_required
 @admin_required
-def admin_notifications():
-    """Telegram habar yuborish sahifasi"""
-    # Get recent notifications
-    notifications = Notification.query.order_by(Notification.created_at.desc()).limit(10).all()
+def admin_marketing():
+    """Marketing email yuborish sahifasi"""
+    # Get recent marketing notifications (last 10)
+    notifications = Notification.query.filter(
+        Notification.title.contains('Email') | Notification.title.contains('Marketing')
+    ).order_by(Notification.created_at.desc()).limit(10).all()
     
-    # Get available bots with Telegram tokens
-    telegram_bots = Bot.query.filter(
-        Bot.telegram_token.isnot(None),
-        Bot.telegram_token != ''
-    ).all()
-    
-    # Count users by type
+    # Count users by type for marketing
     all_users_count = User.query.filter_by(is_admin=False).count()
-    trial_users_count = User.query.filter(
-        User.access_status == AccessStatus.TRIAL,
-        User.is_admin == False
-    ).count()
-    subscription_users_count = User.query.filter(
-        User.access_status.in_([AccessStatus.MONTHLY, AccessStatus.YEARLY]),
-        User.is_admin == False
-    ).count()
-    approved_users_count = User.query.filter(
-        User.access_status == AccessStatus.APPROVED,
-        User.is_admin == False
-    ).count()
+    trial_expired_count = len(get_trial_expired_users())
+    trial_active_count = len(get_active_trial_users())
     
     user_counts = {
         'all': all_users_count,
-        'trial': trial_users_count,
-        'subscription': subscription_users_count,
-        'approved': approved_users_count
+        'trial_expired': trial_expired_count,
+        'trial_active': trial_active_count
     }
     
     return render_template('admin/notifications.html', 
                          notifications=notifications,
-                         telegram_bots=telegram_bots,
                          user_counts=user_counts)
 
-@app.route('/admin/notifications/send', methods=['POST'])
+@app.route('/admin/marketing/send', methods=['POST'])
 @login_required
 @admin_required
-def send_notification():
-    """Telegram orqali notification yuborish"""
+def send_marketing_email():
+    """Marketing email yuborish"""
     try:
         # Get form data
-        title = request.form.get('title', '').strip()
-        message = request.form.get('message', '').strip()
-        notification_type = request.form.get('notification_type', 'general')
-        telegram_bot_id = request.form.get('telegram_bot_id')
-        
-        # Target audience
-        target_all_users = request.form.get('target_all_users') == 'on'
-        target_trial_users = request.form.get('target_trial_users') == 'on'
-        target_subscription_users = request.form.get('target_subscription_users') == 'on'
-        target_approved_users = request.form.get('target_approved_users') == 'on'
-        
-        # Delivery method
-        send_to_channel = request.form.get('send_to_channel') == 'on'
-        send_direct_messages = request.form.get('send_direct_messages') == 'on'
+        subject = request.form.get('subject', '').strip()
+        content = request.form.get('content', '').strip()
+        target_audience = request.form.get('target_audience', 'trial_expired')
+        include_contact = request.form.get('include_contact') == '1'
         
         # Validation
-        if not title or not message:
-            flash('Sarlavha va habar matni kiritilishi kerak!', 'error')
-            return redirect(url_for('admin_notifications'))
+        if not subject or not content:
+            flash('Email sarlavhasi va matni kiritilishi kerak!', 'error')
+            return redirect(url_for('admin_marketing'))
         
-        if not telegram_bot_id:
-            flash('Telegram bot tanlanishi kerak!', 'error')
-            return redirect(url_for('admin_notifications'))
-            
-        # Get bot
-        bot = Bot.query.get(telegram_bot_id)
-        if not bot or not bot.telegram_token:
-            flash('Bot topilmadi yoki Telegram token mavjud emas!', 'error')
-            return redirect(url_for('admin_notifications'))
+        # Get target users based on audience
+        if target_audience == 'trial_expired':
+            target_users = get_trial_expired_users()
+        elif target_audience == 'trial_active':
+            target_users = get_active_trial_users()
+        elif target_audience == 'all':
+            target_users = get_all_users()
+        else:
+            flash('Noto\'g\'ri auditoriya tanlandi!', 'error')
+            return redirect(url_for('admin_marketing'))
+        
+        if not target_users:
+            flash('Tanlangan auditoriyada foydalanuvchilar topilmadi!', 'error')
+            return redirect(url_for('admin_marketing'))
+        
+        # Initialize marketing email service
+        marketing_service = MarketingEmailService()
+        
+        # Create email content based on target audience
+        if target_audience == 'trial_expired':
+            # For trial expired users, use the specialized template
+            html_content = marketing_service.create_trial_expired_email(
+                user_name="",  # Will be personalized per user
+                include_contact=include_contact
+            )
+        else:
+            # For other audiences, use general template
+            html_content = marketing_service.create_general_marketing_email(
+                subject=subject,
+                content=content,
+                include_contact=include_contact
+            )
+        
+        # Extract email list
+        email_list = [user['email'] for user in target_users]
+        
+        # Send bulk emails
+        bulk_result = marketing_service.send_bulk_emails(
+            email_list=email_list,
+            subject=subject,
+            html_content=html_content
+        )
+        
+        sent_count = bulk_result['sent']
+        failed_count = bulk_result['failed']
         
         # Create notification record
         notification = Notification(
-            title=title,
-            message=message,
-            notification_type=getattr(NotificationType, notification_type.upper(), NotificationType.GENERAL),
+            title=subject,
+            message=content[:500] + '...' if len(content) > 500 else content,
+            notification_type=NotificationType.GENERAL,
             created_by=current_user.id,
-            send_telegram=True,
-            target_all_users=target_all_users,
-            target_trial_users=target_trial_users,
-            target_subscription_users=target_subscription_users,
-            target_approved_users=target_approved_users,
-            target_telegram_channel=send_to_channel,
-            target_direct_telegram=send_direct_messages
+            send_telegram=False,
+            target_all_users=(target_audience == 'all'),
+            target_trial_users=(target_audience == 'trial_active'),
+            sent_count=sent_count,
+            failed_count=failed_count,
+            status=NotificationStatus.SENT if sent_count > 0 else NotificationStatus.FAILED,
+            sent_at=datetime.utcnow()
         )
         
         db.session.add(notification)
         db.session.commit()
         
-        # Initialize Telegram service
-        telegram_service = TelegramService(bot.telegram_token)
-        
-        sent_count = 0
-        failed_count = 0
-        
-        # Send direct messages (simplified - always send to all users)
-        if send_direct_messages:
-            try:
-                # Get all chat IDs from Telegram conversations
-                chat_ids = get_user_chat_ids_from_conversations(target_all_users=True)
-                
-                if chat_ids:
-                    formatted_message = f"<b>{title}</b>\n\n{message}"
-                    bulk_result = telegram_service.send_bulk_messages(
-                        chat_ids,
-                        formatted_message,
-                        'HTML'
-                    )
-                    
-                    sent_count += bulk_result['sent']
-                    failed_count += bulk_result['failed']
-                    
-                    logging.info(f"Bulk message sent: {bulk_result['sent']} successful, {bulk_result['failed']} failed")
-                else:
-                    logging.warning("No chat IDs found for sending messages")
-                    
-            except Exception as e:
-                logging.error(f"Direct message error: {e}")
-                failed_count += 1
-        
-        # Update notification status
-        notification.sent_count = sent_count
-        notification.failed_count = failed_count
-        notification.status = NotificationStatus.SENT if sent_count > 0 else NotificationStatus.FAILED
-        notification.sent_at = datetime.utcnow()
-        
-        db.session.commit()
-        
         if sent_count > 0:
-            flash(f'Habar muvaffaqiyatli yuborildi! Yuborilgan: {sent_count}, Xatolik: {failed_count}', 'success')
+            flash(f'Marketing email muvaffaqiyatli yuborildi! Yuborilgan: {sent_count}, Xatolik: {failed_count}', 'success')
+            logging.info(f"Marketing emails sent: {sent_count} successful, {failed_count} failed to {target_audience} audience")
         else:
-            flash('Habar yuborishda xatolik yuz berdi!', 'error')
+            flash('Email yuborishda xatolik yuz berdi!', 'error')
             
     except Exception as e:
-        logging.error(f"Notification sending error: {e}")
-        flash('Habar yuborishda xatolik yuz berdi!', 'error')
+        logging.error(f"Marketing email sending error: {e}")
+        flash('Email yuborishda xatolik yuz berdi!', 'error')
         db.session.rollback()
     
-    return redirect(url_for('admin_notifications'))
+    return redirect(url_for('admin_marketing'))

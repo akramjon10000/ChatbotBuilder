@@ -56,14 +56,13 @@ def update_daily_stats():
             total_messages = Message.query.count()
             
             # Create daily stats
-            stats = SystemStats(
-                date=today,
-                total_users=total_users,
-                active_trials=active_trials,
-                approved_users=approved_users,
-                total_bots=total_bots,
-                total_messages=total_messages
-            )
+            stats = SystemStats()
+            stats.date = today
+            stats.total_users = total_users
+            stats.active_trials = active_trials
+            stats.approved_users = approved_users
+            stats.total_bots = total_bots
+            stats.total_messages = total_messages
             
             db.session.add(stats)
             db.session.commit()
@@ -99,6 +98,50 @@ def cleanup_old_data():
             
     except Exception as e:
         logging.error(f"Error cleaning up old data: {e}")
+
+def send_marketing_emails():
+    """Send marketing emails to trial users every 3 days"""
+    try:
+        from app import app, db
+        from services.marketing_service import MarketingEmailService, get_trial_expired_users
+        
+        with app.app_context():
+            # Get trial expired users
+            trial_expired_users = get_trial_expired_users()
+            
+            if not trial_expired_users:
+                logging.info("No trial expired users found for marketing emails")
+                return
+            
+            # Initialize marketing service
+            marketing_service = MarketingEmailService()
+            
+            # Create email content for trial expired users
+            subject = "🚀 Yana AI Chatbot Platform'ga qaytib keling!"
+            
+            # Extract email list
+            email_list = [user['email'] for user in trial_expired_users]
+            
+            # Create personalized email content
+            html_content = marketing_service.create_trial_expired_email(
+                user_name="Aziz foydalanuvchi",  # Generic greeting
+                include_contact=True
+            )
+            
+            # Send bulk emails
+            bulk_result = marketing_service.send_bulk_emails(
+                email_list=email_list,
+                subject=subject,
+                html_content=html_content
+            )
+            
+            sent_count = bulk_result['sent']
+            failed_count = bulk_result['failed']
+            
+            logging.info(f"Marketing emails sent: {sent_count} successful, {failed_count} failed to {len(trial_expired_users)} trial expired users")
+            
+    except Exception as e:
+        logging.error(f"Error sending marketing emails: {e}")
 
 def send_trial_expiry_notifications():
     """Send notifications for trial expiry"""
@@ -167,6 +210,15 @@ def start_scheduler():
         trigger=CronTrigger(hour=9, minute=0),  # Daily at 09:00
         id='trial_notifications',
         name='Send trial expiry notifications',
+        replace_existing=True
+    )
+    
+    # Send marketing emails every 3 days at 10 AM
+    scheduler.add_job(
+        func=send_marketing_emails,
+        trigger=CronTrigger(day='*/3', hour=10, minute=0),  # Every 3 days at 10:00
+        id='marketing_emails',
+        name='Send marketing emails to trial users',
         replace_existing=True
     )
     

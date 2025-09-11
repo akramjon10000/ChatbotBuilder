@@ -40,17 +40,21 @@ class MarketingEmailService:
             dict: Yuborish natijasi
         """
         try:
-            message = Mail(
-                from_email=Email(self.from_email, self.from_name),
-                to_emails=To(to_email),
-                subject=subject
-            )
-            
-            # HTML content qo'shish
+            # Create Mail object with proper v6+ API pattern
             if html_content:
-                message.content = Content("text/html", html_content)
+                message = Mail(
+                    from_email=Email(self.from_email, self.from_name),
+                    to_emails=To(to_email),
+                    subject=subject,
+                    html_content=html_content
+                )
             elif text_content:
-                message.content = Content("text/plain", text_content)
+                message = Mail(
+                    from_email=Email(self.from_email, self.from_name),
+                    to_emails=To(to_email),
+                    subject=subject,
+                    plain_text_content=text_content
+                )
             
             response = self.client.send(message)
             
