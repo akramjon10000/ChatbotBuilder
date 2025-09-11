@@ -603,19 +603,19 @@ def send_monitoring_notification(bot, conversation, user_message, bot_response, 
             username = "Noma'lum"
         
         notification_text = f"""
-{platform_emoji} **{platform.title()} Conversation**
+{platform_emoji} {platform.title()} Conversation
 
-👤 **Foydalanuvchi:** {username}
-🆔 **Chat ID:** {conversation.platform_user_id}
-🤖 **Bot:** {bot.name}
+👤 Foydalanuvchi: {username}
+🆔 Chat ID: {conversation.platform_user_id}
+🤖 Bot: {bot.name}
 
-📝 **Foydalanuvchi xabari:**
+📝 Foydalanuvchi xabari:
 {user_message}
 
-🤖 **Bot javobi:**
+🤖 Bot javobi:
 {bot_response}
 
-🕐 **Vaqt:** {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} UTC
+🕐 Vaqt: {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} UTC
 """
 
         # Send to admin chat if configured
