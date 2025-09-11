@@ -121,6 +121,7 @@ def grant_user_access(user_id):
     user.admin_approved = True
     user.access_granted_date = datetime.utcnow()
     user.is_trial_active = False  # End trial
+    user.marketing_opt_out = True  # Stop marketing messages
     
     # Log admin action
     action = AdminAction(

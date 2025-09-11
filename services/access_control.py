@@ -45,6 +45,7 @@ class AccessControlService:
         target_user.access_status = AccessStatus.APPROVED
         target_user.access_granted_date = datetime.utcnow()
         target_user.is_trial_active = False
+        target_user.marketing_opt_out = True  # Stop marketing messages
         
         # Admin harakatini yozib olish
         action = AdminAction()
@@ -72,6 +73,7 @@ class AccessControlService:
         target_user.is_trial_active = False
         target_user.admin_approved = True
         target_user.access_granted_date = datetime.utcnow()
+        target_user.marketing_opt_out = True  # Stop marketing messages
         
         # Admin harakatini yozib olish
         action = AdminAction()
@@ -99,6 +101,7 @@ class AccessControlService:
         target_user.is_trial_active = False
         target_user.admin_approved = True
         target_user.access_granted_date = datetime.utcnow()
+        target_user.marketing_opt_out = True  # Stop marketing messages
         
         # Admin harakatini yozib olish
         action = AdminAction()
