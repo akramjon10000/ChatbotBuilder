@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from sqlalchemy import func
 
 from app import app, db
-from models import User, Bot, Conversation, Message, AdminAction, SystemStats, Notification, UserNotification, NotificationStatus, NotificationType
+from models import User, Bot, Conversation, Message, AdminAction, SystemStats, Notification, UserNotification, NotificationStatus, NotificationType, AccessStatus
 from utils.helpers import admin_required
 from services.telegram_service import TelegramService, get_user_chat_ids_from_conversations
 import logging
@@ -356,15 +356,15 @@ def admin_notifications():
     # Count users by type
     all_users_count = User.query.filter_by(is_admin=False).count()
     trial_users_count = User.query.filter(
-        User.access_status.in_(['trial']),
+        User.access_status == AccessStatus.TRIAL,
         User.is_admin == False
     ).count()
     subscription_users_count = User.query.filter(
-        User.access_status.in_(['monthly', 'yearly']),
+        User.access_status.in_([AccessStatus.MONTHLY, AccessStatus.YEARLY]),
         User.is_admin == False
     ).count()
     approved_users_count = User.query.filter(
-        User.access_status.in_(['approved']),
+        User.access_status == AccessStatus.APPROVED,
         User.is_admin == False
     ).count()
     
@@ -478,21 +478,21 @@ def send_notification():
                 else:
                     if target_trial_users:
                         trial_users = User.query.filter(
-                            User.access_status.in_(['trial']),
+                            User.access_status == AccessStatus.TRIAL,
                             User.is_admin == False
                         ).all()
                         target_users.extend(trial_users)
                     
                     if target_subscription_users:
                         sub_users = User.query.filter(
-                            User.access_status.in_(['monthly', 'yearly']),
+                            User.access_status.in_([AccessStatus.MONTHLY, AccessStatus.YEARLY]),
                             User.is_admin == False
                         ).all()
                         target_users.extend(sub_users)
                     
                     if target_approved_users:
                         approved_users = User.query.filter(
-                            User.access_status.in_(['approved']),
+                            User.access_status == AccessStatus.APPROVED,
                             User.is_admin == False
                         ).all()
                         target_users.extend(approved_users)
