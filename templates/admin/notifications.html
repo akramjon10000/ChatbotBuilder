@@ -29,20 +29,9 @@
                     <form method="POST" action="{{ url_for('send_notification') }}">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <!-- Title and Message -->
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="title" class="form-label">Sarlavha *</label>
-                                <input type="text" class="form-control" id="title" name="title" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="notification_type" class="form-label">Xabar turi</label>
-                                <select class="form-select" id="notification_type" name="notification_type">
-                                    <option value="general">Umumiy xabar</option>
-                                    <option value="subscription">Obuna haqida</option>
-                                    <option value="update">Yangilanish</option>
-                                    <option value="announcement">E'lon</option>
-                                </select>
-                            </div>
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Sarlavha *</label>
+                            <input type="text" class="form-control" id="title" name="title" required placeholder="Xabar sarlavhasi...">
                         </div>
                         
                         <div class="mb-3">
@@ -70,78 +59,20 @@
                         <!-- Delivery Method -->
                         <div class="mb-3">
                             <label class="form-label">Yuborish usuli</label>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="send_to_channel" name="send_to_channel" value="1">
-                                        <label class="form-check-label" for="send_to_channel">
-                                            <i class="fas fa-bullhorn me-1"></i>
-                                            Kanalga yuborish
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="send_direct_messages" name="send_direct_messages" value="1" checked>
-                                        <label class="form-check-label" for="send_direct_messages">
-                                            <i class="fas fa-paper-plane me-1"></i>
-                                            To'g'ridan-to'g'ri xabar
-                                        </label>
-                                    </div>
-                                </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="send_direct_messages" name="send_direct_messages" value="1" checked>
+                                <label class="form-check-label" for="send_direct_messages">
+                                    <i class="fas fa-paper-plane me-1"></i>
+                                    Barcha foydalanuvchilarga yuborish
+                                </label>
+                                <small class="text-muted d-block">Telegram orqali chatbot bilan muloqot qilgan barcha foydalanuvchilarga yuboriladi</small>
                             </div>
                         </div>
                         
-                        <!-- Target Audience -->
-                        <div class="mb-3" id="audience-selection">
-                            <label class="form-label">Maqsadli auditoriya</label>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="target_all_users" name="target_all_users" value="1">
-                                        <label class="form-check-label" for="target_all_users">
-                                            <i class="fas fa-users me-1"></i>
-                                            Barcha foydalanuvchilar
-                                            <span class="badge bg-secondary ms-1">{{ user_counts.all }}</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="target_trial_users" name="target_trial_users" value="1">
-                                        <label class="form-check-label" for="target_trial_users">
-                                            <i class="fas fa-clock me-1"></i>
-                                            Sinov foydalanuvchilari
-                                            <span class="badge bg-warning ms-1">{{ user_counts.trial }}</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="target_subscription_users" name="target_subscription_users" value="1">
-                                        <label class="form-check-label" for="target_subscription_users">
-                                            <i class="fas fa-crown me-1"></i>
-                                            Obuna foydalanuvchilari
-                                            <span class="badge bg-success ms-1">{{ user_counts.subscription }}</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="target_approved_users" name="target_approved_users" value="1">
-                                        <label class="form-check-label" for="target_approved_users">
-                                            <i class="fas fa-check-circle me-1"></i>
-                                            Tasdiqlangan foydalanuvchilar
-                                            <span class="badge bg-info ms-1">{{ user_counts.approved }}</span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <small class="text-muted">
-                                <i class="fas fa-info-circle me-1"></i>
-                                Faqat Telegram orqali muloqot qilgan foydalanuvchilarga xabar yuboriladi.
-                            </small>
-                        </div>
+                        <!-- Hidden inputs for simplified interface -->
+                        <input type="hidden" name="notification_type" value="general">
+                        <input type="hidden" name="target_all_users" value="1">
+                        <input type="hidden" name="send_to_channel" value="0">
                         
                         <div class="d-flex justify-content-between">
                             <button type="button" class="btn btn-outline-secondary" onclick="window.location.href='{{ url_for('admin_dashboard') }}'">
@@ -294,34 +225,17 @@
 </div>
 
 <script>
-// Handle target all users checkbox
-document.getElementById('target_all_users').addEventListener('change', function() {
-    const otherCheckboxes = ['target_trial_users', 'target_subscription_users', 'target_approved_users'];
-    if (this.checked) {
-        otherCheckboxes.forEach(id => {
-            document.getElementById(id).checked = false;
-            document.getElementById(id).disabled = true;
-        });
-    } else {
-        otherCheckboxes.forEach(id => {
-            document.getElementById(id).disabled = false;
-        });
+// Simple form validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    const title = document.getElementById('title').value.trim();
+    const message = document.getElementById('message').value.trim();
+    const botId = document.getElementById('telegram_bot_id').value;
+    
+    if (!title || !message || !botId) {
+        e.preventDefault();
+        alert('Iltimos, barcha majburiy maydonlarni to\'ldiring!');
+        return false;
     }
 });
-
-// Show/hide audience selection based on direct messages checkbox
-document.getElementById('send_direct_messages').addEventListener('change', function() {
-    const audienceSelection = document.getElementById('audience-selection');
-    if (this.checked) {
-        audienceSelection.style.display = 'block';
-    } else {
-        audienceSelection.style.display = 'none';
-    }
-});
-
-// Initial state
-if (!document.getElementById('send_direct_messages').checked) {
-    document.getElementById('audience-selection').style.display = 'none';
-}
 </script>
 {% endblock %}
