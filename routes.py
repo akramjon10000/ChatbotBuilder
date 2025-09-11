@@ -1041,31 +1041,49 @@ def send_manual_message(bot_id):
             if conversation.bot_id != bot.id:
                 return jsonify({'success': False, 'error': 'Suhbat bu botga tegishli emas'})
             
-            # Send message through appropriate platform
-            success = False
-            if platform == 'telegram' and bot.telegram_token:
-                telegram_service = TelegramService(bot.telegram_token)
-                success = telegram_service.send_message(platform_user_id, message_text)
-            elif platform == 'instagram' and bot.instagram_access_token:
-                instagram_service = InstagramService(bot.instagram_access_token, bot.instagram_page_id)
-                success = instagram_service.send_message(platform_user_id, message_text)
-            # Add WhatsApp support here later
+            # Send message through appropriate platform with transactional database operations
+            response = None
+            error_message = 'Xabar yuborishda xatolik yuz berdi'
             
-            if success:
-                # Save message to database
-                message = Message(
-                    conversation_id=conversation.id,
-                    content=message_text,
-                    is_from_user=False,  # This is from admin/bot
-                    created_at=datetime.utcnow()
-                )
-                db.session.add(message)
-                conversation.updated_at = datetime.utcnow()
-                db.session.commit()
+            try:
+                if platform == 'telegram' and bot.telegram_token:
+                    telegram_service = TelegramService(bot.telegram_token)
+                    response = telegram_service.send_message(platform_user_id, message_text)
+                elif platform == 'instagram' and bot.instagram_token:
+                    instagram_service = InstagramService(bot.instagram_token, bot.instagram_page_id)
+                    response = instagram_service.send_message(platform_user_id, message_text)
+                elif platform == 'whatsapp':
+                    error_message = 'WhatsApp integratsiyasi hozircha mavjud emas'
+                    return jsonify({'success': False, 'error': error_message})
+                else:
+                    error_message = f'{platform.title()} platformasi uchun kerakli konfiguratsiya yo\'q'
+                    return jsonify({'success': False, 'error': error_message})
                 
-                return jsonify({'success': True, 'message': 'Xabar muvaffaqiyatli yuborildi'})
-            else:
-                return jsonify({'success': False, 'error': 'Xabar yuborishda xatolik yuz berdi'})
+                if response and response.success:
+                    # Save message to database in a transaction
+                    try:
+                        with db.session.begin():
+                            message = Message(
+                                conversation_id=conversation.id,
+                                content=message_text,
+                                is_from_user=False,  # This is from admin/bot
+                                created_at=datetime.utcnow()
+                            )
+                            db.session.add(message)
+                            conversation.updated_at = datetime.utcnow()
+                        
+                        return jsonify({'success': True, 'message': 'Xabar muvaffaqiyatli yuborildi'})
+                    except Exception as db_error:
+                        logging.error(f"Database error while saving manual message: {db_error}")
+                        return jsonify({'success': False, 'error': 'Xabar yuborildi, lekin saqlashda xatolik'})
+                else:
+                    error_detail = response.error_message if response else 'Platform xizmati javob bermadi'
+                    logging.error(f"Platform service failed for {platform}: {error_detail}")
+                    return jsonify({'success': False, 'error': f'Platform xatoligi: {error_detail}'})
+                    
+            except Exception as send_error:
+                logging.error(f"Error sending manual message via {platform}: {send_error}")
+                return jsonify({'success': False, 'error': f'Xabar yuborishda xatolik: {str(send_error)}'})
                 
         except Exception as e:
             logging.error(f"Manual message send error: {e}")

@@ -4,6 +4,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_babel import Babel
+from flask_wtf.csrf import CSRFProtect
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -16,6 +17,7 @@ class Base(DeclarativeBase):
 db = SQLAlchemy(model_class=Base)
 login_manager = LoginManager()
 babel = Babel()
+csrf = CSRFProtect()
 
 # Create the app
 app = Flask(__name__)
@@ -41,6 +43,7 @@ app.config['BABEL_DEFAULT_TIMEZONE'] = 'UTC'
 # Initialize extensions
 db.init_app(app)
 login_manager.init_app(app)
+csrf.init_app(app)
 
 # Login manager settings
 login_manager.login_view = 'login'

@@ -130,6 +130,7 @@
                                     
                                     <!-- Toggle Active Button -->
                                     <form method="POST" action="{{ url_for('toggle_user_active', user_id=user.id) }}" class="d-inline">
+                                        {{ csrf_token() }}
                                         <button type="submit" class="btn btn-{{ 'danger' if user.is_active else 'success' }} btn-sm"
                                                 onclick="return confirm('{{ user.username }} ni {{ 'faolsizlashtirish' if user.is_active else 'faollashtirish' }}ni xohlaysizmi?')">
                                             <i class="fas fa-{{ 'pause' if user.is_active else 'play' }}"></i>
@@ -146,6 +147,7 @@
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
                                             <form method="POST" action="{{ url_for('grant_user_access', user_id=user.id) }}">
+                                                {{ csrf_token() }}
                                                 <div class="modal-body">
                                                     <p><strong>{{ user.username }}</strong> ga dostup berasizmi?</p>
                                                     <div class="mb-3">
@@ -171,6 +173,7 @@
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
                                             <form method="POST" action="{{ url_for('revoke_user_access', user_id=user.id) }}">
+                                                {{ csrf_token() }}
                                                 <div class="modal-body">
                                                     <p><strong>{{ user.username }}</strong> ning dostupini bekor qilasizmi?</p>
                                                     <div class="mb-3">

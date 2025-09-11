@@ -98,6 +98,7 @@
                     </div>
                     <div class="card-body">
                         <form id="messageForm" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <input type="hidden" id="conversationId" name="conversation_id" value="">
                             <input type="hidden" id="platform" name="platform" value="">
                             <input type="hidden" id="platformUserId" name="platform_user_id" value="">
