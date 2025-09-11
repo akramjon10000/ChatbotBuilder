@@ -1,1 +1,326 @@
-{% extends "admin/base.html" %}\n\n{% block title %}Telegram Xabarlar - AI Chatbot Platform{% endblock %}\n\n{% block admin_content %}\n<div class=\"container-fluid\">\n    <div class=\"row\">\n        <div class=\"col-12\">\n            <div class=\"d-flex justify-content-between align-items-center mb-4\">\n                <h2 class=\"mb-0\">\n                    <i class=\"bi bi-telegram me-2 text-primary\"></i>\n                    Telegram Xabarlar\n                </h2>\n            </div>\n        </div>\n    </div>\n    \n    <!-- Send New Notification Form -->\n    <div class=\"row\">\n        <div class=\"col-lg-8\">\n            <div class=\"card border-0 shadow-sm\">\n                <div class=\"card-header bg-primary text-white\">\n                    <h5 class=\"card-title mb-0\">\n                        <i class=\"bi bi-send me-2\"></i>\n                        Yangi Xabar Yuborish\n                    </h5>\n                </div>\n                <div class=\"card-body\">\n                    <form method=\"POST\" action=\"{{ url_for('send_notification') }}\">\n                        <!-- Title and Message -->\n                        <div class=\"row mb-3\">\n                            <div class=\"col-md-6\">\n                                <label for=\"title\" class=\"form-label\">Sarlavha *</label>\n                                <input type=\"text\" class=\"form-control\" id=\"title\" name=\"title\" required>\n                            </div>\n                            <div class=\"col-md-6\">\n                                <label for=\"notification_type\" class=\"form-label\">Xabar turi</label>\n                                <select class=\"form-select\" id=\"notification_type\" name=\"notification_type\">\n                                    <option value=\"general\">Umumiy xabar</option>\n                                    <option value=\"subscription\">Obuna haqida</option>\n                                    <option value=\"system\">Tizim xabari</option>\n                                    <option value=\"promotion\">Aksiya/Takliflar</option>\n                                </select>\n                            </div>\n                        </div>\n                        \n                        <div class=\"mb-3\">\n                            <label for=\"message\" class=\"form-label\">Xabar matni *</label>\n                            <textarea class=\"form-control\" id=\"message\" name=\"message\" rows=\"4\" \n                                    placeholder=\"Bu yerga xabar matnini kiriting...\" required></textarea>\n                            <div class=\"form-text\">HTML formatini qo'llab-quvvatlaydi (masalan: &lt;b&gt;qalin&lt;/b&gt;, &lt;i&gt;qiyshiq&lt;/i&gt;)</div>\n                        </div>\n                        \n                        <!-- Bot Selection -->\n                        <div class=\"mb-3\">\n                            <label for=\"telegram_bot_id\" class=\"form-label\">Telegram Bot *</label>\n                            <select class=\"form-select\" id=\"telegram_bot_id\" name=\"telegram_bot_id\" required>\n                                <option value=\"\">Bot tanlang...</option>\n                                {% for bot in telegram_bots %}\n                                <option value=\"{{ bot.id }}\">{{ bot.name }} \n                                    {% if bot.notification_channel %}(Kanal: {{ bot.notification_channel }}){% endif %}\n                                </option>\n                                {% endfor %}\n                            </select>\n                            {% if not telegram_bots %}\n                            <div class=\"alert alert-warning mt-2\">\n                                <i class=\"bi bi-exclamation-triangle me-2\"></i>\n                                Hech qanday Telegram bot konfiguratsiya qilinmagan!\n                            </div>\n                            {% endif %}\n                        </div>\n                        \n                        <!-- Target Audience -->\n                        <div class=\"mb-4\">\n                            <label class=\"form-label\">Maqsadli auditoriya</label>\n                            <div class=\"row\">\n                                <div class=\"col-md-6\">\n                                    <div class=\"form-check mb-2\">\n                                        <input class=\"form-check-input\" type=\"checkbox\" id=\"target_all_users\" name=\"target_all_users\" checked>\n                                        <label class=\"form-check-label\" for=\"target_all_users\">\n                                            <strong>Barcha foydalanuvchilar</strong> ({{ user_counts.all }})\n                                        </label>\n                                    </div>\n                                    <div class=\"form-check mb-2\">\n                                        <input class=\"form-check-input\" type=\"checkbox\" id=\"target_trial_users\" name=\"target_trial_users\">\n                                        <label class=\"form-check-label\" for=\"target_trial_users\">\n                                            Sinov foydalanuvchilari ({{ user_counts.trial }})\n                                        </label>\n                                    </div>\n                                </div>\n                                <div class=\"col-md-6\">\n                                    <div class=\"form-check mb-2\">\n                                        <input class=\"form-check-input\" type=\"checkbox\" id=\"target_subscription_users\" name=\"target_subscription_users\">\n                                        <label class=\"form-check-label\" for=\"target_subscription_users\">\n                                            Obuna foydalanuvchilari ({{ user_counts.subscription }})\n                                        </label>\n                                    </div>\n                                    <div class=\"form-check mb-2\">\n                                        <input class=\"form-check-input\" type=\"checkbox\" id=\"target_approved_users\" name=\"target_approved_users\">\n                                        <label class=\"form-check-label\" for=\"target_approved_users\">\n                                            Tasdiqlangan foydalanuvchilar ({{ user_counts.approved }})\n                                        </label>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                        \n                        <!-- Delivery Method -->\n                        <div class=\"mb-4\">\n                            <label class=\"form-label\">Yuborish usuli</label>\n                            <div class=\"row\">\n                                <div class=\"col-md-6\">\n                                    <div class=\"form-check mb-2\">\n                                        <input class=\"form-check-input\" type=\"checkbox\" id=\"send_to_channel\" name=\"send_to_channel\" checked>\n                                        <label class=\"form-check-label\" for=\"send_to_channel\">\n                                            <i class=\"bi bi-broadcast me-1\"></i>\n                                            <strong>Kanalga yuborish</strong>\n                                        </label>\n                                        <div class=\"form-text\">Bot admin bo'lgan kanal/gruppaga xabar yuboradi</div>\n                                    </div>\n                                </div>\n                                <div class=\"col-md-6\">\n                                    <div class=\"form-check mb-2\">\n                                        <input class=\"form-check-input\" type=\"checkbox\" id=\"send_direct_messages\" name=\"send_direct_messages\">\n                                        <label class=\"form-check-label\" for=\"send_direct_messages\">\n                                            <i class=\"bi bi-chat-dots me-1\"></i>\n                                            <strong>Shaxsiy xabarlar</strong>\n                                        </label>\n                                        <div class=\"form-text\">Bot bilan muloqot qilgan foydalanuvchilarga</div>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                        \n                        <div class=\"d-grid\">\n                            <button type=\"submit\" class=\"btn btn-primary btn-lg\">\n                                <i class=\"bi bi-send me-2\"></i>\n                                Xabar Yuborish\n                            </button>\n                        </div>\n                    </form>\n                </div>\n            </div>\n        </div>\n        \n        <!-- Recent Notifications -->\n        <div class=\"col-lg-4\">\n            <div class=\"card border-0 shadow-sm\">\n                <div class=\"card-header bg-light\">\n                    <h6 class=\"card-title mb-0\">\n                        <i class=\"bi bi-clock-history me-2\"></i>\n                        So'nggi Xabarlar\n                    </h6>\n                </div>\n                <div class=\"card-body p-0\">\n                    {% if notifications %}\n                    <div class=\"list-group list-group-flush\">\n                        {% for notification in notifications %}\n                        <div class=\"list-group-item\">\n                            <div class=\"d-flex justify-content-between align-items-start\">\n                                <div class=\"flex-grow-1\">\n                                    <h6 class=\"mb-1\">{{ notification.title }}</h6>\n                                    <p class=\"mb-1 text-muted small\">{{ notification.message[:50] }}{% if notification.message|length > 50 %}...{% endif %}</p>\n                                    <small class=\"text-muted\">\n                                        <i class=\"bi bi-calendar3 me-1\"></i>\n                                        {{ notification.created_at.strftime('%d.%m.%Y %H:%M') }}\n                                    </small>\n                                </div>\n                                <div class=\"text-end ms-2\">\n                                    {% if notification.status.name == 'SENT' %}\n                                    <span class=\"badge bg-success\">Yuborildi</span>\n                                    {% elif notification.status.name == 'FAILED' %}\n                                    <span class=\"badge bg-danger\">Xatolik</span>\n                                    {% else %}\n                                    <span class=\"badge bg-secondary\">Tayyorlanmoqda</span>\n                                    {% endif %}\n                                    {% if notification.sent_count %}\n                                    <br><small class=\"text-muted\">{{ notification.sent_count }} ta</small>\n                                    {% endif %}\n                                </div>\n                            </div>\n                        </div>\n                        {% endfor %}\n                    </div>\n                    {% else %}\n                    <div class=\"p-3 text-center text-muted\">\n                        <i class=\"bi bi-inbox display-6 d-block mb-2\"></i>\n                        Hali xabarlar yuborilmagan\n                    </div>\n                    {% endif %}\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n\n<script>\n// Form validation and UX improvements\ndocument.addEventListener('DOMContentLoaded', function() {\n    const targetAllUsers = document.getElementById('target_all_users');\n    const targetSpecificUsers = document.querySelectorAll('input[name^=\"target_\"][name!=\"target_all_users\"]');\n    \n    // When \"All users\" is checked, uncheck specific user types\n    targetAllUsers.addEventListener('change', function() {\n        if (this.checked) {\n            targetSpecificUsers.forEach(input => {\n                input.checked = false;\n            });\n        }\n    });\n    \n    // When specific user types are checked, uncheck \"All users\"\n    targetSpecificUsers.forEach(input => {\n        input.addEventListener('change', function() {\n            if (this.checked) {\n                targetAllUsers.checked = false;\n            }\n        });\n    });\n    \n    // Ensure at least one audience is selected\n    const form = document.querySelector('form');\n    form.addEventListener('submit', function(e) {\n        const anyTargetChecked = document.querySelector('input[name^=\"target_\"]:checked');\n        const anyDeliveryChecked = document.querySelector('input[name^=\"send_\"]:checked');\n        \n        if (!anyTargetChecked) {\n            e.preventDefault();\n            alert('Kamida bitta maqsadli auditoriya tanlang!');\n            return;\n        }\n        \n        if (!anyDeliveryChecked) {\n            e.preventDefault();\n            alert('Kamida bitta yuborish usulini tanlang!');\n            return;\n        }\n    });\n});\n</script>\n{% endblock %}"
+{% extends "admin/base.html" %}
+
+{% block title %}Telegram Xabarlar - AI Chatbot Platform{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">
+                    <i class="fab fa-telegram me-2 text-primary"></i>
+                    Telegram Xabarlar
+                </h2>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Send New Notification Form -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-send me-2"></i>
+                        Yangi Xabar Yuborish
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('send_notification') }}">
+                        <!-- Title and Message -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="title" class="form-label">Sarlavha *</label>
+                                <input type="text" class="form-control" id="title" name="title" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="notification_type" class="form-label">Xabar turi</label>
+                                <select class="form-select" id="notification_type" name="notification_type">
+                                    <option value="general">Umumiy xabar</option>
+                                    <option value="subscription">Obuna haqida</option>
+                                    <option value="update">Yangilanish</option>
+                                    <option value="announcement">E'lon</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Xabar matni *</label>
+                            <textarea class="form-control" id="message" name="message" rows="4" required placeholder="Xabar matnini kiriting..."></textarea>
+                        </div>
+                        
+                        <!-- Bot Selection -->
+                        <div class="mb-3">
+                            <label for="telegram_bot_id" class="form-label">Telegram Bot *</label>
+                            <select class="form-select" id="telegram_bot_id" name="telegram_bot_id" required>
+                                <option value="">Bot tanlang...</option>
+                                {% for bot in telegram_bots %}
+                                <option value="{{ bot.id }}">{{ bot.name }} ({{ bot.telegram_username or 'Username yo\'q' }})</option>
+                                {% endfor %}
+                            </select>
+                            {% if not telegram_bots %}
+                            <div class="alert alert-warning mt-2">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Hech qanday Telegram token sozlangan bot mavjud emas. Avval botlaringizga Telegram token qo'shing.
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Delivery Method -->
+                        <div class="mb-3">
+                            <label class="form-label">Yuborish usuli</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="send_to_channel" name="send_to_channel" value="1">
+                                        <label class="form-check-label" for="send_to_channel">
+                                            <i class="fas fa-bullhorn me-1"></i>
+                                            Kanalga yuborish
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="send_direct_messages" name="send_direct_messages" value="1" checked>
+                                        <label class="form-check-label" for="send_direct_messages">
+                                            <i class="fas fa-paper-plane me-1"></i>
+                                            To'g'ridan-to'g'ri xabar
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Target Audience -->
+                        <div class="mb-3" id="audience-selection">
+                            <label class="form-label">Maqsadli auditoriya</label>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="target_all_users" name="target_all_users" value="1">
+                                        <label class="form-check-label" for="target_all_users">
+                                            <i class="fas fa-users me-1"></i>
+                                            Barcha foydalanuvchilar
+                                            <span class="badge bg-secondary ms-1">{{ user_counts.all }}</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="target_trial_users" name="target_trial_users" value="1">
+                                        <label class="form-check-label" for="target_trial_users">
+                                            <i class="fas fa-clock me-1"></i>
+                                            Sinov foydalanuvchilari
+                                            <span class="badge bg-warning ms-1">{{ user_counts.trial }}</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="target_subscription_users" name="target_subscription_users" value="1">
+                                        <label class="form-check-label" for="target_subscription_users">
+                                            <i class="fas fa-crown me-1"></i>
+                                            Obuna foydalanuvchilari
+                                            <span class="badge bg-success ms-1">{{ user_counts.subscription }}</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="target_approved_users" name="target_approved_users" value="1">
+                                        <label class="form-check-label" for="target_approved_users">
+                                            <i class="fas fa-check-circle me-1"></i>
+                                            Tasdiqlangan foydalanuvchilar
+                                            <span class="badge bg-info ms-1">{{ user_counts.approved }}</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Faqat Telegram orqali muloqot qilgan foydalanuvchilarga xabar yuboriladi.
+                            </small>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-outline-secondary" onclick="window.location.href='{{ url_for('admin_dashboard') }}'">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Orqaga
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-2"></i>
+                                Xabar Yuborish
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Statistics Panel -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Foydalanuvchi Statistikasi
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Barcha foydalanuvchilar:</span>
+                            <span class="badge bg-secondary">{{ user_counts.all }}</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Sinov foydalanuvchilari:</span>
+                            <span class="badge bg-warning">{{ user_counts.trial }}</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Obuna foydalanuvchilari:</span>
+                            <span class="badge bg-success">{{ user_counts.subscription }}</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Tasdiqlangan foydalanuvchilar:</span>
+                            <span class="badge bg-info">{{ user_counts.approved }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Available Bots -->
+            <div class="card border-0 shadow-sm mt-3">
+                <div class="card-header bg-light">
+                    <h6 class="card-title mb-0">
+                        <i class="fab fa-telegram me-2"></i>
+                        Mavjud Telegram Botlar
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% if telegram_bots %}
+                        {% for bot in telegram_bots %}
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-robot text-primary me-2"></i>
+                            <div class="flex-grow-1">
+                                <strong>{{ bot.name }}</strong>
+                                {% if bot.telegram_username %}
+                                <br><small class="text-muted">@{{ bot.telegram_username }}</small>
+                                {% endif %}
+                                {% if bot.notification_channel %}
+                                <br><small class="text-success">Kanal: {{ bot.notification_channel }}</small>
+                                {% endif %}
+                            </div>
+                            <span class="badge bg-success">
+                                <i class="fas fa-check"></i>
+                            </span>
+                        </div>
+                        {% if not loop.last %}<hr>{% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center text-muted">
+                            <i class="fas fa-robot fa-2x mb-2"></i>
+                            <p>Hech qanday Telegram bot sozlanmagan</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Notifications -->
+    {% if notifications %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-history me-2"></i>
+                        So'nggi Yuborilgan Xabarlar
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Sarlavha</th>
+                                    <th>Turi</th>
+                                    <th>Yuborilgan vaqt</th>
+                                    <th>Holat</th>
+                                    <th>Muvaffaq/Xatolik</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for notification in notifications %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ notification.title }}</strong>
+                                        <br><small class="text-muted">{{ notification.message[:50] }}{% if notification.message|length > 50 %}...{% endif %}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">{{ notification.notification_type.value }}</span>
+                                    </td>
+                                    <td>{{ notification.sent_at.strftime('%d.%m.%Y %H:%M') if notification.sent_at else '-' }}</td>
+                                    <td>
+                                        {% if notification.status.value == 'sent' %}
+                                        <span class="badge bg-success">Yuborilgan</span>
+                                        {% elif notification.status.value == 'failed' %}
+                                        <span class="badge bg-danger">Xatolik</span>
+                                        {% else %}
+                                        <span class="badge bg-warning">Kutilmoqda</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="text-success">{{ notification.sent_count or 0 }}</span> /
+                                        <span class="text-danger">{{ notification.failed_count or 0 }}</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+// Handle target all users checkbox
+document.getElementById('target_all_users').addEventListener('change', function() {
+    const otherCheckboxes = ['target_trial_users', 'target_subscription_users', 'target_approved_users'];
+    if (this.checked) {
+        otherCheckboxes.forEach(id => {
+            document.getElementById(id).checked = false;
+            document.getElementById(id).disabled = true;
+        });
+    } else {
+        otherCheckboxes.forEach(id => {
+            document.getElementById(id).disabled = false;
+        });
+    }
+});
+
+// Show/hide audience selection based on direct messages checkbox
+document.getElementById('send_direct_messages').addEventListener('change', function() {
+    const audienceSelection = document.getElementById('audience-selection');
+    if (this.checked) {
+        audienceSelection.style.display = 'block';
+    } else {
+        audienceSelection.style.display = 'none';
+    }
+});
+
+// Initial state
+if (!document.getElementById('send_direct_messages').checked) {
+    document.getElementById('audience-selection').style.display = 'none';
+}
+</script>
+{% endblock %}
