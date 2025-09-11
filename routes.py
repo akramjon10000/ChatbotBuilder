@@ -223,6 +223,16 @@ def bot_detail(bot_id):
                 db.session.commit()
                 flash('WhatsApp token o\'chirildi', 'info')
         
+        elif platform == 'telegram_notifications':
+            # Handle Telegram notification settings update
+            admin_chat_id = request.form.get('admin_chat_id', '').strip()
+            notification_channel = request.form.get('notification_channel', '').strip()
+            
+            bot.admin_chat_id = admin_chat_id if admin_chat_id else None
+            bot.notification_channel = notification_channel if notification_channel else None
+            db.session.commit()
+            flash('Telegram bildirishnoma sozlamalari yangilandi!', 'success')
+        
         else:
             # Handle regular bot updates (name, description, etc.)
             name = request.form.get('name')
@@ -866,6 +876,16 @@ def deploy_telegram(bot_id):
             bot.telegram_token = telegram_token
             bot.telegram_webhook_url = webhook_url
             bot.is_active = True
+            
+            # Save notification settings if provided
+            admin_chat_id = request.form.get('admin_chat_id', '').strip()
+            notification_channel = request.form.get('notification_channel', '').strip()
+            
+            if admin_chat_id:
+                bot.admin_chat_id = admin_chat_id
+            if notification_channel:
+                bot.notification_channel = notification_channel
+                
             db.session.commit()
             
             flash(f'Telegram bot muvaffaqiyatli ulandi! Bot nomi: {bot_info["result"]["first_name"]}', 'success')
