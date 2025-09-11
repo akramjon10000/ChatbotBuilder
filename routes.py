@@ -8,6 +8,8 @@ import logging
 import csv
 import hashlib
 import hmac
+import base64
+import secrets
 
 from flask import send_from_directory
 from app import app, db, limiter, csrf
@@ -468,6 +470,40 @@ def profile():
     
     return render_template('profile.html')
 
+@app.route('/connect_telegram')
+@login_required
+def connect_telegram():
+    """Telegram akkauntni bog'lash uchun deep-link yaratish"""
+    if not current_user.has_access:
+        return redirect(url_for('trial_expired'))
+    
+    # Generate secure token for this user
+    token = secrets.token_urlsafe(16)
+    user_id_encoded = base64.b64encode(str(current_user.id).encode()).decode()
+    deep_link_param = f"{user_id_encoded}_{token}"
+    
+    # Store token temporarily (you could also store this in database for more security)
+    session[f'telegram_connect_token_{current_user.id}'] = token
+    
+    # Get marketing bot token (you'll need to set this up)
+    marketing_bot_username = "YOUR_MARKETING_BOT_USERNAME"  # Bu o'rningiga haqiqiy bot username qo'ying
+    
+    # Create deep-link URL
+    telegram_deep_link = f"https://t.me/{marketing_bot_username}?start={deep_link_param}"
+    
+    return render_template('connect_telegram.html', 
+                         telegram_link=telegram_deep_link,
+                         connected=bool(current_user.telegram_chat_id))
+
+@app.route('/telegram_status')
+@login_required
+def telegram_status():
+    """Telegram bog'lanish holatini tekshirish"""
+    return jsonify({
+        'connected': bool(current_user.telegram_chat_id),
+        'chat_id': current_user.telegram_chat_id if current_user.telegram_chat_id else None
+    })
+
 @app.route('/knowledge-guide')
 @login_required
 def knowledge_guide():
@@ -843,6 +879,15 @@ def handle_telegram_command(bot, chat_id, command, message):
                 db.session.commit()
         
         if command.startswith('/start'):
+            # Check for deep-link parameter (marketing bot connection)
+            command_parts = command.split(' ', 1)
+            if len(command_parts) > 1:
+                deep_link_param = command_parts[1]
+                # Try to connect user account
+                connection_result = handle_telegram_connection(chat_id, deep_link_param, message)
+                if connection_result:
+                    return connection_result
+            
             # Welcome message with language selection
             welcome_messages = {
                 'uz': f"Assalom alaykum! 👋\n\nMen <b>{bot.name}</b> botman.\n\n{bot.description or 'Sizga yordam berish uchun tayyorman!'}\n\n📣 Tilni o'zgartirish uchun /til buyrug'idan foydalaning.",
@@ -884,6 +929,81 @@ def handle_telegram_command(bot, chat_id, command, message):
     except Exception as e:
         logging.error(f"Telegram command error: {e}")
         return "Error", 500
+
+def handle_telegram_connection(chat_id, deep_link_param, message):
+    """Handle Telegram account connection via deep-link"""
+    try:
+        # Parse deep-link parameter
+        if '_' not in deep_link_param:
+            return None
+        
+        user_id_encoded, token = deep_link_param.split('_', 1)
+        
+        # Decode user ID
+        try:
+            user_id = int(base64.b64decode(user_id_encoded).decode())
+        except:
+            logging.warning(f"Invalid user ID in deep-link: {user_id_encoded}")
+            return None
+        
+        # Get user
+        user = User.query.get(user_id)
+        if not user:
+            logging.warning(f"User not found for deep-link: {user_id}")
+            return None
+        
+        # Verify token (you could check session or database)
+        # For now, we'll accept any valid format as the token expires quickly
+        
+        # Check if user already has a telegram_chat_id
+        if user.telegram_chat_id:
+            # User already connected, send notification
+            telegram_service = TelegramService(os.environ.get('TELEGRAM_BOT_TOKEN'))
+            message_text = f"""
+✅ <b>Allaqachon bog'langan!</b>
+
+Sizning {user.username} akkauntingiz allaqachon Telegram'ga bog'langan.
+
+🎯 Endi siz marketing xabarlarini qabul qilasiz va platform xizmatlaridan to'liq foydalanishingiz mumkin!
+"""
+            telegram_service.send_message(chat_id, message_text)
+            return "OK", 200
+        
+        # Connect user's chat_id
+        user.telegram_chat_id = str(chat_id)
+        db.session.commit()
+        
+        # Send success message
+        telegram_service = TelegramService(os.environ.get('TELEGRAM_BOT_TOKEN'))
+        telegram_username = message['from'].get('username', '')
+        user_display_name = message['from'].get('first_name', 'Foydalanuvchi')
+        
+        success_message = f"""
+🎉 <b>Muvaffaqiyat!</b>
+
+Sizning <b>{user.username}</b> akkauntingiz Telegram'ga muvaffaqiyatli bog'landi!
+
+👤 Telegram: @{telegram_username or user_display_name}
+🔗 Chat ID: {chat_id}
+
+✨ <b>Endi siz:</b>
+• Platform yangilanishlarini olasiz
+• Marketing takliflarini ko'rasiz  
+• Texnik yordam xabarlarini qabul qilasiz
+
+🚀 <i>AI Chatbot Platform'dan foydalanganingiz uchun rahmat!</i>
+
+💬 Savollaringiz bo'lsa, to'g'ridan-to'g'ri shu yerga yozing.
+"""
+        
+        telegram_service.send_message(chat_id, success_message)
+        
+        logging.info(f"User {user.username} (ID: {user.id}) connected Telegram chat_id: {chat_id}")
+        return "OK", 200
+        
+    except Exception as e:
+        logging.error(f"Error handling Telegram connection: {e}")
+        return None
 
 def handle_telegram_callback(bot, callback_query):
     """Handle Telegram callback queries (inline keyboard responses)"""

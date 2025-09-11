@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Telegram Akkaunt Bog'lash{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fab fa-telegram"></i> Telegram Akkaunt Bog'lash</h4>
+                </div>
+                <div class="card-body">
+                    {% if connected %}
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i> 
+                            <strong>Muvaffaqiyat!</strong> Sizning Telegram akkauntingiz allaqachon bog'langan.
+                        </div>
+                        <div class="text-center">
+                            <i class="fab fa-telegram fa-3x text-success mb-3"></i>
+                            <h5>Telegram akkauntingiz bog'langan</h5>
+                            <p class="text-muted">Endi siz marketing xabarlarini va platform yangilanishlarini Telegram orqali olasiz.</p>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> 
+                            Telegram akkauntingizni bog'lash uchun quyidagi tugmani bosing.
+                        </div>
+                        
+                        <div class="text-center mb-4">
+                            <i class="fab fa-telegram fa-3x text-primary mb-3"></i>
+                            <h5>Telegram Akkauntni Bog'lash</h5>
+                            <p class="text-muted">
+                                Akkauntingizni bog'lashdan keyin siz quyidagilarni olasiz:
+                            </p>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> Platform yangilanishlari</li>
+                                <li><i class="fas fa-check text-success"></i> Marketing takliflari</li>
+                                <li><i class="fas fa-check text-success"></i> Texnik yordam xabarlari</li>
+                                <li><i class="fas fa-check text-success"></i> Sinov muddati tugaganda eslatishlar</li>
+                            </ul>
+                        </div>
+
+                        <div class="text-center">
+                            <a href="{{ telegram_link }}" class="btn btn-primary btn-lg" target="_blank">
+                                <i class="fab fa-telegram"></i> Telegram'ga Bog'lash
+                            </a>
+                        </div>
+
+                        <div class="alert alert-warning mt-4">
+                            <small>
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <strong>Eslatma:</strong> Yuqoridagi tugmani bosgandan keyin, bot sizga xabar yuboradi. 
+                                Bot bilan /start buyrug'ini bosing va akkauntingiz avtomatik bog'lanadi.
+                            </small>
+                        </div>
+                    {% endif %}
+
+                    <div class="text-center mt-4">
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Dashboard'ga Qaytish
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Connection Status Card -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6><i class="fas fa-info-circle"></i> Bog'lanish Holati</h6>
+                </div>
+                <div class="card-body">
+                    <div id="connection-status">
+                        {% if connected %}
+                            <span class="badge badge-success">
+                                <i class="fas fa-check"></i> Bog'langan
+                            </span>
+                        {% else %}
+                            <span class="badge badge-warning">
+                                <i class="fas fa-clock"></i> Bog'lanmagan
+                            </span>
+                        {% endif %}
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary mt-2" onclick="checkConnectionStatus()">
+                        <i class="fas fa-sync"></i> Holatni Yangilash
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function checkConnectionStatus() {
+    fetch('/telegram_status')
+        .then(response => response.json())
+        .then(data => {
+            const statusDiv = document.getElementById('connection-status');
+            if (data.connected) {
+                statusDiv.innerHTML = '<span class="badge badge-success"><i class="fas fa-check"></i> Bog\'langan</span>';
+                // Refresh page to show connected state
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                statusDiv.innerHTML = '<span class="badge badge-warning"><i class="fas fa-clock"></i> Bog\'lanmagan</span>';
+            }
+        })
+        .catch(error => {
+            console.error('Error checking connection status:', error);
+        });
+}
+
+// Auto-check status every 5 seconds if not connected
+{% if not connected %}
+setInterval(checkConnectionStatus, 5000);
+{% endif %}
+</script>
+{% endblock %}
