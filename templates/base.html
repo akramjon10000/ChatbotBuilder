@@ -17,6 +17,24 @@
     <link href="{{ url_for('static', filename='css/pricing.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/contrast-improvements.css') }}" rel="stylesheet">
     
+    <!-- Hide Replit development tools in production -->
+    <style>
+        /* Hide Eruda and other Replit dev tools */
+        #eruda, #eruda-container, [id*="eruda"], 
+        .eruda, .eruda-container, [class*="eruda"] {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+        
+        /* Hide dev tools console */
+        [id*="__replco"], [class*="__replco"],
+        [src*="eruda"], [src*="devtools"] {
+            display: none !important;
+        }
+    </style>
+    
     {% block extra_head %}{% endblock %}
 </head>
 <body>

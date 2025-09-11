@@ -1,0 +1,84 @@
+console
+elements
+network
+resources
+settings
+Local Storage
+Key	Value
+Session Storage
+Key	Value
+Cookie
+Key	Value
+Name	Method	Status	Type	Size	Time
+<html lang="uz">
+<head>…</head>
+<script src="/__replco/static/devtools/eruda/3.2.3/eruda.js"></script>
+<style type="text/css">…</style>
+<script src="/__replco/static/devtools/injected.js" onerror="parent.postMessage({event:'error',payload:'script.onerror: Failed to load '+event.target.src},'https://replit.com')"></script>
+<style type="text/css">…</style>
+<meta charset="UTF-8"></meta>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta>
+<title>…</title>
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"></link>
+<!-- Lucide Icons -->
+<link href="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></link>
+<!-- Feather Icons -->
+<script src="https://unpkg.com/feather-icons"></script>
+<!-- Custom CSS -->
+<link href="/static/css/style.css" rel="stylesheet"></link>
+<link href="/static/css/pricing.css" rel="stylesheet"></link>
+<link href="/static/css/contrast-improvements.css" rel="stylesheet"></link>
+<script type="text/javascript" src="https://replit.com/public/js/beacon.js"></script>
+</head>
+<body>…</body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark" style="background: var(--gradient-primary); backdrop-filter: blur(10px);">…</nav>
+<!-- Flash Messages -->
+<!-- Main Content -->
+<main class="container my-4">…</main>
+<!-- Footer -->
+<footer class="bg-light py-4 mt-5">…</footer>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Custom JS -->
+<script src="/static/js/main.js"></script>
+<script>…</script>
+<div id="notification-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 350px;"></div>
+</body>
+</html>
+All Info Warning Error
+Cancel
+Execute
+ Remember Entry Button Position
+Theme
+
+Atom One Dark
+Transparency
+0.2
+
+1/1
+Display Size
+40
+
+20/100
+Restore defaults and reload
+Console
+ Asynchronous Rendering
+ Enable JavaScript Execution
+ Catch Global Errors
+ Override Console
+ Auto Display If Error Occurs
+ Display Extra Information
+ Display Unenumerable Properties
+ Access Getter Value
+ Lazy Evaluation
+Max Log Number
+
+infinite
+Elements
+ Catch Event Listeners
+Resources
+ Hide Eruda Setting
+ Auto Refresh Elements

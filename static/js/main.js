@@ -30,6 +30,57 @@ function initializeApp() {
     startTrialStatusMonitoring();
     
     console.log('AI Chatbot Platform initialized');
+    
+    // Remove Replit development tools if they exist
+    removeReplotDevTools();
+}
+
+/**
+ * Remove Replit development tools from DOM
+ */
+function removeReplotDevTools() {
+    function cleanDevTools() {
+        // Remove Eruda and other dev tool elements
+        const devSelectors = [
+            '#eruda', '#eruda-container', 
+            '[id*="eruda"]', '[class*="eruda"]',
+            '[id*="__replco"]', '[class*="__replco"]',
+            'script[src*="eruda"]', 'script[src*="devtools"]'
+        ];
+        
+        devSelectors.forEach(selector => {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => {
+                if (el && el.parentNode) {
+                    el.parentNode.removeChild(el);
+                }
+            });
+        });
+        
+        // Remove any style elements that might be injected
+        const styles = document.querySelectorAll('style');
+        styles.forEach(style => {
+            if (style.textContent && style.textContent.includes('eruda')) {
+                style.remove();
+            }
+        });
+    }
+    
+    // Clean immediately
+    cleanDevTools();
+    
+    // Monitor for dynamic injection
+    const observer = new MutationObserver(() => {
+        cleanDevTools();
+    });
+    
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+    
+    // Also clean periodically as backup
+    setInterval(cleanDevTools, 2000);
 }
 
 /**
