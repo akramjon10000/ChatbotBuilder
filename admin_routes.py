@@ -4,8 +4,10 @@ from datetime import datetime, timedelta
 from sqlalchemy import func
 
 from app import app, db
-from models import User, Bot, Conversation, Message, AdminAction, SystemStats
+from models import User, Bot, Conversation, Message, AdminAction, SystemStats, Notification, UserNotification, NotificationStatus, NotificationType
 from utils.helpers import admin_required
+from services.telegram_service import TelegramService, get_user_chat_ids_from_conversations
+import logging
 
 @app.route('/admin')
 @login_required
@@ -336,3 +338,223 @@ def admin_settings():
         return redirect(url_for('admin_settings'))
     
     return render_template('admin/settings.html')
+
+@app.route('/admin/notifications')
+@login_required
+@admin_required
+def admin_notifications():
+    """Telegram habar yuborish sahifasi"""
+    # Get recent notifications
+    notifications = Notification.query.order_by(Notification.created_at.desc()).limit(10).all()
+    
+    # Get available bots with Telegram tokens
+    telegram_bots = Bot.query.filter(
+        Bot.telegram_token.isnot(None),
+        Bot.telegram_token != ''
+    ).all()
+    
+    # Count users by type
+    all_users_count = User.query.filter_by(is_admin=False).count()
+    trial_users_count = User.query.filter(
+        User.access_status.in_(['trial']),
+        User.is_admin == False
+    ).count()
+    subscription_users_count = User.query.filter(
+        User.access_status.in_(['monthly', 'yearly']),
+        User.is_admin == False
+    ).count()
+    approved_users_count = User.query.filter(
+        User.access_status.in_(['approved']),
+        User.is_admin == False
+    ).count()
+    
+    user_counts = {
+        'all': all_users_count,
+        'trial': trial_users_count,
+        'subscription': subscription_users_count,
+        'approved': approved_users_count
+    }
+    
+    return render_template('admin/notifications.html', 
+                         notifications=notifications,
+                         telegram_bots=telegram_bots,
+                         user_counts=user_counts)
+
+@app.route('/admin/notifications/send', methods=['POST'])
+@login_required
+@admin_required
+def send_notification():
+    """Telegram orqali notification yuborish"""
+    try:
+        # Get form data
+        title = request.form.get('title', '').strip()
+        message = request.form.get('message', '').strip()
+        notification_type = request.form.get('notification_type', 'general')
+        telegram_bot_id = request.form.get('telegram_bot_id')
+        
+        # Target audience
+        target_all_users = request.form.get('target_all_users') == 'on'
+        target_trial_users = request.form.get('target_trial_users') == 'on'
+        target_subscription_users = request.form.get('target_subscription_users') == 'on'
+        target_approved_users = request.form.get('target_approved_users') == 'on'
+        
+        # Delivery method
+        send_to_channel = request.form.get('send_to_channel') == 'on'
+        send_direct_messages = request.form.get('send_direct_messages') == 'on'
+        
+        # Validation
+        if not title or not message:
+            flash('Sarlavha va habar matni kiritilishi kerak!', 'error')
+            return redirect(url_for('admin_notifications'))
+        
+        if not telegram_bot_id:
+            flash('Telegram bot tanlanishi kerak!', 'error')
+            return redirect(url_for('admin_notifications'))
+            
+        # Get bot
+        bot = Bot.query.get(telegram_bot_id)
+        if not bot or not bot.telegram_token:
+            flash('Bot topilmadi yoki Telegram token mavjud emas!', 'error')
+            return redirect(url_for('admin_notifications'))
+        
+        # Create notification record
+        notification = Notification(
+            title=title,
+            message=message,
+            notification_type=getattr(NotificationType, notification_type.upper(), NotificationType.GENERAL),
+            created_by=current_user.id,
+            send_telegram=True,
+            target_all_users=target_all_users,
+            target_trial_users=target_trial_users,
+            target_subscription_users=target_subscription_users,
+            target_approved_users=target_approved_users,
+            target_telegram_channel=send_to_channel,
+            target_direct_telegram=send_direct_messages
+        )
+        
+        db.session.add(notification)
+        db.session.commit()
+        
+        # Initialize Telegram service
+        telegram_service = TelegramService(bot.telegram_token)
+        
+        sent_count = 0
+        failed_count = 0
+        
+        # Send to channel if requested
+        if send_to_channel:
+            if not bot.notification_channel:
+                failed_count += 1
+                logging.error(f"Channel sending requested but bot {bot.name} has no notification_channel configured")
+                flash('Kanalga yuborish tanlangan lekin bot sozlamalarida kanal ko\'rsatilmagan!', 'warning')
+            else:
+                try:
+                    formatted_message = f"<b>{title}</b>\n\n{message}"
+                    result = telegram_service.send_channel_message(
+                        bot.notification_channel, 
+                        formatted_message,
+                        'HTML'
+                    )
+                    
+                    if result['success']:
+                        sent_count += 1
+                        logging.info(f"Channel message sent successfully to {bot.notification_channel}")
+                    else:
+                        failed_count += 1
+                        logging.error(f"Failed to send channel message: {result.get('error_description')}")
+                        
+                except Exception as e:
+                    failed_count += 1
+                    logging.error(f"Channel message error: {e}")
+        
+        # Send direct messages if requested
+        if send_direct_messages:
+            try:
+                # Get target users
+                target_users = []
+                
+                if target_all_users:
+                    target_users = User.query.filter_by(is_admin=False).all()
+                else:
+                    if target_trial_users:
+                        trial_users = User.query.filter(
+                            User.access_status.in_(['trial']),
+                            User.is_admin == False
+                        ).all()
+                        target_users.extend(trial_users)
+                    
+                    if target_subscription_users:
+                        sub_users = User.query.filter(
+                            User.access_status.in_(['monthly', 'yearly']),
+                            User.is_admin == False
+                        ).all()
+                        target_users.extend(sub_users)
+                    
+                    if target_approved_users:
+                        approved_users = User.query.filter(
+                            User.access_status.in_(['approved']),
+                            User.is_admin == False
+                        ).all()
+                        target_users.extend(approved_users)
+                
+                # Get chat IDs for users who have interacted via Telegram with proper filtering
+                chat_ids = get_user_chat_ids_from_conversations(
+                    target_all_users=target_all_users,
+                    target_trial_users=target_trial_users,
+                    target_subscription_users=target_subscription_users,
+                    target_approved_users=target_approved_users
+                )
+                
+                if chat_ids:
+                    formatted_message = f"<b>{title}</b>\n\n{message}"
+                    bulk_result = telegram_service.send_bulk_messages(
+                        chat_ids,
+                        formatted_message,
+                        'HTML'
+                    )
+                    
+                    sent_count += bulk_result['sent']
+                    failed_count += bulk_result['failed']
+                    
+                    # Create UserNotification records for successful sends
+                    for chat_id in bulk_result['successful_chat_ids']:
+                        # Find user by chat_id (from conversations)
+                        conversation = Conversation.query.filter_by(
+                            platform='telegram',
+                            platform_user_id=chat_id
+                        ).first()
+                        
+                        if conversation:
+                            user_notification = UserNotification(
+                                user_id=conversation.user_id,
+                                notification_id=notification.id,
+                                is_telegram_sent=True,
+                                telegram_sent_at=datetime.utcnow()
+                            )
+                            db.session.add(user_notification)
+                    
+                    db.session.commit()
+                    
+            except Exception as e:
+                logging.error(f"Direct message error: {e}")
+                failed_count += len(chat_ids) if 'chat_ids' in locals() else 1
+        
+        # Update notification status
+        notification.sent_count = sent_count
+        notification.failed_count = failed_count
+        notification.status = NotificationStatus.SENT if sent_count > 0 else NotificationStatus.FAILED
+        notification.sent_at = datetime.utcnow()
+        
+        db.session.commit()
+        
+        if sent_count > 0:
+            flash(f'Habar muvaffaqiyatli yuborildi! Yuborilgan: {sent_count}, Xatolik: {failed_count}', 'success')
+        else:
+            flash('Habar yuborishda xatolik yuz berdi!', 'error')
+            
+    except Exception as e:
+        logging.error(f"Notification sending error: {e}")
+        flash('Habar yuborishda xatolik yuz berdi!', 'error')
+        db.session.rollback()
+    
+    return redirect(url_for('admin_notifications'))

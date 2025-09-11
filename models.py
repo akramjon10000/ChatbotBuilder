@@ -24,6 +24,18 @@ class AdminActionType(enum.Enum):
     SUSPEND_USER = "suspend_user"
     GRANT_MONTHLY = "grant_monthly"
     GRANT_YEARLY = "grant_yearly"
+    SEND_NOTIFICATION = "send_notification"
+
+class NotificationStatus(enum.Enum):
+    DRAFT = "draft"
+    SENT = "sent"
+    FAILED = "failed"
+
+class NotificationType(enum.Enum):
+    GENERAL = "general"
+    SUBSCRIPTION = "subscription"
+    SYSTEM = "system"
+    PROMOTION = "promotion"
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -309,3 +321,68 @@ class SystemStats(db.Model):
     
     def __repr__(self):
         return f'<SystemStats {self.date}>'
+
+class Notification(db.Model):
+    """Admin tomonidan yuborilgan umumiy habarlar"""
+    id = db.Column(db.Integer, primary_key=True)
+    
+    # HABAR MAZMUNI
+    title = db.Column(db.String(200), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    notification_type = db.Column(db.Enum(NotificationType), default=NotificationType.GENERAL)
+    
+    # YUBORISH MA'LUMOTLARI
+    status = db.Column(db.Enum(NotificationStatus), default=NotificationStatus.DRAFT)
+    created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    sent_count = db.Column(db.Integer, default=0)
+    failed_count = db.Column(db.Integer, default=0)
+    
+    # VAQT
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    sent_at = db.Column(db.DateTime)
+    
+    # EMAIL parametrlari
+    send_email = db.Column(db.Boolean, default=False)
+    email_subject = db.Column(db.String(200))
+    
+    # TELEGRAM parametrlari
+    send_telegram = db.Column(db.Boolean, default=True)
+    telegram_parse_mode = db.Column(db.String(20), default='HTML')
+    target_telegram_channel = db.Column(db.Boolean, default=True)
+    target_direct_telegram = db.Column(db.Boolean, default=False)
+    
+    # MAQSADLI AUDITORIYA
+    target_all_users = db.Column(db.Boolean, default=True)
+    target_trial_users = db.Column(db.Boolean, default=False)
+    target_subscription_users = db.Column(db.Boolean, default=False)
+    target_approved_users = db.Column(db.Boolean, default=False)
+    
+    def __repr__(self):
+        return f'<Notification {self.title}>'
+
+class UserNotification(db.Model):
+    """Foydalanuvchi va habar orasidagi bog'lanish"""
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    notification_id = db.Column(db.Integer, db.ForeignKey('notification.id'), nullable=False)
+    
+    # HOLAT
+    is_read = db.Column(db.Boolean, default=False)
+    is_email_sent = db.Column(db.Boolean, default=False)
+    email_sent_at = db.Column(db.DateTime)
+    read_at = db.Column(db.DateTime)
+    
+    # TELEGRAM HOLAT
+    is_telegram_sent = db.Column(db.Boolean, default=False)
+    telegram_sent_at = db.Column(db.DateTime)
+    telegram_message_id = db.Column(db.String(100))
+    
+    # VAQT
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # RELATIONSHIPS
+    user = db.relationship('User', backref='notifications')
+    notification = db.relationship('Notification', backref='user_notifications')
+    
+    def __repr__(self):
+        return f'<UserNotification user={self.user_id} notification={self.notification_id}>'

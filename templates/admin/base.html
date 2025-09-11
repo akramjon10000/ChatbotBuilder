@@ -287,6 +287,13 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link {{ 'active' if request.endpoint == 'admin_notifications' }}" 
+                               href="{{ url_for('admin_notifications') }}">
+                                <i class="fab fa-telegram me-2"></i>
+                                Telegram Xabarlar
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link {{ 'active' if request.endpoint == 'admin_settings' }}" 
                                href="{{ url_for('admin_settings') }}">
                                 <i class="fas fa-cog me-2"></i>
