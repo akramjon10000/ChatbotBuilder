@@ -58,11 +58,19 @@ class AIService:
             
             if knowledge_content:
                 kb_instructions = {
-                    'uz': f"\n\nSizda quyidagi bilimlar bazasi mavjud. Foydalanuvchi savollariga javob berishda ushbu ma'lumotlardan foydalaning:\n{knowledge_content}\n\nMuhim: Agar mahsulot haqida so'ralsa va uning rasm URL si mavjud bo'lsa (https bilan boshlangan), javobingizda rasm URL ni ham ko'rsating. Rasm URL ni to'g'ridan-to'g'ri yozing, masalan: 'Bu mahsulotning rasmi: https://example.com/image.jpg'",
-                    'ru': f"\n\nУ вас есть следующая база знаний. Используйте эту информацию при ответе на вопросы пользователя:\n{knowledge_content}\n\nВажно: Если спрашивают о товаре и у него есть URL изображения (начинающийся с https), включите URL изображения в ваш ответ. Пишите URL изображения напрямую, например: 'Изображение этого товара: https://example.com/image.jpg'",
-                    'en': f"\n\nYou have the following knowledge base. Use this information when answering user questions:\n{knowledge_content}\n\nImportant: If asked about a product and it has an image URL (starting with https), include the image URL in your response. Write the image URL directly, for example: 'Product image: https://example.com/image.jpg'"
+                    'uz': f"\n\nSizda quyidagi bilimlar bazasi mavjud. FAQAT ushbu bilimlar bazasidan topilgan ma'lumotlar asosida javob bering:\n{knowledge_content}\n\nMUHIM QOIDALAR:\n1. Agar savol bilimlar bazasida yo'q bo'lsa, \"Kechirasiz, bu haqida ma'lumotim yo'q. Faqat bizning mahsulotlar va xizmatlar haqida savol bering\" deb javob bering.\n2. Bilimlar bazasidan tashqari umumiy savollar (tarix, siyosat, boshqa mavzular) ga javob bermang.\n3. Agar mahsulot haqida so'ralsa va rasm URL si mavjud bo'lsa, uni ham ko'rsating.\n4. Faqat bilimlar bazasidagi ma'lumotlardan foydalaning.",
+                    'ru': f"\n\nУ вас есть следующая база знаний. Отвечайте ТОЛЬКО на основе информации из этой базы знаний:\n{knowledge_content}\n\nВАЖНЫЕ ПРАВИЛА:\n1. Если вопроса нет в базе знаний, отвечайте: \"Извините, у меня нет информации об этом. Пожалуйста, задавайте вопросы только о наших продуктах и услугах\"\n2. Не отвечайте на общие вопросы (история, политика, другие темы) вне базы знаний.\n3. Если спрашивают о товаре и есть URL изображения, включите его.\n4. Используйте только информацию из базы знаний.",
+                    'en': f"\n\nYou have the following knowledge base. Answer ONLY based on information from this knowledge base:\n{knowledge_content}\n\nIMPORTANT RULES:\n1. If the question is not in the knowledge base, respond: \"Sorry, I don't have information about that. Please ask questions only about our products and services\"\n2. Do not answer general questions (history, politics, other topics) outside the knowledge base.\n3. If asked about a product and there's an image URL, include it.\n4. Use only information from the knowledge base."
                 }
                 system_instruction += kb_instructions.get(language, kb_instructions['uz'])
+            else:
+                # If no knowledge base, refuse to answer any questions
+                no_kb_instructions = {
+                    'uz': "\n\nSizda bilimlar bazasi mavjud emas. Hozircha hech qanday savolga javob bera olmaysiz. Foydalanuvchiga bilimlar bazasi yuklanmaganini ayting.",
+                    'ru': "\n\nУ вас нет базы знаний. Вы не можете отвечать на вопросы сейчас. Сообщите пользователю, что база знаний не загружена.",
+                    'en': "\n\nYou don't have a knowledge base. You cannot answer questions right now. Tell the user that the knowledge base is not loaded."
+                }
+                system_instruction += no_kb_instructions.get(language, no_kb_instructions['uz'])
             
             if system_prompt:
                 system_instruction += f"\n\nQo'shimcha ko'rsatmalar: {system_prompt}"
@@ -126,11 +134,19 @@ class AIService:
             
             if knowledge_content:
                 kb_instructions = {
-                    'uz': f"\n\nSizda quyidagi bilimlar bazasi mavjud. Foydalanuvchi savollariga javob berishda ushbu ma'lumotlardan foydalaning:\n{knowledge_content}\n\nMuhim: Agar mahsulot haqida so'ralsa va uning rasm URL si mavjud bo'lsa (https bilan boshlangan), javobingizda rasm URL ni ham ko'rsating. Rasm URL ni to'g'ridan-to'g'ri yozing, masalan: 'Bu mahsulotning rasmi: https://example.com/image.jpg'",
-                    'ru': f"\n\nУ вас есть следующая база знаний. Используйте эту информацию при ответе на вопросы пользователя:\n{knowledge_content}\n\nВажно: Если спрашивают о товаре и у него есть URL изображения (начинающийся с https), включите URL изображения в ваш ответ. Пишите URL изображения напрямую, например: 'Изображение этого товара: https://example.com/image.jpg'",
-                    'en': f"\n\nYou have the following knowledge base. Use this information when answering user questions:\n{knowledge_content}\n\nImportant: If asked about a product and it has an image URL (starting with https), include the image URL in your response. Write the image URL directly, for example: 'Product image: https://example.com/image.jpg'"
+                    'uz': f"\n\nSizda quyidagi bilimlar bazasi mavjud. FAQAT ushbu bilimlar bazasidan topilgan ma'lumotlar asosida javob bering:\n{knowledge_content}\n\nMUHIM QOIDALAR:\n1. Agar savol bilimlar bazasida yo'q bo'lsa, \"Kechirasiz, bu haqida ma'lumotim yo'q. Faqat bizning mahsulotlar va xizmatlar haqida savol bering\" deb javob bering.\n2. Bilimlar bazasidan tashqari umumiy savollar (tarix, siyosat, boshqa mavzular) ga javob bermang.\n3. Agar mahsulot haqida so'ralsa va rasm URL si mavjud bo'lsa, uni ham ko'rsating.\n4. Faqat bilimlar bazasidagi ma'lumotlardan foydalaning.",
+                    'ru': f"\n\nУ вас есть следующая база знаний. Отвечайте ТОЛЬКО на основе информации из этой базы знаний:\n{knowledge_content}\n\nВАЖНЫЕ ПРАВИЛА:\n1. Если вопроса нет в базе знаний, отвечайте: \"Извините, у меня нет информации об этом. Пожалуйста, задавайте вопросы только о наших продуктах и услугах\"\n2. Не отвечайте на общие вопросы (история, политика, другие темы) вне базы знаний.\n3. Если спрашивают о товаре и есть URL изображения, включите его.\n4. Используйте только информацию из базы знаний.",
+                    'en': f"\n\nYou have the following knowledge base. Answer ONLY based on information from this knowledge base:\n{knowledge_content}\n\nIMPORTANT RULES:\n1. If the question is not in the knowledge base, respond: \"Sorry, I don't have information about that. Please ask questions only about our products and services\"\n2. Do not answer general questions (history, politics, other topics) outside the knowledge base.\n3. If asked about a product and there's an image URL, include it.\n4. Use only information from the knowledge base."
                 }
                 system_instruction += kb_instructions.get(language, kb_instructions['uz'])
+            else:
+                # If no knowledge base, refuse to answer any questions
+                no_kb_instructions = {
+                    'uz': "\n\nSizda bilimlar bazasi mavjud emas. Hozircha hech qanday savolga javob bera olmaysiz. Foydalanuvchiga bilimlar bazasi yuklanmaganini ayting.",
+                    'ru': "\n\nУ вас нет базы знаний. Вы не можете отвечать на вопросы сейчас. Сообщите пользователю, что база знаний не загружена.",
+                    'en': "\n\nYou don't have a knowledge base. You cannot answer questions right now. Tell the user that the knowledge base is not loaded."
+                }
+                system_instruction += no_kb_instructions.get(language, no_kb_instructions['uz'])
             
             if system_prompt:
                 system_instruction += f"\n\nQo'shimcha ko'rsatmalar: {system_prompt}"
