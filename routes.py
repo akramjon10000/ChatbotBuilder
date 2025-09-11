@@ -1110,9 +1110,122 @@ def send_manual_message(bot_id):
             return jsonify({'success': False, 'error': 'Server xatoligi'})
     
     # GET request - show message sending page
-    conversations = Conversation.query.filter_by(bot_id=bot.id).order_by(Conversation.updated_at.desc()).all()
+    conversations = Conversation.query.filter_by(bot_id=bot.id, is_active=True).order_by(Conversation.updated_at.desc()).limit(50).all()
     
     return render_template('bot/send_message.html', bot=bot, conversations=conversations)
+
+
+@app.route('/bot/<int:bot_id>/broadcast-message', methods=['GET', 'POST'])
+@login_required
+def broadcast_message(bot_id):
+    """Send broadcast message to all customers"""
+    if not current_user.has_access:
+        return redirect(url_for('trial_expired'))
+        
+    bot = Bot.query.get_or_404(bot_id)
+    
+    # Check ownership
+    if bot.user_id != current_user.id:
+        flash('Bu chatbotga ruxsatingiz yo\'q', 'error')
+        return redirect(url_for('dashboard'))
+    
+    if request.method == 'POST':
+        try:
+            message_text = request.form.get('message')
+            
+            if not message_text or not message_text.strip():
+                return jsonify({'success': False, 'error': 'Xabar matnini kiriting'})
+            
+            # Get all active conversations for this bot
+            conversations = Conversation.query.filter_by(bot_id=bot.id, is_active=True).all()
+            
+            if not conversations:
+                return jsonify({'success': False, 'error': 'Hech qanday faol suhbat topilmadi'})
+            
+            successful_sends = 0
+            failed_sends = 0
+            errors = []
+            
+            # Send message to each conversation
+            for conversation in conversations:
+                try:
+                    response = None
+                    
+                    # Send via appropriate platform
+                    if conversation.platform == 'telegram' and bot.telegram_token:
+                        telegram_service = TelegramService(bot.telegram_token)
+                        response = telegram_service.send_message(conversation.platform_user_id, message_text)
+                    elif conversation.platform == 'instagram' and bot.instagram_token:
+                        instagram_service = InstagramService(bot.instagram_token, bot.instagram_page_id)
+                        response = instagram_service.send_message(conversation.platform_user_id, message_text)
+                    elif conversation.platform == 'whatsapp':
+                        errors.append(f'WhatsApp (@{conversation.platform_username}): Integratsiya mavjud emas')
+                        failed_sends += 1
+                        continue
+                    else:
+                        errors.append(f'{conversation.platform.title()} (@{conversation.platform_username}): Konfiguratsiya yo\'q')
+                        failed_sends += 1
+                        continue
+                    
+                    if response and response.success:
+                        # Save message to database
+                        try:
+                            with db.session.begin():
+                                message = Message(
+                                    conversation_id=conversation.id,
+                                    content=message_text,
+                                    is_from_user=False,  # This is from admin/bot
+                                    created_at=datetime.utcnow()
+                                )
+                                db.session.add(message)
+                                conversation.updated_at = datetime.utcnow()
+                            successful_sends += 1
+                        except Exception as db_error:
+                            logging.error(f"Database error for conversation {conversation.id}: {db_error}")
+                            errors.append(f'@{conversation.platform_username}: Xabar yuborildi, lekin saqlashda xatolik')
+                            failed_sends += 1
+                    else:
+                        error_detail = response.error_message if response else 'Platform xizmati javob bermadi'
+                        logging.error(f"Failed to send broadcast to {conversation.platform}:{conversation.platform_user_id}: {error_detail}")
+                        errors.append(f'@{conversation.platform_username} ({conversation.platform}): {error_detail}')
+                        failed_sends += 1
+                        
+                except Exception as send_error:
+                    logging.error(f"Error sending broadcast to conversation {conversation.id}: {send_error}")
+                    errors.append(f'@{conversation.platform_username}: Xatolik - {str(send_error)}')
+                    failed_sends += 1
+            
+            # Prepare result message
+            if successful_sends > 0:
+                result_message = f'✅ {successful_sends} ta foydalanuvchiga xabar yuborildi'
+                if failed_sends > 0:
+                    result_message += f'\n❌ {failed_sends} ta xabar yuborilmadi'
+                    if errors:
+                        result_message += f'\n\nXatoliklar:\n' + '\n'.join(errors[:5])  # Show first 5 errors
+                        if len(errors) > 5:
+                            result_message += f'\n... va yana {len(errors) - 5} ta xatolik'
+                
+                return jsonify({'success': True, 'message': result_message, 'stats': {
+                    'successful': successful_sends,
+                    'failed': failed_sends,
+                    'total': len(conversations)
+                }})
+            else:
+                return jsonify({'success': False, 'error': f'Hech qanday xabar yuborilmadi. {failed_sends} ta xatolik.'})
+                    
+        except Exception as e:
+            logging.error(f"Error in broadcast message: {e}")
+            return jsonify({'success': False, 'error': f'Broadcast xatoligi: {str(e)}'})
+    
+    # GET request - show broadcast form
+    conversations_count = Conversation.query.filter_by(bot_id=bot.id, is_active=True).count()
+    platforms = db.session.query(Conversation.platform).filter_by(bot_id=bot.id, is_active=True).distinct().all()
+    platform_list = [p[0] for p in platforms]
+    
+    return render_template('bot/broadcast_message.html', 
+                         bot=bot, 
+                         conversations_count=conversations_count,
+                         platforms=platform_list)
 
 @app.route('/conversation/<int:conversation_id>/messages')
 @login_required

@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}Barcha Mijozlarga Xabar - {{ bot.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-broadcast-tower me-2"></i>
+                        Barcha Mijozlarga Xabar Yuborish
+                    </h4>
+                    <a href="{{ url_for('send_manual_message', bot_id=bot.id) }}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-user me-1"></i>Individual Xabar
+                    </a>
+                </div>
+                <p class="text-muted mb-0 mt-2">{{ bot.name }} botining barcha foydalanuvchilariga xabar yuborish</p>
+            </div>
+            <div class="card-body">
+                <!-- Stats -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-primary">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>{{ conversations_count }}</h3>
+                                <p>Faol Mijozlar</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-success">
+                                <i class="fas fa-network-wired"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>{{ platforms|length }}</h3>
+                                <p>Platform{% if platforms|length != 1 %}lar{% endif %}</p>
+                                <small class="text-muted">
+                                    {% for platform in platforms %}
+                                        <span class="badge bg-light text-dark me-1">{{ platform.title() }}</span>
+                                    {% endfor %}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if conversations_count == 0 %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Hozircha faol suhbatlar yo'q. Avval foydalanuvchilar bot bilan muloqot qilishi kerak.
+                    </div>
+                {% else %}
+                    <!-- Broadcast Form -->
+                    <form id="broadcastForm" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        
+                        <div class="mb-4">
+                            <label for="message" class="form-label">
+                                <i class="fas fa-edit me-1"></i>
+                                Xabar Matni <span class="text-danger">*</span>
+                            </label>
+                            <textarea 
+                                class="form-control" 
+                                id="message" 
+                                name="message" 
+                                rows="6" 
+                                placeholder="Barcha mijozlarga yuboriladigan xabarni kiriting..."
+                                required
+                                maxlength="4000"
+                            ></textarea>
+                            <small class="form-text text-muted">
+                                Maksimal 4000 belgi. HTML teglar qo'llab-quvvatlanadi.
+                            </small>
+                            <div class="character-count mt-1">
+                                <span id="charCount">0</span>/4000 belgi
+                            </div>
+                        </div>
+
+                        <!-- Preview -->
+                        <div class="mb-4">
+                            <div class="card bg-light">
+                                <div class="card-header py-2">
+                                    <small class="text-muted">
+                                        <i class="fas fa-eye me-1"></i>
+                                        Xabar ko'rinishi:
+                                    </small>
+                                </div>
+                                <div class="card-body" id="messagePreview">
+                                    <em class="text-muted">Xabar matni avtomatik ko'rsatiladi...</em>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Warning -->
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Diqqat!</strong> Bu xabar <strong>{{ conversations_count }}</strong> ta mijozga yuboriladi. 
+                            Xabarni yuborishdan oldin matnni diqqat bilan tekshiring.
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg" id="sendButton">
+                                <i class="fas fa-broadcast-tower me-2"></i>
+                                {{ conversations_count }} ta Mijozga Xabar Yuborish
+                            </button>
+                        </div>
+                    </form>
+                {% endif %}
+                
+                <!-- Result Display -->
+                <div id="resultDisplay" class="mt-4" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success/Error Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+<style>
+.stat-card {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    border-left: 4px solid var(--bs-primary);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.stat-content h3 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--bs-dark);
+}
+
+.stat-content p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--bs-secondary);
+}
+
+.character-count {
+    text-align: right;
+    font-size: 0.8rem;
+    color: var(--bs-secondary);
+}
+
+#messagePreview {
+    min-height: 60px;
+    border: 1px dashed #ddd;
+    background: white;
+    border-radius: 8px;
+}
+
+.result-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 1rem 0;
+}
+
+.result-stat {
+    text-align: center;
+}
+
+.result-stat .number {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.result-stat .label {
+    font-size: 0.8rem;
+    color: var(--bs-secondary);
+}
+</style>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/broadcast_message.js') }}" defer></script>
+{% endblock %}
