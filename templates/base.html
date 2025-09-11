@@ -190,6 +190,81 @@
         {% block content %}{% endblock %}
     </main>
 
+    <!-- PWA Install Button (Floating) -->
+    <div id="install-btn" class="position-fixed" style="bottom: 20px; right: 20px; z-index: 1050; display: none;">
+        <button class="btn btn-primary btn-lg rounded-pill shadow-lg" onclick="installPWA()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/>
+                <polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2"/>
+                <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            Ilovani o'rnatish
+        </button>
+    </div>
+
+    <!-- PWA Install Modal -->
+    <div class="modal fade" id="installModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                            <line x1="8" y1="21" x2="16" y2="21" stroke="currentColor" stroke-width="2"/>
+                            <line x1="12" y1="17" x2="12" y2="21" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        AI Chatbot ni o'rnatish
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="mb-4">
+                        <img src="{{ url_for('static', filename='icons/icon-192x192.png') }}" alt="AI Chatbot" class="rounded" width="96" height="96">
+                    </div>
+                    <h6>Ilovani telefoningizga o'rnatib, tezroq foydalaning!</h6>
+                    <p class="text-muted mb-4">O'rnatganingizdan so'ng ilova telefoningiz ekranida ikonka sifatida ko'rinadi va internetsizsiz ham ishlaydi.</p>
+                    <div class="row text-start">
+                        <div class="col-12 mb-2">
+                            <small class="text-success">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                                    <polyline points="20,6 9,17 4,12" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Tez ishga tushish
+                            </small>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <small class="text-success">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                                    <polyline points="20,6 9,17 4,12" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Offline rejimda ishlash
+                            </small>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <small class="text-success">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                                    <polyline points="20,6 9,17 4,12" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Push bildirishnomalar
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Keyinroq</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmInstallPWA()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-1">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/>
+                            <polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2"/>
+                            <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        O'rnatish
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="bg-light py-4 mt-5">
         <div class="container">
@@ -225,28 +300,84 @@
         
         // PWA Install prompt
         let deferredPrompt;
+        
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
             
-            // Show install button/banner
+            // Show install button after 3 seconds
+            setTimeout(() => {
+                const installBtn = document.getElementById('install-btn');
+                if (installBtn && !isPWAInstalled()) {
+                    installBtn.style.display = 'block';
+                    
+                    // Auto-show modal after 10 seconds if not clicked
+                    setTimeout(() => {
+                        if (installBtn.style.display === 'block') {
+                            showInstallModal();
+                        }
+                    }, 10000);
+                }
+            }, 3000);
+        });
+        
+        // Check if PWA is already installed
+        function isPWAInstalled() {
+            return window.matchMedia('(display-mode: standalone)').matches || 
+                   window.navigator.standalone || 
+                   localStorage.getItem('pwa-dismissed') === 'true';
+        }
+        
+        // Show install modal
+        function showInstallModal() {
+            if (!isPWAInstalled()) {
+                const modal = new bootstrap.Modal(document.getElementById('installModal'));
+                modal.show();
+            }
+        }
+        
+        // Install PWA function
+        function installPWA() {
             const installBtn = document.getElementById('install-btn');
             if (installBtn) {
-                installBtn.style.display = 'block';
-                installBtn.addEventListener('click', (e) => {
-                    installBtn.style.display = 'none';
-                    deferredPrompt.prompt();
-                    deferredPrompt.userChoice.then((choiceResult) => {
-                        if (choiceResult.outcome === 'accepted') {
-                            console.log('User accepted the install prompt');
-                        } else {
-                            console.log('User dismissed the install prompt');
-                        }
-                        deferredPrompt = null;
-                    });
-                });
+                installBtn.style.display = 'none';
             }
-        });
+            showInstallModal();
+        }
+        
+        // Confirm PWA installation
+        function confirmInstallPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('PWA installed successfully');
+                        showNotificationIfAvailable('Ilova muvaffaqiyatli o\'rnatildi!', 'success');
+                    } else {
+                        console.log('PWA installation dismissed');
+                        localStorage.setItem('pwa-dismissed', 'true');
+                    }
+                    deferredPrompt = null;
+                });
+                
+                // Hide modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('installModal'));
+                if (modal) {
+                    modal.hide();
+                }
+            }
+        }
+        
+        // Show notification if function is available
+        function showNotificationIfAvailable(message, type) {
+            if (typeof showNotification === 'function') {
+                showNotification(message, type);
+            }
+        }
+        
+        // Make functions global
+        window.installPWA = installPWA;
+        window.confirmInstallPWA = confirmInstallPWA;
     </script>
     
     {% block extra_scripts %}{% endblock %}
