@@ -596,10 +596,13 @@ def send_monitoring_notification(bot, conversation, user_message, bot_response, 
         # Format notification message
         platform_emoji = {'telegram': '💬', 'instagram': '📸', 'whatsapp': '💚'}.get(platform, '🤖')
         
+        # Format username safely
+        username = conversation.platform_username or "Noma'lum"
+        
         notification_text = f"""
 {platform_emoji} **{platform.title()} Conversation**
 
-👤 **Foydalanuvchi:** {conversation.platform_username or 'Noma\'lum'}
+👤 **Foydalanuvchi:** {username}
 🆔 **Chat ID:** {conversation.platform_user_id}
 🤖 **Bot:** {bot.name}
 
