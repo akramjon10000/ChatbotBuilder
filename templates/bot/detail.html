@@ -448,6 +448,40 @@
                                     <br><small class="text-muted">Webhook: {{ bot.telegram_webhook_url }}</small>
                                 {% endif %}
                             </div>
+                            
+                            <!-- Notification Settings -->
+                            <h6 class="mb-3"><i class="fas fa-bell me-1"></i>Bildirishnoma sozlamalari</h6>
+                            <form method="POST" action="{{ url_for('bot_detail', bot_id=bot.id) }}">
+                                <input type="hidden" name="platform" value="telegram_notifications">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="adminChatId" class="form-label">Admin Chat ID</label>
+                                            <input type="text" class="form-control" id="adminChatId" name="admin_chat_id" 
+                                                   value="{{ bot.admin_chat_id or '' }}" placeholder="123456789">
+                                            <div class="form-text">
+                                                Shaxsiy chat ID si bot bildirishnomalarini olish uchun
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="notificationChannel" class="form-label">Bildirishnoma kanali</label>
+                                            <input type="text" class="form-control" id="notificationChannel" name="notification_channel" 
+                                                   value="{{ bot.notification_channel or '' }}" placeholder="@mychannel yoki -100123456789">
+                                            <div class="form-text">
+                                                Jamoa bildirishnomalari uchun kanal (ixtiyoriy)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm me-2">
+                                    <i class="fas fa-save me-1"></i>Konfiguratsiyani yangilash
+                                </button>
+                            </form>
+                            
+                            <hr class="my-3">
+                            
                             <form method="POST" action="{{ url_for('disconnect_telegram', bot_id=bot.id) }}">
                                 <button type="submit" class="btn btn-outline-danger btn-sm" 
                                         onclick="return confirm('Telegram botni uzishni xohlaysizmi?')">
@@ -464,6 +498,31 @@
                                         @BotFather dan olingan bot tokenini kiriting
                                     </div>
                                 </div>
+                                
+                                <h6 class="mb-3"><i class="fas fa-bell me-1"></i>Bildirishnoma sozlamalari (ixtiyoriy)</h6>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="adminChatIdSetup" class="form-label">Admin Chat ID</label>
+                                            <input type="text" class="form-control" id="adminChatIdSetup" name="admin_chat_id" 
+                                                   placeholder="123456789">
+                                            <div class="form-text">
+                                                Shaxsiy chat ID si bot bildirishnomalarini olish uchun
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="notificationChannelSetup" class="form-label">Bildirishnoma kanali</label>
+                                            <input type="text" class="form-control" id="notificationChannelSetup" name="notification_channel" 
+                                                   placeholder="@mychannel yoki -100123456789">
+                                            <div class="form-text">
+                                                Jamoa bildirishnomalari uchun kanal (ixtiyoriy)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
                                 <button type="submit" class="btn btn-info btn-sm">
                                     <i class="fas fa-plug me-1"></i>Ulash
                                 </button>
