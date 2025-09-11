@@ -182,7 +182,7 @@ Sizning bepul sinov mudatingiz {days_left} kun qoldi!
         return message.strip()
 
 
-def get_trial_expired_users() -> List[Dict]:
+def get_trial_expired_telegram_users() -> List[Dict]:
     """Trial muddati tugagan foydalanuvchilarni olish"""
     from app import app, db
     from models import User, AccessStatus

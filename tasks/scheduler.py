@@ -99,49 +99,49 @@ def cleanup_old_data():
     except Exception as e:
         logging.error(f"Error cleaning up old data: {e}")
 
-def send_marketing_emails():
-    """Send marketing emails to trial users every 3 days"""
+def send_marketing_telegrams():
+    """Send marketing Telegram messages to trial users every 3 days"""
     try:
         from app import app, db
-        from services.marketing_service import MarketingEmailService, get_trial_expired_users
+        from services.telegram_marketing_service import TelegramMarketingService, get_trial_expired_telegram_users
         
         with app.app_context():
-            # Get trial expired users
-            trial_expired_users = get_trial_expired_users()
+            # Get trial expired users who have telegram_chat_id
+            trial_expired_users = get_trial_expired_telegram_users()
             
             if not trial_expired_users:
-                logging.info("No trial expired users found for marketing emails")
+                logging.info("No trial expired users with Telegram found for marketing messages")
                 return
             
-            # Initialize marketing service
-            marketing_service = MarketingEmailService()
+            # Initialize Telegram marketing service
+            marketing_service = TelegramMarketingService()
             
-            # Create email content for trial expired users
-            subject = "🚀 Yana AI Chatbot Platform'ga qaytib keling!"
+            # Send marketing messages to each user
+            sent_count = 0
+            failed_count = 0
             
-            # Extract email list
-            email_list = [user['email'] for user in trial_expired_users]
+            for user_data in trial_expired_users:
+                try:
+                    result = marketing_service.send_trial_expired_message(
+                        chat_id=user_data['telegram_chat_id'],
+                        user_name=user_data['full_name'] or user_data['username']
+                    )
+                    
+                    if result and result.get('success'):
+                        sent_count += 1
+                        logging.info(f"Marketing Telegram sent to user {user_data['full_name'] or user_data['username']} (chat_id: {user_data['telegram_chat_id']})")
+                    else:
+                        failed_count += 1
+                        logging.warning(f"Failed to send marketing Telegram to user {user_data['full_name'] or user_data['username']}: {result.get('error', 'Unknown error')}")
+                        
+                except Exception as user_error:
+                    failed_count += 1
+                    logging.error(f"Error sending marketing Telegram to user {user_data['full_name'] or user_data['username']}: {user_error}")
             
-            # Create personalized email content
-            html_content = marketing_service.create_trial_expired_email(
-                user_name="Aziz foydalanuvchi",  # Generic greeting
-                include_contact=True
-            )
-            
-            # Send bulk emails
-            bulk_result = marketing_service.send_bulk_emails(
-                email_list=email_list,
-                subject=subject,
-                html_content=html_content
-            )
-            
-            sent_count = bulk_result['sent']
-            failed_count = bulk_result['failed']
-            
-            logging.info(f"Marketing emails sent: {sent_count} successful, {failed_count} failed to {len(trial_expired_users)} trial expired users")
+            logging.info(f"Marketing Telegrams sent: {sent_count} successful, {failed_count} failed to {len(trial_expired_users)} trial expired users")
             
     except Exception as e:
-        logging.error(f"Error sending marketing emails: {e}")
+        logging.error(f"Error sending marketing Telegrams: {e}")
 
 def send_trial_expiry_notifications():
     """Send notifications for trial expiry"""
@@ -213,12 +213,12 @@ def start_scheduler():
         replace_existing=True
     )
     
-    # Send marketing emails every 3 days at 10 AM
+    # Send marketing Telegrams every 3 days at 10 AM
     scheduler.add_job(
-        func=send_marketing_emails,
+        func=send_marketing_telegrams,
         trigger=CronTrigger(day='*/3', hour=10, minute=0),  # Every 3 days at 10:00
-        id='marketing_emails',
-        name='Send marketing emails to trial users',
+        id='marketing_telegrams',
+        name='Send marketing Telegrams to trial users',
         replace_existing=True
     )
     
