@@ -252,7 +252,7 @@
                     <div class="card-body">
                         <form method="POST" action="{{ url_for('upload_knowledge', bot_id=bot.id) }}" 
                               enctype="multipart/form-data">
-                            {{ csrf_token() }}
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <div class="mb-3">
                                 <label for="knowledgeFile" class="form-label">Fayl tanlang</label>
                                 <input type="file" class="form-control" id="knowledgeFile" name="file" 
