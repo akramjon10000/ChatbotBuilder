@@ -343,21 +343,39 @@ def admin_settings():
 @login_required
 @admin_required
 def admin_marketing():
-    """Marketing email yuborish sahifasi"""
+    """Marketing Telegram xabarlari yuborish sahifasi"""
     # Get recent marketing notifications (last 10)
     notifications = Notification.query.filter(
-        Notification.title.contains('Email') | Notification.title.contains('Marketing')
+        Notification.title.contains('Telegram') | Notification.title.contains('Marketing')
     ).order_by(Notification.created_at.desc()).limit(10).all()
     
-    # Count users by type for marketing
+    # Count users by type for Telegram marketing
     all_users_count = User.query.filter_by(is_admin=False).count()
-    trial_expired_count = len(get_trial_expired_users())
-    trial_active_count = len(get_active_trial_users())
+    all_telegram_users_count = User.query.filter(
+        User.is_admin == False,
+        User.telegram_chat_id != None,
+        User.marketing_opt_out == False
+    ).count()
+    
+    # Import Telegram marketing functions
+    from services.telegram_marketing_service import get_trial_expired_telegram_users
+    trial_expired_count = len(get_trial_expired_telegram_users())
+    
+    # Count active trial users with Telegram
+    active_trial_telegram_count = User.query.filter(
+        User.is_trial_active == True,
+        User.trial_end_date > datetime.utcnow(),
+        User.admin_approved == False,
+        User.is_admin == False,
+        User.telegram_chat_id != None,
+        User.marketing_opt_out == False
+    ).count()
     
     user_counts = {
         'all': all_users_count,
+        'all_telegram': all_telegram_users_count,
         'trial_expired': trial_expired_count,
-        'trial_active': trial_active_count
+        'trial_active': active_trial_telegram_count
     }
     
     return render_template('admin/notifications.html', 
@@ -367,74 +385,115 @@ def admin_marketing():
 @app.route('/admin/marketing/send', methods=['POST'])
 @login_required
 @admin_required
-def send_marketing_email():
-    """Marketing email yuborish"""
+def send_marketing_telegram():
+    """Marketing Telegram xabar yuborish"""
     try:
         # Get form data
-        subject = request.form.get('subject', '').strip()
         content = request.form.get('content', '').strip()
         target_audience = request.form.get('target_audience', 'trial_expired')
         include_contact = request.form.get('include_contact') == '1'
         
         # Validation
-        if not subject or not content:
-            flash('Email sarlavhasi va matni kiritilishi kerak!', 'error')
+        if not content:
+            flash('Xabar matni kiritilishi kerak!', 'error')
             return redirect(url_for('admin_marketing'))
+        
+        # Initialize Telegram marketing service
+        from services.telegram_marketing_service import TelegramMarketingService, get_trial_expired_telegram_users
+        marketing_service = TelegramMarketingService()
         
         # Get target users based on audience
         if target_audience == 'trial_expired':
-            target_users = get_trial_expired_users()
+            target_users = get_trial_expired_telegram_users()
         elif target_audience == 'trial_active':
-            target_users = get_active_trial_users()
-        elif target_audience == 'all':
-            target_users = get_all_users()
+            # Get active trial users with Telegram
+            target_users = []
+            users = User.query.filter(
+                User.is_trial_active == True,
+                User.trial_end_date > datetime.utcnow(),
+                User.admin_approved == False,
+                User.is_admin == False,
+                User.telegram_chat_id != None,
+                User.marketing_opt_out == False
+            ).all()
+            
+            for user in users:
+                target_users.append({
+                    'id': user.id,
+                    'username': user.username,
+                    'full_name': user.full_name or user.username,
+                    'telegram_chat_id': user.telegram_chat_id
+                })
+        elif target_audience == 'all_telegram':
+            # Get all users with Telegram
+            target_users = []
+            users = User.query.filter(
+                User.is_admin == False,
+                User.telegram_chat_id != None,
+                User.marketing_opt_out == False
+            ).all()
+            
+            for user in users:
+                target_users.append({
+                    'id': user.id,
+                    'username': user.username,
+                    'full_name': user.full_name or user.username,
+                    'telegram_chat_id': user.telegram_chat_id
+                })
         else:
             flash('Noto\'g\'ri auditoriya tanlandi!', 'error')
             return redirect(url_for('admin_marketing'))
         
         if not target_users:
-            flash('Tanlangan auditoriyada foydalanuvchilar topilmadi!', 'error')
+            flash('Tanlangan auditoriyada Telegram bog\'lagan foydalanuvchilar topilmadi!', 'error')
             return redirect(url_for('admin_marketing'))
         
-        # Initialize marketing email service
-        marketing_service = MarketingEmailService()
+        # Send Telegram messages to each user
+        sent_count = 0
+        failed_count = 0
         
-        # Create email content based on target audience
-        if target_audience == 'trial_expired':
-            # For trial expired users, use the specialized template
-            html_content = marketing_service.create_trial_expired_email(
-                user_name="",  # Will be personalized per user
-                include_contact=include_contact
-            )
-        else:
-            # For other audiences, use general template
-            html_content = marketing_service.create_general_marketing_email(
-                subject=subject,
-                content=content,
-                include_contact=include_contact
-            )
-        
-        # Extract email list
-        email_list = [user['email'] for user in target_users]
-        
-        # Send bulk emails
-        bulk_result = marketing_service.send_bulk_emails(
-            email_list=email_list,
-            subject=subject,
-            html_content=html_content
-        )
-        
-        sent_count = bulk_result['sent']
-        failed_count = bulk_result['failed']
+        for user_data in target_users:
+            try:
+                if target_audience == 'trial_expired':
+                    # Use predefined trial expired message
+                    result = marketing_service.send_trial_expired_message(
+                        chat_id=user_data['telegram_chat_id'],
+                        user_name=user_data['full_name'] or user_data['username']
+                    )
+                else:
+                    # Use custom message
+                    custom_message = content
+                    if include_contact:
+                        custom_message += "\n\n📞 Aloqa:\n• Telefon: +998 99 644 84 44\n• Telegram: @Akramjon1984"
+                    
+                    result = marketing_service.send_marketing_message(
+                        chat_id=user_data['telegram_chat_id'],
+                        message=custom_message
+                    )
+                
+                if result and result.get('success'):
+                    sent_count += 1
+                    
+                    # Update user's marketing last sent timestamp
+                    user = User.query.get(user_data['id'])
+                    if user:
+                        user.marketing_last_sent_at = datetime.utcnow()
+                        db.session.commit()
+                else:
+                    failed_count += 1
+                    
+            except Exception as user_error:
+                failed_count += 1
+                logging.error(f"Error sending Telegram to user {user_data['full_name']}: {user_error}")
         
         # Create notification record
         notification = Notification(
-            title=subject,
+            title=f"Telegram Marketing - {target_audience.replace('_', ' ').title()}",
             message=content[:500] + '...' if len(content) > 500 else content,
             notification_type=NotificationType.GENERAL,
             created_by=current_user.id,
-            send_telegram=False,
-            target_all_users=(target_audience == 'all'),
+            send_telegram=True,
+            target_all_users=(target_audience == 'all_telegram'),
             target_trial_users=(target_audience == 'trial_active'),
             sent_count=sent_count,
             failed_count=failed_count,
@@ -446,14 +505,14 @@ def send_marketing_email():
         db.session.commit()
         
         if sent_count > 0:
-            flash(f'Marketing email muvaffaqiyatli yuborildi! Yuborilgan: {sent_count}, Xatolik: {failed_count}', 'success')
-            logging.info(f"Marketing emails sent: {sent_count} successful, {failed_count} failed to {target_audience} audience")
+            flash(f'Marketing Telegram xabarlari muvaffaqiyatli yuborildi! Yuborilgan: {sent_count}, Xatolik: {failed_count}', 'success')
+            logging.info(f"Marketing Telegrams sent: {sent_count} successful, {failed_count} failed to {target_audience} audience")
         else:
-            flash('Email yuborishda xatolik yuz berdi!', 'error')
+            flash('Telegram xabar yuborishda xatolik yuz berdi!', 'error')
             
     except Exception as e:
-        logging.error(f"Marketing email sending error: {e}")
-        flash('Email yuborishda xatolik yuz berdi!', 'error')
+        logging.error(f"Marketing Telegram sending error: {e}")
+        flash('Telegram xabar yuborishda xatolik yuz berdi!', 'error')
         db.session.rollback()
     
     return redirect(url_for('admin_marketing'))
