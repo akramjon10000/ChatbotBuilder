@@ -510,7 +510,7 @@ def telegram_webhook(bot_id):
                 bot_id=bot.id,
                 platform='telegram',
                 platform_user_id=str(chat_id),
-                platform_username=message['from'].get('first_name', 'Unknown'),
+                platform_username=message['from'].get('username') or message['from'].get('first_name', 'Unknown'),
                 language=detected_language
             )
             db.session.add(conversation)
@@ -596,8 +596,11 @@ def send_monitoring_notification(bot, conversation, user_message, bot_response, 
         # Format notification message
         platform_emoji = {'telegram': '💬', 'instagram': '📸', 'whatsapp': '💚'}.get(platform, '🤖')
         
-        # Format username safely
-        username = conversation.platform_username or "Noma'lum"
+        # Format username safely with @ symbol
+        if conversation.platform_username:
+            username = f"@{conversation.platform_username}"
+        else:
+            username = "Noma'lum"
         
         notification_text = f"""
 {platform_emoji} **{platform.title()} Conversation**
@@ -787,7 +790,7 @@ def handle_telegram_command(bot, chat_id, command, message):
                 bot_id=bot.id,
                 platform='telegram',
                 platform_user_id=str(chat_id),
-                platform_username=message['from'].get('first_name', 'Unknown'),
+                platform_username=message['from'].get('username') or message['from'].get('first_name', 'Unknown'),
                 language='uz'  # Default to Uzbek
             )
             db.session.add(conversation)
