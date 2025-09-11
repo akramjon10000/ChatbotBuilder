@@ -46,6 +46,12 @@
                 </button>
             </div>
             <div class="col-md-3 mb-2">
+                <a href="{{ url_for('send_manual_message', bot_id=bot.id) }}" class="btn btn-outline-primary w-100">
+                    <i class="fas fa-paper-plane me-2"></i>
+                    Mijozlarga Xabar
+                </a>
+            </div>
+            <div class="col-md-3 mb-2">
                 <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary w-100">
                     <i class="fas fa-arrow-left me-2"></i>
                     Orqaga
