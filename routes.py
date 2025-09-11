@@ -957,16 +957,18 @@ def deploy_telegram(bot_id):
         telegram_service = TelegramService(telegram_token)
         
         # Check if token is valid
-        bot_info = telegram_service.get_bot_info()
-        if not bot_info or not bot_info.get('ok'):
+        bot_info_response = telegram_service.get_bot_info()
+        if not bot_info_response.success:
             flash('Telegram bot token noto\'g\'ri yoki yaroqsiz', 'error')
             return redirect(url_for('bot_detail', bot_id=bot_id))
         
+        bot_info = bot_info_response.data
+        
         # Set webhook URL
         webhook_url = f"{request.host_url}webhook/telegram/{bot_id}"
-        webhook_result = telegram_service.set_webhook(webhook_url)
+        webhook_response = telegram_service.set_webhook(webhook_url)
         
-        if webhook_result and webhook_result.get('ok'):
+        if webhook_response.success:
             # Save token to bot
             bot.telegram_token = telegram_token
             bot.telegram_webhook_url = webhook_url
@@ -983,7 +985,7 @@ def deploy_telegram(bot_id):
                 
             db.session.commit()
             
-            flash(f'Telegram bot muvaffaqiyatli ulandi! Bot nomi: {bot_info["result"]["first_name"]}', 'success')
+            flash(f'Telegram bot muvaffaqiyatli ulandi! Bot nomi: {bot_info.get("first_name", "Bot")}', 'success')
         else:
             flash('Webhook o\'rnatishda xatolik', 'error')
             
