@@ -202,6 +202,36 @@ from admin_routes import *
 from admin_panel import admin
 app.register_blueprint(admin)
 
-# Start scheduler
-from tasks.scheduler import start_scheduler
-start_scheduler()
+# Start scheduler only once (prevent multiple instances in multi-worker environment)
+def start_scheduler_once():
+    """Start scheduler with proper multi-worker protection"""
+    import fcntl
+    import time
+    
+    lock_file_path = '/tmp/apscheduler.lock'
+    
+    try:
+        # Try to acquire lock
+        lock_file = open(lock_file_path, 'w')
+        fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        
+        # Write process ID to lock file
+        lock_file.write(str(os.getpid()))
+        lock_file.flush()
+        
+        # Start scheduler
+        from tasks.scheduler import start_scheduler
+        start_scheduler()
+        logging.info(f"APScheduler started in process {os.getpid()}")
+        
+        # Keep lock file open to maintain lock
+        # It will be released when process exits
+        
+    except (IOError, OSError) as e:
+        # Another process already has the lock
+        logging.info(f"APScheduler already running in another process, skipping in process {os.getpid()}")
+        pass
+
+# Only start scheduler in production or if ENABLE_SCHEDULER is set
+if os.environ.get('FLASK_ENV') == 'production' or os.environ.get('ENABLE_SCHEDULER', 'false').lower() == 'true':
+    start_scheduler_once()

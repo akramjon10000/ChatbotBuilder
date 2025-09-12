@@ -7,8 +7,8 @@ port = os.environ.get("PORT", "5000")
 bind = f"0.0.0.0:{port}"
 backlog = 2048
 
-# Worker processes
-workers = multiprocessing.cpu_count() * 2 + 1
+# Worker processes - Use WEB_CONCURRENCY if available (for Render deployment)
+workers = int(os.environ.get("WEB_CONCURRENCY", multiprocessing.cpu_count() * 2 + 1))
 worker_class = "sync"
 worker_connections = 1000
 timeout = 30
