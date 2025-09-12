@@ -300,32 +300,56 @@
         
         // PWA Install prompt
         let deferredPrompt;
+        let installBtnShown = false;
+        
+        // Debug PWA readiness
+        console.log('PWA Debug: Service Worker support:', 'serviceWorker' in navigator);
+        console.log('PWA Debug: Current protocol:', window.location.protocol);
+        console.log('PWA Debug: Is standalone:', window.matchMedia('(display-mode: standalone)').matches);
         
         window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('PWA Debug: beforeinstallprompt event fired');
             e.preventDefault();
             deferredPrompt = e;
             
-            // Show install button after 3 seconds
+            // Show install button after 2 seconds
             setTimeout(() => {
                 const installBtn = document.getElementById('install-btn');
                 if (installBtn && !isPWAInstalled()) {
+                    console.log('PWA Debug: Showing install button');
                     installBtn.style.display = 'block';
+                    installBtnShown = true;
                     
-                    // Auto-show modal after 10 seconds if not clicked
+                    // Auto-show modal after 8 seconds if not clicked
                     setTimeout(() => {
-                        if (installBtn.style.display === 'block') {
+                        if (installBtnShown && installBtn.style.display === 'block') {
+                            console.log('PWA Debug: Auto-showing install modal');
                             showInstallModal();
                         }
-                    }, 10000);
+                    }, 8000);
                 }
-            }, 3000);
+            }, 2000);
         });
+        
+        // Force show install button for testing (remove in production)
+        setTimeout(() => {
+            if (!deferredPrompt && !isPWAInstalled()) {
+                console.log('PWA Debug: beforeinstallprompt not fired, showing button anyway for testing');
+                const installBtn = document.getElementById('install-btn');
+                if (installBtn) {
+                    installBtn.style.display = 'block';
+                    installBtnShown = true;
+                }
+            }
+        }, 5000);
         
         // Check if PWA is already installed
         function isPWAInstalled() {
-            return window.matchMedia('(display-mode: standalone)').matches || 
-                   window.navigator.standalone || 
-                   localStorage.getItem('pwa-dismissed') === 'true';
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                                window.navigator.standalone || 
+                                localStorage.getItem('pwa-dismissed') === 'true';
+            console.log('PWA Debug: Is PWA installed?', isStandalone);
+            return isStandalone;
         }
         
         // Show install modal
@@ -347,25 +371,56 @@
         
         // Confirm PWA installation
         function confirmInstallPWA() {
+            console.log('PWA Debug: confirmInstallPWA called, deferredPrompt:', !!deferredPrompt);
+            
             if (deferredPrompt) {
+                console.log('PWA Debug: Showing install prompt');
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
+                    console.log('PWA Debug: User choice:', choiceResult.outcome);
                     if (choiceResult.outcome === 'accepted') {
                         console.log('PWA installed successfully');
                         showNotificationIfAvailable('Ilova muvaffaqiyatli o\'rnatildi!', 'success');
+                        installBtnShown = false;
+                        const installBtn = document.getElementById('install-btn');
+                        if (installBtn) {
+                            installBtn.style.display = 'none';
+                        }
                     } else {
                         console.log('PWA installation dismissed');
                         localStorage.setItem('pwa-dismissed', 'true');
                     }
                     deferredPrompt = null;
                 });
-                
-                // Hide modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('installModal'));
-                if (modal) {
-                    modal.hide();
-                }
+            } else {
+                // Fallback: Show manual installation instructions
+                console.log('PWA Debug: No deferredPrompt, showing manual instructions');
+                showManualInstallInstructions();
             }
+            
+            // Hide modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('installModal'));
+            if (modal) {
+                modal.hide();
+            }
+        }
+        
+        // Show manual installation instructions
+        function showManualInstallInstructions() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            let instructions = '';
+            
+            if (userAgent.includes('chrome') || userAgent.includes('edge')) {
+                instructions = 'Browser menyusidagi "..." ni bosing va "Install app" yoki "Ilovani o\'rnatish" ni tanlang.';
+            } else if (userAgent.includes('firefox')) {
+                instructions = 'Manzil satridan "Install" tugmasini bosing yoki browser menyusida "Add to Home Screen" ni tanlang.';
+            } else if (userAgent.includes('safari')) {
+                instructions = 'Share tugmasini bosing va "Add to Home Screen" ni tanlang.';
+            } else {
+                instructions = 'Brauzer menyusida "Add to Home Screen" yoki "Install app" opsiyasini qidiring.';
+            }
+            
+            showNotificationIfAvailable(instructions, 'info');
         }
         
         // Show notification if function is available
