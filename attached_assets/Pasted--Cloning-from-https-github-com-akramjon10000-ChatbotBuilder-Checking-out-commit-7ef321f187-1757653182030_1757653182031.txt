@@ -1,0 +1,98 @@
+==> Cloning from https://github.com/akramjon10000/ChatbotBuilder
+==> Checking out commit 7ef321f187f5148bb3984f2dcd604ca80971257e in branch main
+==> Using Python version 3.13.4 (default)
+==> Docs on specifying a Python version: https://render.com/docs/python-version
+==> Using Poetry version 2.1.3 (default)
+==> Docs on specifying a Poetry version: https://render.com/docs/poetry-version
+==> Using uv version 0.7.12 (default)
+==> Docs on specifying a uv version: https://render.com/docs/uv-version
+==> Installing uv version 0.7.12...
+==> Running build command 'uv sync --frozen && uv cache prune --ci'...
+Downloading babel (9.7MiB)
+Downloading pygments (1.2MiB)
+Downloading pydantic-core (1.9MiB)
+Downloading psycopg2-binary (2.9MiB)
+Downloading sqlalchemy (3.1MiB)
+ Downloading pydantic-core
+ Downloading psycopg2-binary
+ Downloading sqlalchemy
+ Downloading pygments
+ Downloading babel
+Prepared 63 packages in 497ms
+Installed 63 packages in 76ms
+Bytecode compiled 2600 files in 2.17s
+ + alembic==1.16.5
+ + annotated-types==0.7.0
+ + anyio==4.10.0
+ + apscheduler==3.11.0
+ + babel==2.17.0
+ + blinker==1.9.0
+ + cachetools==5.5.2
+ + certifi==2025.8.3
+ + charset-normalizer==3.4.3
+ + click==8.2.1
+ + deprecated==1.2.18
+ + dnspython==2.8.0
+ + ecdsa==0.19.1
+ + email-validator==2.3.0
+ + flask==3.1.2
+ + flask-babel==4.0.0
+ + flask-limiter==3.12
+ + flask-login==0.6.3
+ + flask-migrate==4.1.0
+ + flask-sqlalchemy==3.1.1
+ + flask-talisman==1.1.0
+ + flask-wtf==1.2.2
+ + google-auth==2.40.3
+ + google-genai==1.35.0
+ + greenlet==3.2.4
+ + gunicorn==23.0.0
+ + h11==0.16.0
+ + httpcore==1.0.9
+ + httpx==0.28.1
+ + idna==3.10
+ + itsdangerous==2.2.0
+ + jinja2==3.1.6
+ + limits==5.5.0
+ + mako==1.3.10
+ + markdown-it-py==4.0.0
+ + markupsafe==3.0.2
+ + mdurl==0.1.2
+ + ordered-set==4.1.0
+ + packaging==25.0
+ + psycopg2-binary==2.9.10
+ + pyasn1==0.6.1
+ + pyasn1-modules==0.4.2
+ + pydantic==2.11.7
+ + pydantic-core==2.33.2
+ + pygments==2.19.2
+ + python-http-client==3.3.7
+ + pytz==2025.2
+ + requests==2.32.5
+ + rich==13.9.4
+ + rsa==4.9.1
+ + sendgrid==6.12.4
+ + six==1.17.0
+ + sniffio==1.3.1
+ + sqlalchemy==2.0.43
+ + tenacity==9.1.2
+ + typing-extensions==4.15.0
+ + typing-inspection==0.4.1
+ + tzlocal==5.3.1
+ + urllib3==2.5.0
+ + websockets==15.0.1
+ + werkzeug==3.1.3
+ + wrapt==1.17.3
+ + wtforms==3.2.1
+Pruning cache at: /opt/render/.cache/.python-uv/cache
+Removed 4564 files (78.4MiB)
+==> Uploading build...
+==> Uploaded in 5.4s. Compression took 1.5s
+==> Build successful 🎉
+==> Deploying...
+==> Running 'Start Command: gunicorn --config gunicorn.conf.py main:app'
+bash: line 1: Start: command not found
+==> Exited with status 127
+==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+==> Running 'Start Command: gunicorn --config gunicorn.conf.py main:app'
+bash: line 1: Start: command not found
