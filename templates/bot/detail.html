@@ -27,32 +27,36 @@
 
         <!-- Quick Actions -->
         <div class="row mb-4">
-            <div class="col-md-3 mb-2">
-                <a href="{{ url_for('bot_chat', bot_id=bot.id) }}" class="btn btn-primary w-100">
+            <div class="col-6 col-lg-3 mb-2">
+                <a href="{{ url_for('bot_chat', bot_id=bot.id) }}" class="btn btn-primary w-100 btn-lg d-flex align-items-center justify-content-center">
                     <i class="fas fa-comments me-2"></i>
-                    Suhbat Boshlash
+                    <span class="d-none d-sm-inline">Suhbat Boshlash</span>
+                    <span class="d-sm-none">Chat</span>
                 </a>
             </div>
-            <div class="col-md-3 mb-2">
-                <button class="btn btn-outline-success w-100" data-bs-toggle="modal" data-bs-target="#platformModal">
+            <div class="col-6 col-lg-3 mb-2">
+                <button class="btn btn-outline-success w-100 btn-lg d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#platformModal">
                     <i class="fas fa-share-alt me-2"></i>
-                    Platformalar
+                    <span class="d-none d-sm-inline">Platformalar</span>
+                    <span class="d-sm-none">Platform</span>
                 </button>
             </div>
-            <div class="col-md-3 mb-2">
-                <button class="btn btn-outline-info w-100" data-bs-toggle="modal" data-bs-target="#editModal">
+            <div class="col-6 col-lg-3 mb-2">
+                <button class="btn btn-outline-info w-100 btn-lg d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#editModal">
                     <i class="fas fa-edit me-2"></i>
-                    Tahrirlash
+                    <span class="d-none d-sm-inline">Tahrirlash</span>
+                    <span class="d-sm-none">Edit</span>
                 </button>
             </div>
-            <div class="col-md-3 mb-2">
-                <a href="{{ url_for('send_manual_message', bot_id=bot.id) }}" class="btn btn-outline-primary w-100">
+            <div class="col-6 col-lg-3 mb-2">
+                <a href="{{ url_for('send_manual_message', bot_id=bot.id) }}" class="btn btn-outline-primary w-100 btn-lg d-flex align-items-center justify-content-center">
                     <i class="fas fa-paper-plane me-2"></i>
-                    Mijozlarga Xabar
+                    <span class="d-none d-sm-inline">Mijozlarga Xabar</span>
+                    <span class="d-sm-none">Xabar</span>
                 </a>
             </div>
-            <div class="col-md-3 mb-2">
-                <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary w-100">
+            <div class="col-12 col-lg-3 mb-2 d-lg-none">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary w-100 btn-lg d-flex align-items-center justify-content-center">
                     <i class="fas fa-arrow-left me-2"></i>
                     Orqaga
                 </a>
@@ -61,8 +65,8 @@
 
         <div class="row">
             <!-- Bot Information -->
-            <div class="col-md-6 mb-4">
-                <div class="card">
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100">
                     <div class="card-header">
                         <h5 class="mb-0">
                             <i class="fas fa-info-circle me-2"></i>
@@ -70,47 +74,79 @@
                         </h5>
                     </div>
                     <div class="card-body">
-                        <table class="table table-borderless">
-                            <tr>
-                                <td><strong>Nom:</strong></td>
-                                <td>{{ bot.name }}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Tavsif:</strong></td>
-                                <td>{{ bot.description or "Tavsif yo'q" }}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Tillar:</strong></td>
-                                <td>
-                                    {% for lang in bot.languages.split(',') %}
-                                        <span class="badge bg-secondary me-1">
-                                            {% if lang.strip() == 'uz' %}O'zbek
-                                            {% elif lang.strip() == 'ru' %}Русский
-                                            {% else %}English{% endif %}
-                                        </span>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Yaratilgan:</strong></td>
-                                <td>{{ bot.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Oxirgi yangilangan:</strong></td>
-                                <td>{{ bot.updated_at.strftime('%d.%m.%Y %H:%M') }}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Kunlik limit:</strong></td>
-                                <td>{{ bot.max_daily_messages }} xabar</td>
-                            </tr>
-                        </table>
+                        <div class="d-block d-md-none">
+                            <!-- Mobile Layout -->
+                            <div class="mb-3">
+                                <strong>Nom:</strong><br>
+                                <span class="text-muted">{{ bot.name }}</span>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Tavsif:</strong><br>
+                                <span class="text-muted">{{ bot.description or "Tavsif yo'q" }}</span>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Tillar:</strong><br>
+                                {% for lang in bot.languages.split(',') %}
+                                    <span class="badge bg-secondary me-1">
+                                        {% if lang.strip() == 'uz' %}O'zbek
+                                        {% elif lang.strip() == 'ru' %}Русский
+                                        {% else %}English{% endif %}
+                                    </span>
+                                {% endfor %}
+                            </div>
+                            <div class="mb-3">
+                                <strong>Yaratilgan:</strong><br>
+                                <span class="text-muted">{{ bot.created_at.strftime('%d.%m.%Y') }}</span>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Kunlik limit:</strong><br>
+                                <span class="text-muted">{{ bot.max_daily_messages }} xabar</span>
+                            </div>
+                        </div>
+                        <div class="d-none d-md-block">
+                            <!-- Desktop Layout -->
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Nom:</strong></td>
+                                    <td>{{ bot.name }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tavsif:</strong></td>
+                                    <td>{{ bot.description or "Tavsif yo'q" }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tillar:</strong></td>
+                                    <td>
+                                        {% for lang in bot.languages.split(',') %}
+                                            <span class="badge bg-secondary me-1">
+                                                {% if lang.strip() == 'uz' %}O'zbek
+                                                {% elif lang.strip() == 'ru' %}Русский
+                                                {% else %}English{% endif %}
+                                            </span>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Yaratilgan:</strong></td>
+                                    <td>{{ bot.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Oxirgi yangilangan:</strong></td>
+                                    <td>{{ bot.updated_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Kunlik limit:</strong></td>
+                                    <td>{{ bot.max_daily_messages }} xabar</td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Platform Integrations -->
-            <div class="col-md-6 mb-4">
-                <div class="card">
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100">
                     <div class="card-header">
                         <h5 class="mb-0">
                             <i class="fas fa-share-alt me-2"></i>
@@ -120,35 +156,38 @@
                     <div class="card-body">
                         <div class="row text-center">
                             <div class="col-4 mb-3">
-                                <div class="border rounded p-3 {{ 'bg-light' if bot.telegram_token else '' }}">
-                                    <i class="fab fa-telegram fa-2x {{ 'text-info' if bot.telegram_token else 'text-muted' }} mb-2"></i>
+                                <div class="border rounded p-2 p-md-3 {{ 'bg-light' if bot.telegram_token else '' }}">
+                                    <i class="fab fa-telegram fa-lg fa-md-2x {{ 'text-info' if bot.telegram_token else 'text-muted' }} mb-2"></i>
                                     <br>
-                                    <small class="fw-bold">Telegram</small>
+                                    <small class="fw-bold d-none d-md-inline">Telegram</small>
+                                    <small class="fw-bold d-md-none">TG</small>
                                     <br>
-                                    <span class="badge bg-{{ 'success' if bot.telegram_token else 'secondary' }}">
-                                        {{ 'Ulangan' if bot.telegram_token else 'Ulanmagan' }}
+                                    <span class="badge bg-{{ 'success' if bot.telegram_token else 'secondary' }} small">
+                                        {{ '✓' if bot.telegram_token else '✗' }}
                                     </span>
                                 </div>
                             </div>
                             <div class="col-4 mb-3">
-                                <div class="border rounded p-3 {{ 'bg-light' if bot.whatsapp_token else '' }}">
-                                    <i class="fab fa-whatsapp fa-2x {{ 'text-success' if bot.whatsapp_token else 'text-muted' }} mb-2"></i>
+                                <div class="border rounded p-2 p-md-3 {{ 'bg-light' if bot.whatsapp_token else '' }}">
+                                    <i class="fab fa-whatsapp fa-lg fa-md-2x {{ 'text-success' if bot.whatsapp_token else 'text-muted' }} mb-2"></i>
                                     <br>
-                                    <small class="fw-bold">WhatsApp</small>
+                                    <small class="fw-bold d-none d-md-inline">WhatsApp</small>
+                                    <small class="fw-bold d-md-none">WA</small>
                                     <br>
-                                    <span class="badge bg-{{ 'success' if bot.whatsapp_token else 'secondary' }}">
-                                        {{ 'Ulangan' if bot.whatsapp_token else 'Ulanmagan' }}
+                                    <span class="badge bg-{{ 'success' if bot.whatsapp_token else 'secondary' }} small">
+                                        {{ '✓' if bot.whatsapp_token else '✗' }}
                                     </span>
                                 </div>
                             </div>
                             <div class="col-4 mb-3">
-                                <div class="border rounded p-3 {{ 'bg-light' if bot.instagram_token else '' }}">
-                                    <i class="fab fa-instagram fa-2x {{ 'text-danger' if bot.instagram_token else 'text-muted' }} mb-2"></i>
+                                <div class="border rounded p-2 p-md-3 {{ 'bg-light' if bot.instagram_token else '' }}">
+                                    <i class="fab fa-instagram fa-lg fa-md-2x {{ 'text-danger' if bot.instagram_token else 'text-muted' }} mb-2"></i>
                                     <br>
-                                    <small class="fw-bold">Instagram</small>
+                                    <small class="fw-bold d-none d-md-inline">Instagram</small>
+                                    <small class="fw-bold d-md-none">IG</small>
                                     <br>
-                                    <span class="badge bg-{{ 'success' if bot.instagram_token else 'secondary' }}">
-                                        {{ 'Ulangan' if bot.instagram_token else 'Ulanmagan' }}
+                                    <span class="badge bg-{{ 'success' if bot.instagram_token else 'secondary' }} small">
+                                        {{ '✓' if bot.instagram_token else '✗' }}
                                     </span>
                                 </div>
                             </div>
@@ -186,85 +225,119 @@
 
         <!-- Knowledge Base -->
         <div class="row mb-4">
-            <div class="col-md-8">
+            <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0">
-                            <i class="fas fa-database me-2"></i>
-                            Bilim Bazasi
-                            <span class="badge bg-primary ms-2">{{ knowledge_files|length }}</span>
-                        </h5>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="fas fa-database me-2"></i>
+                                Bilim Bazasi
+                                <span class="badge bg-primary ms-2">{{ knowledge_files|length }}</span>
+                            </h5>
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-outline-success btn-sm" data-bs-toggle="modal" data-bs-target="#addTextModal">
+                                    <i class="fas fa-edit me-1"></i>
+                                    <span class="d-none d-sm-inline">Matn kiritish</span>
+                                    <span class="d-sm-none">Matn</span>
+                                </button>
+                                <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadFileModal">
+                                    <i class="fas fa-upload me-1"></i>
+                                    <span class="d-none d-sm-inline">Fayl yuklash</span>
+                                    <span class="d-sm-none">Fayl</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         {% if knowledge_files %}
-                            <div class="table-responsive">
-                                <table class="table table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Fayl nomi</th>
-                                            <th>Turi</th>
-                                            <th>Hajmi</th>
-                                            <th>Yuklangan</th>
-                                            <th>Harakat</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for kb in knowledge_files %}
-                                        <tr>
-                                            <td>
-                                                <i class="fas fa-file-text me-1"></i>
-                                                {{ kb.original_filename }}
-                                            </td>
-                                            <td>
-                                                <span class="badge bg-info">{{ kb.file_type }}</span>
-                                            </td>
-                                            <td>
-                                                <small>{{ "%.1f"|format(kb.file_size / 1024) }} KB</small>
-                                            </td>
-                                            <td>
-                                                <small>{{ kb.created_at.strftime('%d.%m.%Y') if kb.created_at else 'Noma\'lum' }}</small>
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-outline-danger btn-sm" 
-                                                        onclick="deleteKnowledge({{ kb.id }})">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+                            <!-- Mobile Knowledge List -->
+                            <div class="d-block d-md-none">
+                                {% for kb in knowledge_files %}
+                                <div class="card mb-2 border-0 bg-light">
+                                    <div class="card-body py-2">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-1">
+                                                    <i class="fas fa-file-text me-1 text-info"></i>
+                                                    {{ kb.original_filename }}
+                                                </h6>
+                                                <small class="text-muted">
+                                                    {{ "%.1f"|format(kb.file_size / 1024) }} KB • 
+                                                    {{ kb.created_at.strftime('%d.%m.%Y') if kb.created_at else 'Noma\'lum' }}
+                                                </small>
+                                            </div>
+                                            <button class="btn btn-outline-danger btn-sm ms-2" 
+                                                    onclick="deleteKnowledge({{ kb.id }})">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
                             </div>
-                        {% else %}
-                            <div class="text-center py-3">
-                                <i class="fas fa-database fa-2x text-muted mb-2"></i>
-                                <p class="text-muted mb-0">Bilim bazasi fayllari yo'q</p>
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h6 class="mb-0">Yangi Fayl Yuklash</h6>
-                    </div>
-                    <div class="card-body">
-                        <form method="POST" action="{{ url_for('upload_knowledge', bot_id=bot.id) }}" 
-                              enctype="multipart/form-data">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                            <div class="mb-3">
-                                <label for="knowledgeFile" class="form-label">Fayl tanlang</label>
-                                <input type="file" class="form-control" id="knowledgeFile" name="file" 
-                                       accept=".txt,.pdf,.doc,.docx,.json,.csv" required>
-                                <div class="form-text">
-                                    Qo'llab-quvvatlanadigan formatlar: TXT, PDF, DOC, DOCX, JSON, CSV
+                            
+                            <!-- Desktop Knowledge Table -->
+                            <div class="d-none d-md-block">
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Fayl nomi</th>
+                                                <th>Turi</th>
+                                                <th>Hajmi</th>
+                                                <th>Yuklangan</th>
+                                                <th>Harakat</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for kb in knowledge_files %}
+                                            <tr>
+                                                <td>
+                                                    <i class="fas fa-file-text me-1"></i>
+                                                    {{ kb.original_filename }}
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-info">{{ kb.file_type }}</span>
+                                                </td>
+                                                <td>
+                                                    <small>{{ "%.1f"|format(kb.file_size / 1024) }} KB</small>
+                                                </td>
+                                                <td>
+                                                    <small>{{ kb.created_at.strftime('%d.%m.%Y') if kb.created_at else 'Noma\'lum' }}</small>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-outline-danger btn-sm" 
+                                                            onclick="deleteKnowledge({{ kb.id }})">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">
-                                <i class="fas fa-upload me-1"></i>Yuklash
-                            </button>
-                        </form>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-database fa-3x text-muted mb-3"></i>
+                                <h6 class="text-muted mb-3">Bilim bazasi bo'sh</h6>
+                                <p class="text-muted mb-4">Botingizga bilim qo'shish uchun matn kiriting yoki fayl yuklang</p>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <button class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#addTextModal">
+                                            <i class="fas fa-edit me-1"></i>
+                                            Matn kiritish
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#uploadFileModal">
+                                            <i class="fas fa-upload me-1"></i>
+                                            Fayl yuklash
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -606,6 +679,109 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yopish</button>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Text Knowledge Modal -->
+<div class="modal fade" id="addTextModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-edit me-2"></i>
+                    Matn Bilim Qo'shish
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('add_text_knowledge', bot_id=bot.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Botingizga matn ko'rinishidagi bilim qo'shing. Bu ma'lumot bot javoblari uchun ishlatiladi.
+                    </div>
+                    <div class="mb-3">
+                        <label for="knowledgeTitle" class="form-label">Sarlavha *</label>
+                        <input type="text" class="form-control" id="knowledgeTitle" name="title" 
+                               placeholder="Bilim sarlavhasini kiriting" required>
+                        <div class="form-text">
+                            Bu sarlavha bilim bazasida faylni identifikatsiya qilish uchun ishlatiladi
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="knowledgeContent" class="form-label">Matn Mazmuni *</label>
+                        <textarea class="form-control" id="knowledgeContent" name="content" 
+                                  rows="10" placeholder="Bilim mazmunini kiriting..." required></textarea>
+                        <div class="form-text">
+                            Botingiz ushbu ma'lumotdan foydalanib foydalanuvchi savollariga javob beradi
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save me-1"></i>Bilim Qo'shish
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Upload File Knowledge Modal -->
+<div class="modal fade" id="uploadFileModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-upload me-2"></i>
+                    Fayl Bilim Yuklash
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('upload_knowledge', bot_id=bot.id) }}" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Botingizga fayl ko'rinishidagi bilim yuklang. Qo'llab-quvvatlanadigan formatlar: TXT, PDF, DOC, DOCX, JSON, CSV
+                    </div>
+                    <div class="mb-3">
+                        <label for="knowledgeFile" class="form-label">Bilim Fayli *</label>
+                        <input type="file" class="form-control" id="knowledgeFile" name="file" 
+                               accept=".txt,.pdf,.doc,.docx,.json,.csv" required>
+                        <div class="form-text">
+                            <strong>Qo'llab-quvvatlanadigan formatlar:</strong> TXT, PDF, DOC, DOCX, JSON, CSV<br>
+                            <strong>Maksimal hajm:</strong> 10 MB
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="border rounded p-3 text-center bg-light">
+                                    <i class="fas fa-file-text fa-2x text-info mb-2"></i>
+                                    <h6>Matn Fayllar</h6>
+                                    <small class="text-muted">TXT, PDF, DOC, DOCX</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="border rounded p-3 text-center bg-light">
+                                    <i class="fas fa-table fa-2x text-success mb-2"></i>
+                                    <h6>Ma'lumotlar Fayllar</h6>
+                                    <small class="text-muted">JSON, CSV</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-upload me-1"></i>Fayl Yuklash
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

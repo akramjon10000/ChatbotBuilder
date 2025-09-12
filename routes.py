@@ -449,6 +449,51 @@ def upload_knowledge(bot_id):
     
     return redirect(url_for('bot_detail', bot_id=bot_id))
 
+@app.route('/bot/<int:bot_id>/add_text_knowledge', methods=['POST'])
+@login_required
+def add_text_knowledge(bot_id):
+    """Matn shaklida bilim bazasi qo'shish"""
+    if not current_user.has_access:
+        return redirect(url_for('trial_expired'))
+    
+    bot = Bot.query.get_or_404(bot_id)
+    
+    # Check ownership
+    if bot.user_id != current_user.id:
+        flash('Bu chatbotga ruxsatingiz yo\'q', 'error')
+        return redirect(url_for('dashboard'))
+    
+    # Get form data
+    title = request.form.get('title', '').strip()
+    content = request.form.get('content', '').strip()
+    
+    # Validate that both title and content are provided
+    if not title or not content:
+        flash('Sarlavha va matn to\'ldirilishi shart', 'error')
+        return redirect(url_for('bot_detail', bot_id=bot_id))
+    
+    try:
+        # Create knowledge base entry
+        kb = KnowledgeBase(
+            bot_id=bot.id,
+            filename=f"text_knowledge_{datetime.utcnow().timestamp()}.txt",
+            original_filename=f"{title}.txt",
+            file_type="text/plain",
+            file_size=len(content.encode('utf-8')),
+            content=content
+        )
+        
+        db.session.add(kb)
+        db.session.commit()
+        
+        flash('Matn bilim bazasiga muvaffaqiyatli qo\'shildi!', 'success')
+        
+    except Exception as e:
+        logging.error(f"Text knowledge add error: {e}")
+        flash('Matn qo\'shishda xatolik yuz berdi', 'error')
+    
+    return redirect(url_for('bot_detail', bot_id=bot_id))
+
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
