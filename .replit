@@ -49,9 +49,5 @@ externalPort = 3001
 localPort = 45639
 externalPort = 3002
 
-[[ports]]
-localPort = 45895
-externalPort = 3003
-
 [agent]
 integrations = ["python_gemini:1.0.0", "python_database:1.0.0", "python_sendgrid:1.0.0"]
