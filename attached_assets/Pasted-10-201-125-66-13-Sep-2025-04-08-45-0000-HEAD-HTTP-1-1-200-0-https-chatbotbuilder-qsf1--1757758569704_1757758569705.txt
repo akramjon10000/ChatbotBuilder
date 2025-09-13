@@ -1,0 +1,180 @@
+10.201.125.66 - - [13/Sep/2025:04:08:45 +0000] "HEAD / HTTP/1.1" 200 0 "https://chatbotbuilder-qsf1.onrender.com" "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)" 167832
+2025-09-13 04:10:02,846 INFO root Successfully edited message 125 in Telegram chat 8325332204
+2025-09-13 04:10:03,111 INFO root Successfully answered callback query 8086913436526726704
+10.201.74.1 - - [13/Sep/2025:04:10:03 +0000] "POST /webhook/telegram/3 HTTP/1.1" 200 2 "-" "-" 582546
+2025-09-13 04:10:09,344 INFO google_genai.models AFC is enabled with max remote calls: 10.
+2025-09-13 04:10:10,544 INFO httpx HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2025-09-13 04:10:10,546 INFO google_genai.models AFC remote call 1 is done.
+2025-09-13 04:10:10,812 INFO root Successfully sent message to Telegram chat 8325332204
+2025-09-13 04:10:10,813 INFO root Telegram message sent successfully to chat 8325332204
+10.201.74.1 - - [13/Sep/2025:04:10:10 +0000] "POST /webhook/telegram/3 HTTP/1.1" 200 2 "-" "-" 1588658
+10.201.130.132 - - [13/Sep/2025:04:13:49 +0000] "HEAD / HTTP/1.1" 200 0 "https://chatbotbuilder-qsf1.onrender.com" "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)" 91449
+10.201.125.66 - - [13/Sep/2025:04:18:53 +0000] "HEAD / HTTP/1.1" 200 0 "https://chatbotbuilder-qsf1.onrender.com" "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)" 156752
+10.201.74.1 - - [13/Sep/2025:04:23:56 +0000] "HEAD / HTTP/1.1" 200 0 "https://chatbotbuilder-qsf1.onrender.com" "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)" 67324
+10.201.130.132 - - [13/Sep/2025:04:28:59 +0000] "HEAD / HTTP/1.1" 200 0 "https://chatbotbuilder-qsf1.onrender.com" "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)" 2405
+10.201.74.1 - - [13/Sep/2025:04:34:03 +0000] "HEAD / HTTP/1.1" 200 0 "https://chatbotbuilder-qsf1.onrender.com" "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)" 11248
+10.201.125.66 - - [13/Sep/2025:04:39:06 +0000] "HEAD / HTTP/1.1" 200 0 "https://chatbotbuilder-qsf1.onrender.com" "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)" 33355
+10.201.130.132 - - [13/Sep/2025:04:44:09 +0000] "HEAD / HTTP/1.1" 200 0 "https://chatbotbuilder-qsf1.onrender.com" "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)" 69211
+10.201.74.1 - - [13/Sep/2025:04:49:12 +0000] "HEAD / HTTP/1.1" 200 0 "https://chatbotbuilder-qsf1.onrender.com" "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)" 48973
+10.201.130.132 - - [13/Sep/2025:04:54:17 +0000] "HEAD / HTTP/1.1" 200 0 "https://chatbotbuilder-qsf1.onrender.com" "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)" 198461
+10.201.74.1 - - [13/Sep/2025:04:56:34 +0000] "GET / HTTP/1.1" 302 207 "https://chatbotbuilder-qsf1.onrender.com/bot/3" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 97726
+10.201.130.132 - - [13/Sep/2025:04:56:34 +0000] "GET /dashboard HTTP/1.1" 200 50709 "https://chatbotbuilder-qsf1.onrender.com/bot/3" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 186485
+10.201.130.132 - - [13/Sep/2025:04:56:34 +0000] "GET /static/js/main.js HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1638
+10.201.125.66 - - [13/Sep/2025:04:56:34 +0000] "GET /static/css/pricing.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1154
+10.201.74.1 - - [13/Sep/2025:04:56:34 +0000] "GET /static/css/style.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1296
+10.201.130.132 - - [13/Sep/2025:04:56:34 +0000] "GET /static/css/contrast-improvements.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1553
+10.201.125.66 - - [13/Sep/2025:04:56:34 +0000] "GET /static/icons/icon-192x192.png HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1795
+10.201.74.1 - - [13/Sep/2025:04:56:35 +0000] "GET /static/manifest.json HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1432
+10.201.130.132 - - [13/Sep/2025:04:56:35 +0000] "GET /static/icons/icon-144x144.png HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 13501
+10.201.74.1 - - [13/Sep/2025:04:56:50 +0000] "GET / HTTP/1.1" 200 46074 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 2423
+10.201.130.132 - - [13/Sep/2025:04:56:50 +0000] "GET /static/css/style.css HTTP/1.1" 200 0 "https://chatbotbuilder-qsf1.onrender.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 2759
+10.201.130.132 - - [13/Sep/2025:04:56:50 +0000] "GET /static/css/pricing.css HTTP/1.1" 200 0 "https://chatbotbuilder-qsf1.onrender.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1826
+10.201.74.1 - - [13/Sep/2025:04:56:50 +0000] "GET /static/js/main.js HTTP/1.1" 200 0 "https://chatbotbuilder-qsf1.onrender.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 2453
+10.201.74.1 - - [13/Sep/2025:04:56:50 +0000] "GET /static/css/contrast-improvements.css HTTP/1.1" 200 0 "https://chatbotbuilder-qsf1.onrender.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 6130
+10.201.130.132 - - [13/Sep/2025:04:56:50 +0000] "GET /static/icons/icon-192x192.png HTTP/1.1" 200 0 "https://chatbotbuilder-qsf1.onrender.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 5453
+10.201.125.66 - - [13/Sep/2025:04:56:51 +0000] "GET /static/favicon.ico HTTP/1.1" 200 0 "https://chatbotbuilder-qsf1.onrender.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 5064
+10.201.125.66 - - [13/Sep/2025:04:56:51 +0000] "GET /static/manifest.json HTTP/1.1" 200 0 "https://chatbotbuilder-qsf1.onrender.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 2006
+10.201.125.66 - - [13/Sep/2025:04:56:51 +0000] "GET /static/icons/icon-144x144.png HTTP/1.1" 200 0 "https://chatbotbuilder-qsf1.onrender.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 5554
+10.201.130.132 - - [13/Sep/2025:04:56:52 +0000] "GET /register HTTP/1.1" 200 23745 "https://chatbotbuilder-qsf1.onrender.com/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 6259
+10.201.125.66 - - [13/Sep/2025:04:56:52 +0000] "GET /static/js/main.js HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/register" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1472
+10.201.130.132 - - [13/Sep/2025:04:56:52 +0000] "GET /static/css/contrast-improvements.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/register" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1407
+10.201.130.132 - - [13/Sep/2025:04:56:52 +0000] "GET /static/icons/icon-192x192.png HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/register" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 5851
+10.201.74.1 - - [13/Sep/2025:04:56:52 +0000] "GET /static/css/style.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/register" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1271
+10.201.74.1 - - [13/Sep/2025:04:56:52 +0000] "GET /static/css/pricing.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/register" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 34278
+10.201.74.1 - - [13/Sep/2025:04:56:52 +0000] "GET /static/manifest.json HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/register" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1159
+10.201.125.66 - - [13/Sep/2025:04:56:52 +0000] "GET /static/icons/icon-144x144.png HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/register" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 2047
+10.201.130.132 - - [13/Sep/2025:04:57:05 +0000] "POST /register HTTP/1.1" 302 207 "https://chatbotbuilder-qsf1.onrender.com/register" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 922022
+10.201.74.1 - - [13/Sep/2025:04:57:05 +0000] "GET /dashboard HTTP/1.1" 200 43353 "https://chatbotbuilder-qsf1.onrender.com/register" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 166785
+10.201.125.66 - - [13/Sep/2025:04:57:06 +0000] "GET /static/css/pricing.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 2759
+10.201.74.1 - - [13/Sep/2025:04:57:06 +0000] "GET /static/css/contrast-improvements.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1691
+10.201.130.132 - - [13/Sep/2025:04:57:06 +0000] "GET /static/icons/icon-192x192.png HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1279
+10.201.74.1 - - [13/Sep/2025:04:57:06 +0000] "GET /static/css/style.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1447
+10.201.125.66 - - [13/Sep/2025:04:57:06 +0000] "GET /static/js/main.js HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 2177
+10.201.74.1 - - [13/Sep/2025:04:57:06 +0000] "GET /static/manifest.json HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1333
+10.201.130.132 - - [13/Sep/2025:04:57:06 +0000] "GET /static/icons/icon-144x144.png HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1797
+10.201.130.132 - - [13/Sep/2025:04:57:12 +0000] "GET /bot/create HTTP/1.1" 200 27360 "https://chatbotbuilder-qsf1.onrender.com/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 86623
+10.201.130.132 - - [13/Sep/2025:04:57:12 +0000] "GET /static/css/style.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/create" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1649
+10.201.130.132 - - [13/Sep/2025:04:57:12 +0000] "GET /static/css/pricing.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/create" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1578
+10.201.74.1 - - [13/Sep/2025:04:57:12 +0000] "GET /static/css/contrast-improvements.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/create" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1159
+10.201.125.66 - - [13/Sep/2025:04:57:12 +0000] "GET /static/js/main.js HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/create" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1231
+10.201.130.132 - - [13/Sep/2025:04:57:12 +0000] "GET /static/icons/icon-192x192.png HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/create" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1503
+10.201.125.66 - - [13/Sep/2025:04:57:12 +0000] "GET /static/manifest.json HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/create" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1152
+10.201.125.66 - - [13/Sep/2025:04:57:12 +0000] "GET /static/icons/icon-144x144.png HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/create" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1522
+10.201.74.1 - - [13/Sep/2025:04:57:16 +0000] "POST /bot/create HTTP/1.1" 302 199 "https://chatbotbuilder-qsf1.onrender.com/bot/create" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 53504
+10.201.125.66 - - [13/Sep/2025:04:57:16 +0000] "GET /bot/4 HTTP/1.1" 200 53561 "https://chatbotbuilder-qsf1.onrender.com/bot/create" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 489094
+10.201.125.66 - - [13/Sep/2025:04:57:16 +0000] "GET /static/css/style.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 2217
+10.201.130.132 - - [13/Sep/2025:04:57:16 +0000] "GET /static/css/pricing.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1231
+10.201.130.132 - - [13/Sep/2025:04:57:16 +0000] "GET /static/js/main.js HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1051
+10.201.74.1 - - [13/Sep/2025:04:57:16 +0000] "GET /static/css/contrast-improvements.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1395
+10.201.130.132 - - [13/Sep/2025:04:57:16 +0000] "GET /static/icons/icon-192x192.png HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1248
+10.201.74.1 - - [13/Sep/2025:04:57:16 +0000] "GET /static/manifest.json HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1103
+10.201.74.1 - - [13/Sep/2025:04:57:17 +0000] "GET /static/icons/icon-144x144.png HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1677
+2025-09-13 04:58:55,485 INFO root Successfully retrieved bot information
+2025-09-13 04:58:55,611 INFO root Successfully set webhook to https://chatbotbuilder-qsf1.onrender.com/webhook/telegram/4
+2025-09-13 04:58:55,614 ERROR root Bot 4 has no Telegram token
+10.201.130.132 - - [13/Sep/2025:04:58:55 +0000] "POST /webhook/telegram/4 HTTP/1.1" 400 8 "-" "-" 8548
+10.201.130.132 - - [13/Sep/2025:04:58:55 +0000] "POST /bot/4/deploy_telegram HTTP/1.1" 302 199 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 477895
+2025-09-13 04:58:56,611 INFO root Successfully sent message to Telegram chat 6224477868
+10.201.74.1 - - [13/Sep/2025:04:58:56 +0000] "POST /webhook/telegram/4 HTTP/1.1" 200 2 "-" "-" 969392
+10.201.125.66 - - [13/Sep/2025:04:58:56 +0000] "GET /bot/4 HTTP/1.1" 200 56074 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 876661
+10.201.130.132 - - [13/Sep/2025:04:58:56 +0000] "GET /static/css/style.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1587
+10.201.125.66 - - [13/Sep/2025:04:58:56 +0000] "GET /static/css/pricing.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1534
+10.201.74.1 - - [13/Sep/2025:04:58:56 +0000] "GET /static/css/contrast-improvements.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1353
+10.201.74.1 - - [13/Sep/2025:04:58:56 +0000] "GET /static/js/main.js HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1575
+10.201.125.66 - - [13/Sep/2025:04:58:56 +0000] "GET /static/icons/icon-192x192.png HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1242
+10.201.74.1 - - [13/Sep/2025:04:58:57 +0000] "GET /static/manifest.json HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1208
+10.201.74.1 - - [13/Sep/2025:04:58:57 +0000] "GET /static/icons/icon-144x144.png HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 4956
+2025-09-13 04:59:01,433 INFO root Successfully edited message 226 in Telegram chat 6224477868
+2025-09-13 04:59:01,723 INFO root Successfully answered callback query 8287184806725121608
+10.201.130.132 - - [13/Sep/2025:04:59:01 +0000] "POST /webhook/telegram/4 HTTP/1.1" 200 2 "-" "-" 691049
+2025-09-13 04:59:05,260 INFO google_genai.models AFC is enabled with max remote calls: 10.
+2025-09-13 04:59:06,466 INFO httpx HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2025-09-13 04:59:06,467 INFO google_genai.models AFC remote call 1 is done.
+2025-09-13 04:59:06,755 INFO root Successfully sent message to Telegram chat 6224477868
+2025-09-13 04:59:06,756 INFO root Telegram message sent successfully to chat 6224477868
+10.201.74.1 - - [13/Sep/2025:04:59:06 +0000] "POST /webhook/telegram/4 HTTP/1.1" 200 2 "-" "-" 1511838
+10.201.130.132 - - [13/Sep/2025:04:59:20 +0000] "HEAD / HTTP/1.1" 200 0 "https://chatbotbuilder-qsf1.onrender.com" "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)" 9304
+10.201.125.66 - - [13/Sep/2025:04:59:27 +0000] "POST /bot/4/upload_knowledge HTTP/1.1" 302 199 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 16034
+10.201.125.66 - - [13/Sep/2025:04:59:28 +0000] "GET /bot/4 HTTP/1.1" 200 58808 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 284697
+10.201.125.66 - - [13/Sep/2025:04:59:28 +0000] "GET /static/css/style.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1738
+10.201.125.66 - - [13/Sep/2025:04:59:28 +0000] "GET /static/css/pricing.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1255
+10.201.74.1 - - [13/Sep/2025:04:59:28 +0000] "GET /static/js/main.js HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1363
+10.201.74.1 - - [13/Sep/2025:04:59:28 +0000] "GET /static/icons/icon-192x192.png HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1428
+10.201.125.66 - - [13/Sep/2025:04:59:28 +0000] "GET /static/css/contrast-improvements.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 31390
+10.201.130.132 - - [13/Sep/2025:04:59:28 +0000] "GET /static/manifest.json HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1278
+10.201.130.132 - - [13/Sep/2025:04:59:28 +0000] "GET /static/icons/icon-144x144.png HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1506
+10.201.125.66 - - [13/Sep/2025:04:59:37 +0000] "POST /bot/4/upload_knowledge HTTP/1.1" 302 199 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 15588
+10.201.130.132 - - [13/Sep/2025:04:59:37 +0000] "GET /bot/4 HTTP/1.1" 200 61658 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 242867
+10.201.125.66 - - [13/Sep/2025:04:59:37 +0000] "POST /bot/4/upload_knowledge HTTP/1.1" 302 199 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 163951
+10.201.130.132 - - [13/Sep/2025:04:59:38 +0000] "GET /bot/4 HTTP/1.1" 200 64786 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 351838
+10.201.125.66 - - [13/Sep/2025:04:59:38 +0000] "GET /static/css/contrast-improvements.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1425
+10.201.130.132 - - [13/Sep/2025:04:59:38 +0000] "GET /static/css/style.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 7398
+10.201.130.132 - - [13/Sep/2025:04:59:38 +0000] "GET /static/css/pricing.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 31177
+10.201.130.132 - - [13/Sep/2025:04:59:38 +0000] "GET /static/js/main.js HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1351
+10.201.74.1 - - [13/Sep/2025:04:59:38 +0000] "GET /static/icons/icon-192x192.png HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1259
+10.201.130.132 - - [13/Sep/2025:04:59:38 +0000] "GET /static/manifest.json HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1366
+10.201.130.132 - - [13/Sep/2025:04:59:38 +0000] "GET /static/icons/icon-144x144.png HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 1526
+2025-09-13 05:00:00,002 INFO apscheduler.executors.default Running job "Check trial expiry (trigger: cron[minute='0'], next run at: 2025-09-13 05:00:00 UTC)" (scheduled at 2025-09-13 05:00:00+00:00)
+2025-09-13 05:00:00,325 INFO apscheduler.executors.default Job "Check trial expiry (trigger: cron[minute='0'], next run at: 2025-09-13 06:00:00 UTC)" executed successfully
+10.201.74.1 - - [13/Sep/2025:05:02:17 +0000] "GET /admin HTTP/1.1" 200 36570 "https://chatbotbuilder-qsf1.onrender.com/dashboard" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 539895
+10.201.130.132 - - [13/Sep/2025:05:02:17 +0000] "GET /static/js/main.js HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/admin" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 2910
+2025-09-13 05:03:23,554 INFO root Successfully sent message to Telegram chat 819931801
+10.201.74.1 - - [13/Sep/2025:05:03:23 +0000] "POST /webhook/telegram/4 HTTP/1.1" 200 2 "-" "-" 399117
+2025-09-13 05:03:25,346 INFO root Successfully edited message 230 in Telegram chat 819931801
+2025-09-13 05:03:25,551 INFO root Successfully answered callback query 3521580272740723012
+10.201.130.132 - - [13/Sep/2025:05:03:25 +0000] "POST /webhook/telegram/4 HTTP/1.1" 200 2 "-" "-" 572001
+2025-09-13 05:03:27,842 INFO google_genai.models AFC is enabled with max remote calls: 10.
+2025-09-13 05:03:28,582 INFO httpx HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2025-09-13 05:03:33,221 INFO google_genai.models AFC remote call 1 is done.
+2025-09-13 05:03:33,967 INFO root Successfully sent message to Telegram chat 819931801
+2025-09-13 05:03:33,968 INFO root Telegram message sent successfully to chat 819931801
+10.201.125.66 - - [13/Sep/2025:05:03:34 +0000] "POST /webhook/telegram/4 HTTP/1.1" 200 2 "-" "-" 6224102
+==> Running 'gunicorn --config gunicorn.conf.py main:app'
+/opt/render/project/src/.venv/lib/python3.13/site-packages/flask_limiter/extension.py:324: UserWarning: Using the in-memory storage for tracking rate limits as no storage was explicitly specified. This is not recommended for production use. See: https://flask-limiter.readthedocs.io#configuring-a-storage-backend for documentation about configuring the storage backend.
+  warnings.warn(
+2025-09-13 05:04:14,752 INFO root Admin user already exists: akramjon
+2025-09-13 05:04:24,659 INFO apscheduler.scheduler Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-09-13 05:04:24,660 INFO apscheduler.scheduler Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-09-13 05:04:24,660 INFO apscheduler.scheduler Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-09-13 05:04:24,660 INFO apscheduler.scheduler Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-09-13 05:04:24,660 INFO apscheduler.scheduler Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-09-13 05:04:24,662 INFO apscheduler.scheduler Added job "Check trial expiry" to job store "default"
+2025-09-13 05:04:24,662 INFO apscheduler.scheduler Added job "Update daily statistics" to job store "default"
+2025-09-13 05:04:24,662 INFO apscheduler.scheduler Added job "Send trial expiry notifications" to job store "default"
+2025-09-13 05:04:24,662 INFO apscheduler.scheduler Added job "Send marketing Telegrams to trial users" to job store "default"
+2025-09-13 05:04:24,662 INFO apscheduler.scheduler Added job "Clean up old data" to job store "default"
+2025-09-13 05:04:24,663 INFO apscheduler.scheduler Scheduler started
+2025-09-13 05:04:24,663 INFO root Background scheduler started
+2025-09-13 05:04:24,663 INFO root APScheduler started in process 38
+[2025-09-13 05:04:24 +0000] [38] [INFO] Starting gunicorn 23.0.0
+[2025-09-13 05:04:24 +0000] [38] [INFO] Listening at: http://0.0.0.0:10000 (38)
+[2025-09-13 05:04:24 +0000] [38] [INFO] Using worker: sync
+[2025-09-13 05:04:24 +0000] [41] [INFO] Booting worker with pid: 41
+[2025-09-13 05:04:24 +0000] [42] [INFO] Booting worker with pid: 42
+[2025-09-13 05:04:24 +0000] [43] [INFO] Booting worker with pid: 43
+[2025-09-13 05:04:25 +0000] [44] [INFO] Booting worker with pid: 44
+[2025-09-13 05:04:25 +0000] [45] [INFO] Booting worker with pid: 45
+[2025-09-13 05:04:25 +0000] [46] [INFO] Booting worker with pid: 46
+[2025-09-13 05:04:25 +0000] [47] [INFO] Booting worker with pid: 47
+[2025-09-13 05:04:25 +0000] [48] [INFO] Booting worker with pid: 48
+[2025-09-13 05:04:25 +0000] [49] [INFO] Booting worker with pid: 49
+[2025-09-13 05:04:25 +0000] [50] [INFO] Booting worker with pid: 50
+[2025-09-13 05:04:25 +0000] [51] [INFO] Booting worker with pid: 51
+[2025-09-13 05:04:25 +0000] [52] [INFO] Booting worker with pid: 52
+[2025-09-13 05:04:25 +0000] [53] [INFO] Booting worker with pid: 53
+[2025-09-13 05:04:25 +0000] [54] [INFO] Booting worker with pid: 54
+[2025-09-13 05:04:25 +0000] [55] [INFO] Booting worker with pid: 55
+[2025-09-13 05:04:25 +0000] [56] [INFO] Booting worker with pid: 56
+[2025-09-13 05:04:25 +0000] [57] [INFO] Booting worker with pid: 57
+2025-09-13 05:04:43,938 INFO google_genai.models AFC is enabled with max remote calls: 10.
+2025-09-13 05:04:46,512 INFO httpx HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2025-09-13 05:04:46,516 INFO google_genai.models AFC remote call 1 is done.
+2025-09-13 05:04:46,869 INFO root Successfully sent message to Telegram chat 819931801
+2025-09-13 05:04:46,871 INFO root Telegram message sent successfully to chat 819931801
+10.201.125.66 - - [13/Sep/2025:05:04:46 +0000] "POST /webhook/telegram/4 HTTP/1.1" 200 2 "-" "-" 3072989
+10.201.130.132 - - [13/Sep/2025:05:04:50 +0000] "GET /bot/4/send-message HTTP/1.1" 200 29601 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 456500
+10.201.125.66 - - [13/Sep/2025:05:04:50 +0000] "HEAD / HTTP/1.1" 200 0 "https://chatbotbuilder-qsf1.onrender.com" "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)" 308745
+10.201.125.66 - - [13/Sep/2025:05:04:50 +0000] "GET /static/css/pricing.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4/send-message" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 37606
+10.201.74.1 - - [13/Sep/2025:05:04:50 +0000] "GET /static/js/main.js HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4/send-message" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 39220
+10.201.130.132 - - [13/Sep/2025:05:04:50 +0000] "GET /static/css/contrast-improvements.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4/send-message" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 139416
+10.201.130.132 - - [13/Sep/2025:05:04:50 +0000] "GET /static/css/style.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4/send-message" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 60742
