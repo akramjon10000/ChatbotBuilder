@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "repl-nix-workspace"
 version = "0.1.0"
-description = "Add your description here"
+description = "AI Chatbot Platform"
 requires-python = ">=3.11"
 dependencies = [
     "email-validator>=2.3.0",
@@ -26,3 +26,6 @@ dependencies = [
     "flask-migrate>=4.1.0",
     "sendgrid>=6.12.4",
 ]
+
+[tool.setuptools]
+packages = ["services", "tasks", "utils"]
