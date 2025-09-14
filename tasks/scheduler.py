@@ -100,10 +100,13 @@ def cleanup_old_data():
         logging.error(f"Error cleaning up old data: {e}")
 
 def send_marketing_telegrams():
-    """Send marketing Telegram messages to trial users every 3 days"""
+    """Send marketing Telegram messages to trial users every 3 days (optimized bulk sending)"""
     try:
         from app import app, db
-        from services.telegram_marketing_service import TelegramMarketingService, get_trial_expired_telegram_users
+        from services.telegram_marketing_service import (
+            TelegramMarketingService, get_trial_expired_telegram_users, 
+            update_marketing_sent_timestamp
+        )
         
         with app.app_context():
             # Get trial expired users who have telegram_chat_id
@@ -116,27 +119,42 @@ def send_marketing_telegrams():
             # Initialize Telegram marketing service
             marketing_service = TelegramMarketingService()
             
-            # Send marketing messages to each user
+            # Send individual personalized messages with rate limiting
             sent_count = 0
             failed_count = 0
+            successful_user_ids = []
             
             for user_data in trial_expired_users:
                 try:
-                    result = marketing_service.send_trial_expired_message(
-                        chat_id=user_data['telegram_chat_id'],
+                    # Create personalized message for each user
+                    message = marketing_service.create_trial_expired_message(
                         user_name=user_data['full_name'] or user_data['username']
+                    )
+                    
+                    result = marketing_service.send_marketing_message(
+                        chat_id=user_data['telegram_chat_id'],
+                        message=message
                     )
                     
                     if result and result.get('success'):
                         sent_count += 1
+                        successful_user_ids.append(user_data['id'])
                         logging.info(f"Marketing Telegram sent to user {user_data['full_name'] or user_data['username']} (chat_id: {user_data['telegram_chat_id']})")
                     else:
                         failed_count += 1
                         logging.warning(f"Failed to send marketing Telegram to user {user_data['full_name'] or user_data['username']}: {result.get('error', 'Unknown error')}")
+                    
+                    # Rate limiting - wait 1 second between sends
+                    import time
+                    time.sleep(1.0)
                         
                 except Exception as user_error:
                     failed_count += 1
                     logging.error(f"Error sending marketing Telegram to user {user_data['full_name'] or user_data['username']}: {user_error}")
+            
+            # Update marketing sent timestamp for successful sends
+            if successful_user_ids:
+                update_marketing_sent_timestamp(successful_user_ids)
             
             logging.info(f"Marketing Telegrams sent: {sent_count} successful, {failed_count} failed to {len(trial_expired_users)} trial expired users")
             

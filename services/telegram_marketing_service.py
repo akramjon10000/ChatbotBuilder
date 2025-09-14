@@ -1,5 +1,6 @@
 import os
 import logging
+import time
 from datetime import datetime, timedelta
 from typing import List, Dict, Optional
 from services.telegram_service import TelegramService
@@ -65,45 +66,45 @@ class TelegramMarketingService:
                 'error_code': 'exception'
             }
     
-    def send_bulk_marketing_messages(self, chat_ids: List[str], message: str) -> Dict:
+    def send_bulk_marketing_messages(self, chat_ids: List[str], message: str, 
+                                   rate_limit_delay: float = 1.0) -> Dict:
         """
-        Ko'p foydalanuvchilarga marketing xabarlarini yuborish
+        Ko'p foydalanuvchilarga marketing xabarlarini yuborish (rate limiting bilan)
         
         Args:
             chat_ids: Chat ID'lar ro'yxati
             message: Yuborilayotgan xabar matni
+            rate_limit_delay: Xabarlar orasidagi kutish vaqti (soniyalarda)
             
         Returns:
             dict: Yuborish statistikasi
         """
-        sent_count = 0
-        failed_count = 0
+        logger.info(f"Starting bulk marketing message send to {len(chat_ids)} chats with {rate_limit_delay}s delay")
+        
+        # Use TelegramService's built-in bulk method with rate limiting
+        result = self.telegram_service.send_bulk_messages(
+            chat_ids=chat_ids,
+            text=message,
+            parse_mode='HTML',
+            rate_limit_delay=rate_limit_delay
+        )
+        
+        # Convert result format to match expected output
         failed_chats = []
-        successful_chats = []
+        for error in result.get('errors', []):
+            failed_chats.append({
+                'chat_id': error.get('chat_id'),
+                'error': error.get('error_description', 'Unknown error'),
+                'error_code': error.get('error_code', 'unknown')
+            })
         
-        logger.info(f"Starting bulk marketing message send to {len(chat_ids)} chats")
-        
-        for chat_id in chat_ids:
-            result = self.send_marketing_message(chat_id, message)
-            
-            if result['success']:
-                sent_count += 1
-                successful_chats.append(chat_id)
-            else:
-                failed_count += 1
-                failed_chats.append({
-                    'chat_id': chat_id,
-                    'error': result.get('error', 'Unknown error'),
-                    'error_code': result.get('error_code', 'unknown')
-                })
-        
-        logger.info(f"Bulk marketing send completed: {sent_count} sent, {failed_count} failed")
+        logger.info(f"Bulk marketing send completed: {result['sent']} sent, {result['failed']} failed")
         
         return {
-            'sent': sent_count,
-            'failed': failed_count,
-            'total': len(chat_ids),
-            'successful_chats': successful_chats,
+            'sent': result['sent'],
+            'failed': result['failed'],
+            'total': result['total'],
+            'successful_chats': result.get('successful_chat_ids', []),
             'failed_chats': failed_chats
         }
     

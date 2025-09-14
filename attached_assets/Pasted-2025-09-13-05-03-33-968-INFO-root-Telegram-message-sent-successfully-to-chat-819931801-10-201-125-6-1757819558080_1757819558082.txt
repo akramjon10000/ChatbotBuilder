@@ -1,0 +1,51 @@
+2025-09-13 05:03:33,968 INFO root Telegram message sent successfully to chat 819931801
+10.201.125.66 - - [13/Sep/2025:05:03:34 +0000] "POST /webhook/telegram/4 HTTP/1.1" 200 2 "-" "-" 6224102
+==> Running 'gunicorn --config gunicorn.conf.py main:app'
+/opt/render/project/src/.venv/lib/python3.13/site-packages/flask_limiter/extension.py:324: UserWarning: Using the in-memory storage for tracking rate limits as no storage was explicitly specified. This is not recommended for production use. See: https://flask-limiter.readthedocs.io#configuring-a-storage-backend for documentation about configuring the storage backend.
+  warnings.warn(
+2025-09-13 05:04:14,752 INFO root Admin user already exists: akramjon
+2025-09-13 05:04:24,659 INFO apscheduler.scheduler Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-09-13 05:04:24,660 INFO apscheduler.scheduler Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-09-13 05:04:24,660 INFO apscheduler.scheduler Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-09-13 05:04:24,660 INFO apscheduler.scheduler Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-09-13 05:04:24,660 INFO apscheduler.scheduler Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-09-13 05:04:24,662 INFO apscheduler.scheduler Added job "Check trial expiry" to job store "default"
+2025-09-13 05:04:24,662 INFO apscheduler.scheduler Added job "Update daily statistics" to job store "default"
+2025-09-13 05:04:24,662 INFO apscheduler.scheduler Added job "Send trial expiry notifications" to job store "default"
+2025-09-13 05:04:24,662 INFO apscheduler.scheduler Added job "Send marketing Telegrams to trial users" to job store "default"
+2025-09-13 05:04:24,662 INFO apscheduler.scheduler Added job "Clean up old data" to job store "default"
+2025-09-13 05:04:24,663 INFO apscheduler.scheduler Scheduler started
+2025-09-13 05:04:24,663 INFO root Background scheduler started
+2025-09-13 05:04:24,663 INFO root APScheduler started in process 38
+[2025-09-13 05:04:24 +0000] [38] [INFO] Starting gunicorn 23.0.0
+[2025-09-13 05:04:24 +0000] [38] [INFO] Listening at: http://0.0.0.0:10000 (38)
+[2025-09-13 05:04:24 +0000] [38] [INFO] Using worker: sync
+[2025-09-13 05:04:24 +0000] [41] [INFO] Booting worker with pid: 41
+[2025-09-13 05:04:24 +0000] [42] [INFO] Booting worker with pid: 42
+[2025-09-13 05:04:24 +0000] [43] [INFO] Booting worker with pid: 43
+[2025-09-13 05:04:25 +0000] [44] [INFO] Booting worker with pid: 44
+[2025-09-13 05:04:25 +0000] [45] [INFO] Booting worker with pid: 45
+[2025-09-13 05:04:25 +0000] [46] [INFO] Booting worker with pid: 46
+[2025-09-13 05:04:25 +0000] [47] [INFO] Booting worker with pid: 47
+[2025-09-13 05:04:25 +0000] [48] [INFO] Booting worker with pid: 48
+[2025-09-13 05:04:25 +0000] [49] [INFO] Booting worker with pid: 49
+[2025-09-13 05:04:25 +0000] [50] [INFO] Booting worker with pid: 50
+[2025-09-13 05:04:25 +0000] [51] [INFO] Booting worker with pid: 51
+[2025-09-13 05:04:25 +0000] [52] [INFO] Booting worker with pid: 52
+[2025-09-13 05:04:25 +0000] [53] [INFO] Booting worker with pid: 53
+[2025-09-13 05:04:25 +0000] [54] [INFO] Booting worker with pid: 54
+[2025-09-13 05:04:25 +0000] [55] [INFO] Booting worker with pid: 55
+[2025-09-13 05:04:25 +0000] [56] [INFO] Booting worker with pid: 56
+[2025-09-13 05:04:25 +0000] [57] [INFO] Booting worker with pid: 57
+2025-09-13 05:04:43,938 INFO google_genai.models AFC is enabled with max remote calls: 10.
+2025-09-13 05:04:46,512 INFO httpx HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2025-09-13 05:04:46,516 INFO google_genai.models AFC remote call 1 is done.
+2025-09-13 05:04:46,869 INFO root Successfully sent message to Telegram chat 819931801
+2025-09-13 05:04:46,871 INFO root Telegram message sent successfully to chat 819931801
+10.201.125.66 - - [13/Sep/2025:05:04:46 +0000] "POST /webhook/telegram/4 HTTP/1.1" 200 2 "-" "-" 3072989
+10.201.130.132 - - [13/Sep/2025:05:04:50 +0000] "GET /bot/4/send-message HTTP/1.1" 200 29601 "https://chatbotbuilder-qsf1.onrender.com/bot/4" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 456500
+10.201.125.66 - - [13/Sep/2025:05:04:50 +0000] "HEAD / HTTP/1.1" 200 0 "https://chatbotbuilder-qsf1.onrender.com" "Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)" 308745
+10.201.125.66 - - [13/Sep/2025:05:04:50 +0000] "GET /static/css/pricing.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4/send-message" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 37606
+10.201.74.1 - - [13/Sep/2025:05:04:50 +0000] "GET /static/js/main.js HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4/send-message" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 39220
+10.201.130.132 - - [13/Sep/2025:05:04:50 +0000] "GET /static/css/contrast-improvements.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4/send-message" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 139416
+10.201.130.132 - - [13/Sep/2025:05:04:50 +0000] "GET /static/css/style.css HTTP/1.1" 304 0 "https://chatbotbuilder-qsf1.onrender.com/bot/4/send-message" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" 60742

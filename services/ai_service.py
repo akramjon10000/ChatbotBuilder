@@ -1,6 +1,8 @@
 import os
 import logging
 import time
+import hashlib
+from functools import lru_cache
 from google import genai
 from google.genai import types
 from app import db
@@ -9,28 +11,47 @@ from models import KnowledgeBase
 class AIService:
     def __init__(self):
         """Initialize AI service with Gemini API"""
-        self.client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+        # Support both GOOGLE_API_KEY and GEMINI_API_KEY for compatibility
+        api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
+        if not api_key:
+            raise ValueError("Neither GOOGLE_API_KEY nor GEMINI_API_KEY environment variable is set")
+        self.client = genai.Client(api_key=api_key)
         self.model = "gemini-2.5-flash"
+        self._knowledge_cache = {}
+        self._cache_timeout = 300  # 5 minutes cache
     
     def get_knowledge_base_content(self, bot_id):
-        """Retrieve knowledge base content for the bot"""
+        """Retrieve knowledge base content for the bot with caching"""
         try:
+            # Check cache first
+            cache_key = f"kb_{bot_id}"
+            current_time = time.time()
+            
+            if cache_key in self._knowledge_cache:
+                cached_data, cache_time = self._knowledge_cache[cache_key]
+                if current_time - cache_time < self._cache_timeout:
+                    return cached_data
+            
             knowledge_files = KnowledgeBase.query.filter_by(
                 bot_id=bot_id, is_active=True
             ).all()
             
             if not knowledge_files:
+                self._knowledge_cache[cache_key] = (None, current_time)
                 return None
             
-            # Combine all knowledge base content
+            # Combine content - limit to 2000 chars for faster processing
             combined_content = ""
+            total_chars = 0
             for kb in knowledge_files:
-                if kb.content:
-                    combined_content += f"\n\n--- {kb.original_filename} ---\n{kb.content}"
+                if kb.content and total_chars < 2000:
+                    content_to_add = kb.content[:2000-total_chars]
+                    combined_content += f"\n\n--- {kb.original_filename} ---\n{content_to_add}"
+                    total_chars += len(content_to_add)
             
-            if combined_content.strip():
-                return combined_content.strip()
-            return None
+            result = combined_content.strip() if combined_content.strip() else None
+            self._knowledge_cache[cache_key] = (result, current_time)
+            return result
             
         except Exception as e:
             logging.error(f"Knowledge base retrieval error: {e}")
@@ -83,8 +104,8 @@ class AIService:
                 ],
                 config=types.GenerateContentConfig(
                     system_instruction=system_instruction,
-                    temperature=0.7,
-                    max_output_tokens=1000
+                    temperature=0.6,
+                    max_output_tokens=500
                 )
             )
             
@@ -157,8 +178,8 @@ class AIService:
                 contents=contents,
                 config=types.GenerateContentConfig(
                     system_instruction=system_instruction,
-                    temperature=0.7,
-                    max_output_tokens=1000
+                    temperature=0.6,
+                    max_output_tokens=500
                 )
             )
             
